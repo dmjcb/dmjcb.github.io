@@ -1,5 +1,5 @@
 ---
-title: "Python Socket"
+title: "Network-Python Socket"
 date: 2021-12-01
 categories: [Network]
 tags: [Network]

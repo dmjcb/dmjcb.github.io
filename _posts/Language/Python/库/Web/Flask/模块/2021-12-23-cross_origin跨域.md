@@ -1,5 +1,5 @@
 ---
-title: "cross_origin跨域"
+title: "Pytohn-Flask-cross_origin跨域"
 date: 2021-12-23
 categories: [Python]
 tags: [Python]

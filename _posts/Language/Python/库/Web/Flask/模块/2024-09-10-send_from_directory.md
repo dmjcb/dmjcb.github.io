@@ -1,5 +1,5 @@
 ---
-title: "send_from_directory"
+title: "Pytohn-Flask-send_from_directory"
 date: 2024-09-10
 categories: [Python]
 tags: [Python]

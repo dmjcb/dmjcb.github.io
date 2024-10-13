@@ -1,5 +1,5 @@
 ---
-title: "Django操作MySQL"
+title: "Pytohn-Django-操作MySQL"
 date: 2021-01-16
 categories: [Python]
 tags: [Python]
