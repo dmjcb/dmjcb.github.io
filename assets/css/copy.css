@@ -1,0 +1,22 @@
+div.highlight {
+	position: relative;
+}
+
+div.highlight .copy-button {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	border: .3px solid orange;
+	border-radius: 1px;
+}
+
+.notification {
+	position: fixed;
+	top: 0;
+	left: 50%;
+	transform: translateX(-50%);
+	padding: 10px;
+	color: antiquewhite;
+	opacity: 1;
+	transition: opacity 1s;
+}
