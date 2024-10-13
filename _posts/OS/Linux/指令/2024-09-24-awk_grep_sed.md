@@ -1,5 +1,5 @@
 ---
-title: "awk_grep_sed"
+title: "Linux-awk_grep_sed"
 date: 2024-09-24
 categories: [OS]
 tags: [OS]
