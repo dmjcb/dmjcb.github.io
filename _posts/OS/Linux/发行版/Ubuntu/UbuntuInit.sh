@@ -8,7 +8,7 @@
  # @LastEditTime : 2024-09-24 23:25:59
 ### 
 
-# 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
+#ghp_7myZucaKiAlYfCRHfle####################K2LEj5s6NRO1NZFdN
 init_system(){
     sudo sed -i 's#security.ubuntu.com#mirrors.aliyun.com#g' /etc/apt/sources.list
     sudo sed -i 's#cn.archive.ubuntu.com#mirrors.aliyun.com#g' /etc/apt/sources.list
