@@ -13,8 +13,6 @@
 #include <map>
 #include <set>
 
-namespace {
-
 template<class T = std::string>
 struct Line {
     T      mStartNode;
@@ -27,58 +25,71 @@ struct Line {
 
 
 template<class T = std::string>
-class Graph {
+class DisjointSetUnion {
 public:
-    explicit Graph(std::vector<Line<T> > lines) {
-        mLines = std::move(lines);
+    DisjointSetUnion() = default;
 
-        // count the number of nodes
-        std::set<T> nodes;
-        for (const auto& line : mLines) {
-            nodes.insert(line.mStartNode);
-            nodes.insert(line.mEndNode);
+    DisjointSetUnion(std::vector<Line<T>>& lines) {
+        for (const auto& line : lines) {
+            mNodes.insert(line.mStartNode);
+            mNodes.insert(line.mEndNode);
         }
 
-        // parent of each node is itself at initialization time
-        for (const auto& node : nodes) {
+        for (const auto& node : mNodes) {
             mParent[node] = node;
+            mRank[node] = 0;
         }
     };
 
-    T Find(T node) {
-        if (mParent[node] == node) {
-            return node;
+    T Find(T x) {
+        if (mParent[x] != x) {
+            mParent[x] = Find(mParent[x]);
         }
-
-        T root = node;
-        while (mParent[root] != root) {
-            root = mParent[root];
-        }
-
-        T fatherNode = node;
-        while (root != node) {
-            fatherNode = mParent[node];
-            mParent[node] = root;
-            node = fatherNode;
-        }
-
-        return root;
+        return mParent[x];
     }
 
-    void Merge(T node1, T node2) {
-        mParent[Find(node1)] = Find(node2);
+    void Unions(T x, T y) {
+        T fx = Find(x);
+        T fy = Find(y);
+
+        if (fx != fy) {
+            if (mRank[fx] > mRank[fy]) {
+                mParent[fy] = fx;
+            }
+            else if (mRank[fx] > mRank[fy]) {
+                mParent[fx] = fy;
+            }
+            else {
+                mParent[fx] = fy;
+                mRank[fx]++;
+            }
+        }
+    }
+
+private:
+    std::map<T, T>   mParent;
+    std::map<T, int> mRank;
+    std::set<T>      mNodes;
+};
+
+template<class T = std::string>
+class Graph {
+public:
+    Graph(std::vector<Line<T>>& lines) {
+        mUnions = DisjointSetUnion<T>(lines);
+
+        std::sort(lines.begin(), lines.end(), [=](const Line<T>& e1, const Line<T>& e2) { return e1.mWeight < e2.mWeight; });
+        mLines = std::move(lines);
     }
 
     double GetKruskal() {
-        std::sort(mLines.begin(), mLines.end(), [=](const Line<T>& e1, const Line<T>& e2) { return e1.mWeight < e2.mWeight; });
-
         double sum = 0;
         for (auto& line : mLines) {
-            if (Find(line.mStartNode) != Find(line.mEndNode)) {
+            if (mUnions.Find(line.mStartNode) != mUnions.Find(line.mEndNode)) {
                 sum += line.mWeight;
                 line.mIsSelect = true;
 
-                Merge(line.mStartNode, line.mEndNode);
+                mUnions.Unions(line.mStartNode, line.mEndNode);
             }
         }
         return sum;
@@ -91,12 +102,10 @@ public:
             }
         }
     }
-
 private:
-    std::map<T, T>       mParent;
+    DisjointSetUnion<T>  mUnions;
     std::vector<Line<T>> mLines;
 };
-}
 
 int main() {
     using Line = Line<>;
