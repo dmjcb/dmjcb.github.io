@@ -11,9 +11,6 @@
 #    |  |  \   --. /  .'.  \  |  |
 #    `--'   `----''--'   '--' `--'
 
-include:
-  - _posts/SelfBlog
-  
 google-site-verification: tyOldajEieojScRg9SxAwzgBNDskW3ZfKwCBZ9MALPU
 
 ## => Site Settings

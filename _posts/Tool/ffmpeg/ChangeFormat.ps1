@@ -1,0 +1,1 @@
+ffmpeg -hwaccel cuvid -hwaccel_output_format cuda -i $args[0]  -c:v hevc_nvenc -map_metadata 0 -preset slow -cq 33 $args[1]
