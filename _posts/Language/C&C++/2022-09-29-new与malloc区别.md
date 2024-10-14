@@ -1,5 +1,5 @@
 ---
-title: "C/C++new与malloc区别"
+title: "C/C++-new与malloc区别"
 date: 2022-09-29
 categories: [C&C++]
 tags: [C&C++]

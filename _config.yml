@@ -21,7 +21,7 @@ url     : # the base hostname & protocol for your site e.g. https://www.someone.
 baseurl : # does not include hostname
 title   : dmjcb的个人博客
 description: > # this means to ignore newlines until "Language & timezone"
-  Your Site Description
+  个人博客, 记录日常
 
 
 ## => Language and Timezone
@@ -35,7 +35,7 @@ timezone: # see https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for
 author:
   type      : # "person" (default), "organization"
   name      : dmjcb
-  url       :
+  url       : dmjcb.github.io
   avatar    : # path or url of avatar image (square)
   bio       : I am an amazing person.
   email     : dmjcb@outlook.com
