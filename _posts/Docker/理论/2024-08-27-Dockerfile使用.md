@@ -64,11 +64,12 @@ CMD ["可执行文件", "参数1", "参数2", ...]
 CMD ["python3", "manage.py", "runserver 0.0.0.0: 8000"]
 ```
 
-#### 区别
-
-`CMD` 在`docker run`时运行, Dockerfile中只能在末尾有一条CMD指令
-
-`RUN` 在 `docker build`时运行, 可出现若干次
+```mermaid
+graph LR;
+    X(CMD/RUN区别)
+    X --> A(CMD) --> A1(docker run时运行) --> A2(Dockerfile中只能在末尾有一条CMD指令)
+    X --> B(RUN) --> B1(docker build时运行) --> B2(Dockerfile中可出现若干次)
+```
 
 ## 构建
 

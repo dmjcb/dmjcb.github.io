@@ -1,7 +1,7 @@
 ---
 title: "数据库-Docker部署SQLServer"
 date: 2021-02-04
-categories: [计算机, 数据库]
+categories: [数据库]
 tags: [数据库]
 excerpt: "Docker部署SQLServer"
 ---

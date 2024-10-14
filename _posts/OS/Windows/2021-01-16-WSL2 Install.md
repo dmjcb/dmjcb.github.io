@@ -1,5 +1,5 @@
 ---
-title: "WSL2 Install"
+title: "OS-Windows-WSL2 Install"
 date: 2021-01-16
 categories: [OS]
 tags: [OS]
