@@ -8,8 +8,6 @@ excerpt: "Bootstrap选项卡"
 
 # Bootstrap选项卡
 
-## 效果
-
 ![](https://raw.githubusercontent.com/dmjcb/SelfImgur/main/20200524194114.png)
 
 ![](https://raw.githubusercontent.com/dmjcb/SelfImgur/main/20200524194134.png)

@@ -8,8 +8,6 @@ excerpt: "Bootstrap表单验证"
 
 # Bootstrap表单
 
-## 效果
-
 ![](https://raw.githubusercontent.com/dmjcb/SelfImgur/main/20200526231712.png)
 
 ![](https://raw.githubusercontent.com/dmjcb/SelfImgur/main/20200526231734.png)

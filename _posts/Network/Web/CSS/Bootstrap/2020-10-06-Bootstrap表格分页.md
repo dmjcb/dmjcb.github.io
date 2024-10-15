@@ -8,8 +8,6 @@ excerpt: "Bootstrap表格分页"
 
 # Bootstrap表格分页
 
-## 效果
-
 ![](https://raw.githubusercontent.com/dmjcb/SelfImgur/main/20200708224302.png)
 
 <center>每页显示一定量数据</center>
