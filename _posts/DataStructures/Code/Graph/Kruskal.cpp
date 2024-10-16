@@ -13,23 +13,24 @@
 #include <map>
 #include <set>
 
-template<class T = std::string>
+template<class NodeType = std::string>
 struct Line {
-    T      mStartNode;
-    T      mEndNode;
-    double mWeight;
-    bool   mIsSelect;
+    NodeType mStartNode;
+    NodeType mEndNode;
+    double   mWeight;
+    bool     mIsSelect;
 
-    Line(T s, T e, double w) : mStartNode(std::move(s)), mEndNode(std::move(e)), mWeight(w), mIsSelect(false) {}
+    Line(NodeType s, NodeType e, double w) : 
+        mStartNode(std::move(s)), mEndNode(std::move(e)), mWeight(w), mIsSelect(false) {}
 };
 
 
-template<class T = std::string>
+template<class NodeType = std::string>
 class DisjointSetUnion {
 public:
     DisjointSetUnion() = default;
 
-    DisjointSetUnion(std::vector<Line<T>>& lines) {
+    DisjointSetUnion(std::vector<Line<NodeType>>& lines) {
         for (const auto& line : lines) {
             mNodes.insert(line.mStartNode);
             mNodes.insert(line.mEndNode);
@@ -41,16 +42,16 @@ public:
         }
     };
 
-    T Find(T x) {
+    NodeType Find(NodeType x) {
         if (mParent[x] != x) {
             mParent[x] = Find(mParent[x]);
         }
         return mParent[x];
     }
 
-    void Unions(T x, T y) {
-        T fx = Find(x);
-        T fy = Find(y);
+    void Unions(NodeType x, NodeType y) {
+        NodeType fx = Find(x);
+        NodeType fy = Find(y);
 
         if (fx != fy) {
             if (mRank[fx] > mRank[fy]) {
@@ -67,18 +68,19 @@ public:
     }
 
 private:
-    std::map<T, T>   mParent;
-    std::map<T, int> mRank;
-    std::set<T>      mNodes;
+    std::set<NodeType>           mNodes;
+    std::map<NodeType, NodeType> mParent;
+    std::map<NodeType, int>      mRank;
 };
 
-template<class T = std::string>
+
+template<class NodeType = std::string>
 class Graph {
 public:
-    Graph(std::vector<Line<T>>& lines) {
-        mUnions = DisjointSetUnion<T>(lines);
+    Graph(std::vector<Line<NodeType>>& lines) {
+        mUnions = DisjointSetUnion<NodeType>(lines);
 
-        std::sort(lines.begin(), lines.end(), [=](const Line<T>& e1, const Line<T>& e2) { return e1.mWeight < e2.mWeight; });
+        std::sort(lines.begin(), lines.end(), [=](const Line<NodeType>& e1, const Line<NodeType>& e2) { return e1.mWeight < e2.mWeight; });
         mLines = std::move(lines);
     }
 
@@ -102,9 +104,10 @@ public:
             }
         }
     }
+
 private:
-    DisjointSetUnion<T>  mUnions;
-    std::vector<Line<T>> mLines;
+    DisjointSetUnion<NodeType>  mUnions;
+    std::vector<Line<NodeType>> mLines;
 };
 
 int main() {
@@ -119,7 +122,6 @@ int main() {
     };
 
     Graph graph(lines);
-
     std::cout << "The minimum spanning tree mWeight = " << graph.GetKruskal() << std::endl;
     graph.PrintResult();
 

@@ -1,5 +1,5 @@
 /*
- * @Brief        : 二叉排序树
+ * @Brief        : BST
  * @Author       : dmjcb
  * @Date         : 2022-04-08 22:47:18
  * @LastEditors  : dmjcb@outlook.com
@@ -11,29 +11,28 @@
 #include <vector>
 #include <memory>
 
-template <class T>
+template <class ValueType>
 struct BSTNode {
-    T                        mValue;
+    ValueType                mValue;
     std::shared_ptr<BSTNode> mLeftSon;
     std::shared_ptr<BSTNode> mRightSon;
 
-    BSTNode(T value, std::shared_ptr<BSTNode> leftSon, std::shared_ptr<BSTNode> rightSon) :
-        mValue(value), mLeftSon(std::move(leftSon)), mRightSon(std::move(rightSon)){}
+    BSTNode(ValueType value, std::shared_ptr<BSTNode> leftSon, std::shared_ptr<BSTNode> rightSon) :
+        mValue(value), mLeftSon(std::move(leftSon)), mRightSon(std::move(rightSon)) {}
 };
 
-template <class T>
+template <class ValueType>
 class BinarySearchTree {
 public:
-    using BSTNode    = BSTNode<T>;
-    using BSTNodePtr = std::shared_ptr<BSTNode>;
+    using BSTNodePtr = std::shared_ptr<BSTNode<ValueType>>;
 
-    explicit BinarySearchTree(const std::vector<T>& value) {
+    explicit BinarySearchTree(const std::vector<ValueType>& value) {
         for (auto v : value) {
             mRoot = InsertNode(mRoot, v);
         }
     }
 
-    void Insert(const T value) {
+    void Insert(const ValueType value) {
         mRoot = InsertNode(mRoot, value);
     }
 
@@ -43,28 +42,28 @@ public:
         }
     }
 
-    void Delete(const T value) {
+    void Delete(const ValueType value) {
         DeleteNode(value);
     }
 
 protected:
-    BSTNodePtr InsertNode(BSTNodePtr node, const T value) {
+    BSTNodePtr InsertNode(BSTNodePtr& node, const ValueType value) {
         if (node == nullptr) {
-            node = std::make_shared<BSTNode>(value, nullptr, nullptr);
+            node = std::make_shared<BSTNode<ValueType>>(value, nullptr, nullptr);
             return node;
         }
-        
+
         if (node->mValue > value) {
             node->mLeftSon = InsertNode(node->mLeftSon, value);
         }
-        
+
         if (node->mValue < value) {
             node->mRightSon = InsertNode(node->mRightSon, value);
         }
         return node;
     }
 
-    BSTNodePtr SearchNode(BSTNodePtr node, const T value) {
+    BSTNodePtr SearchNode(BSTNodePtr& node, const ValueType value) {
         while (node) {
             if (node->mValue == value) {
                 return node;
@@ -79,7 +78,7 @@ protected:
         return nullptr;
     }
 
-    void PrintBST(BSTNodePtr node) {
+    void PrintBST(BSTNodePtr& node) {
         if (node == nullptr) {
             return;
         }
@@ -91,95 +90,90 @@ protected:
         PrintBST(node->mRightSon);
     }
 
-    void DeleteNode(const T value) {
+    void DeleteNode(const ValueType value) {
         if (mRoot == nullptr) {
             return;
         }
 
-        // p为待删除节点,fp为其父节点
-        BSTNodePtr p = mRoot;
-        BSTNodePtr fp = nullptr;
-        while (p->mValue != value) {
-            fp = p;
-            if (p->mValue > value) {
-                p = p->mLeftSon;
+        BSTNodePtr delNode = mRoot;
+        BSTNodePtr delFatherNode = nullptr;
+        while (delNode->mValue != value) {
+            delFatherNode = delNode;
+            if (delNode->mValue > value) {
+                delNode = delNode->mLeftSon;
             }
-            if (p->mValue < value) {
-                p = p->mRightSon;
+            if (delNode->mValue < value) {
+                delNode = delNode->mRightSon;
             }
         }
 
-        // 情况1:p为叶子节点, 直接删
-        if (p->mLeftSon == nullptr && p->mRightSon == nullptr) {
-            if (fp->mLeftSon != nullptr) {
-                fp->mLeftSon = nullptr;
+        // case 1, left node
+        if (delNode->mLeftSon == nullptr && delNode->mRightSon == nullptr) {
+            if (delFatherNode->mLeftSon != nullptr) {
+                delFatherNode->mLeftSon = nullptr;
             }
-            if (fp->mRightSon != nullptr) {
-                fp->mRightSon = nullptr;
+            if (delFatherNode->mRightSon != nullptr) {
+                delFatherNode->mRightSon = nullptr;
             }
-            p.reset();
+            delNode.reset();
             return;
         }
 
-        // 情况2:p左子树为空,则重接右子树
-        if (p->mLeftSon == nullptr) {
-            p->mValue = p->mRightSon->mValue;
-            p->mRightSon = nullptr;
-            p.reset();
+        // case 2, leftSon is nullptr, link right subtree
+        if (delNode->mLeftSon == nullptr) {
+            delNode->mValue = delNode->mRightSon->mValue;
+            delNode->mRightSon = nullptr;
+            delNode.reset();
             return;
         }
 
-        // 情况3:p右子树为空,则重接左子树
-        if (p->mRightSon == nullptr) {
-            p->mValue = p->mLeftSon->mValue;
-            p->mLeftSon = nullptr;
-            p->mLeftSon.reset();
+        // case 3, rightSon is nullptr, link left subtree
+        if (delNode->mRightSon == nullptr) {
+            delNode->mValue = delNode->mLeftSon->mValue;
+            delNode->mLeftSon = nullptr;
+            delNode->mLeftSon.reset();
             return;
         }
 
-        // 情况4:p左右子树均不为空时,需要找p右子树中最小节点(最左节点)q
-        BSTNodePtr q = p->mRightSon;
-        BSTNodePtr fq = q;
+        // case 4,  leftSon rightSon is not nullptr, find min node in delNode's right subtree
+        BSTNodePtr minNode = delNode->mRightSon;
+        BSTNodePtr minFatherNode = minNode;
 
-        // 循环查找左节点,就会找到最小值
-        while (q->mLeftSon != nullptr) {
-            fq = q;
-            q = q->mLeftSon;
+        // loop through the left node to find the minimum value
+        while (minNode->mLeftSon != nullptr) {
+            minFatherNode = minNode;
+            minNode = minNode->mLeftSon;
         }
-        fq->mLeftSon = nullptr;
-        // 用最小值节点代替欲删除节点
-        p->mValue = q->mValue;
-        q.reset();
+        minFatherNode->mLeftSon = nullptr;
+
+        delNode->mValue = minNode->mValue;
+        minNode.reset();
     }
 
 private:
     BSTNodePtr mRoot = nullptr;
 };
 
-int main(int argv, char *argc[]) {
-    std::vector v = {11, 45, 9, 23, 76, 68};
+int main(int argv, char* argc[]) {
+    std::vector<int> v = { 11, 45, 9, 23, 76, 68 };
 
-    BinarySearchTree tree(v);
+    BinarySearchTree<int> tree(v);
 
-    std::cout << "二叉排序树的中序遍历结果: ";
+    std::cout << "InOrderPrint: ";
     tree.Print();
     std::cout << std::endl;
 
-    // 插入值
     int newNode = 35;
-    std::cout << "插入新值:" << newNode << std::endl;
+    std::cout << "Insert new value:" << newNode << std::endl;
     tree.Insert(newNode);
-    std::cout << "插入新值后二叉排序树的中序遍历结果: ";
-
+    std::cout << "InOrderPrint: ";
     tree.Print();
     std::cout << std::endl;
 
-    // 删除值
     int delNode = 11;
-    std::cout << "删除值:" << delNode << std::endl;
-
+    std::cout << "Delete value:" << delNode << std::endl;
     tree.Delete(delNode);
-    std::cout << "删除值后二叉排序树的中序遍历结果: ";
+    std::cout << "InOrderPrint: ";
 
     tree.Print();
     std::cout << std::endl;

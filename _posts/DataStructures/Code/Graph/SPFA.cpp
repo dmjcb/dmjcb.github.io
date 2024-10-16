@@ -13,44 +13,42 @@
 #include <utility>
 #include <vector>
 
-// definition of line
-template <class T = std::string>
+ // definition of line
+template <class NodeType = std::string>
 struct Line {
-    T      mStartNode;
-    T      mEndNode;
-    double mWeight;
+    NodeType mStartNode;
+    NodeType mEndNode;
+    double   mWeight;
 
-    Line(T s, T e, double w) : mStartNode(std::move(s)), mEndNode(std::move(e)), mWeight(w) {}
+    Line(NodeType s, NodeType e, double w) :
+        mStartNode(std::move(s)), mEndNode(std::move(e)), mWeight(w) {}
 };
 
 
-template <class T = std::string>
+template <class NodeType = std::string>
 class SPFAAlgorithm {
 public:
-    explicit SPFAAlgorithm(std::vector<Line<T> > lines) {
-        std::set<T> nodes;
+    explicit SPFAAlgorithm(std::vector<Line<NodeType> > lines) {
         for (const auto& line : lines) {
-            nodes.insert(line.mStartNode);
-            nodes.insert(line.mEndNode);
+            mNodes.insert(line.mStartNode);
+            mNodes.insert(line.mEndNode);
         }
-        mNode.assign(nodes.begin(), nodes.end());
 
         mLines = std::move(lines);
-        for (const auto& node : mNode) {
+        for (const auto& node : mNodes) {
             mShortestPath[node] = 0x7FFFFFFF;
             mIsInQueue[node] = false;
         }
     }
 
-    void RunSPFA(T node) {
-        std::queue<T> queue;
-
+    void RunSPFA(NodeType node) {
+        std::queue<NodeType> queue;
         queue.push(node);
         mShortestPath[node] = 0;
         mIsInQueue[node] = true;
 
-        T startNode;
-        T endNode;
+        NodeType startNode;
+        NodeType endNode;
         while (!queue.empty()) {
             startNode = queue.front();
             queue.pop();
@@ -59,9 +57,7 @@ public:
             for (const auto& line : mLines) {
                 if (startNode == line.mStartNode) {
                     endNode = line.mEndNode;
-                    // 若从点node经过点x到点end的距离比node直接到end的距离短
                     if (mShortestPath[startNode] + line.mWeight < mShortestPath[endNode]) {
-                        // 距离更新为点node到x的距离与x到end的距离之和
                         mShortestPath[endNode] = mShortestPath[startNode] + line.mWeight;
                         if (!mIsInQueue[endNode]) {
                             queue.push(endNode);
@@ -74,16 +70,22 @@ public:
     }
 
     void PrintShortestPath() const {
+#if __cplusplus < 201703L
+        for (auto it = mShortestPath.begin(); it != mShortestPath.end(); ++it) {
+            std::cout << it->first << " --- " << it->second << std::endl;
+        }
+#elif __cplusplus >= 201703L
         for (const auto& [k, v] : mShortestPath) {
             std::cout << k << " --- " << v << std::endl;
         }
+#endif
     }
 
 private:
-    std::vector<Line<T>> mLines;
-    std::vector<T>       mNode;
-    std::map<T, double>  mShortestPath;
-    std::map<T, bool>    mIsInQueue;
+    std::vector<Line<NodeType>> mLines;
+    std::set<NodeType>          mNodes;
+    std::map<NodeType, double>  mShortestPath;
+    std::map<NodeType, bool>    mIsInQueue;
 };
 
 

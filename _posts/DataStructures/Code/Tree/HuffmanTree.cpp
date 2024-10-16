@@ -20,34 +20,40 @@ struct Node {
     std::shared_ptr<Node> mLeftChild;
     std::shared_ptr<Node> mRightChild;
 
-    Node(NodeType name, WeightType freq):
+    Node(NodeType name, WeightType freq) :
         mName(name), mFrequency(freq), mLeftChild(nullptr), mRightChild(nullptr) {}
 
-    Node(NodeType name, WeightType freq, std::shared_ptr<Node> left, std::shared_ptr<Node> right):
+    Node(NodeType name, WeightType freq, std::shared_ptr<Node> left, std::shared_ptr<Node> right) :
         mName(name), mFrequency(freq), mLeftChild(std::move(left)), mRightChild(std::move(right)) {}
 };
+
 
 template<typename NodeType, typename WeightType>
 class HuffmanTree {
 public:
-    using Node    = Node<NodeType, WeightType>;
-    using NodePtr = std::shared_ptr<Node>;
+    using NodePtr = std::shared_ptr<Node<NodeType, WeightType>>;
 
-    explicit HuffmanTree(std::map<NodeType, WeightType> &table) {
-        auto Compare = [](NodePtr node1, NodePtr node2) {return node1->mFrequency > node2->mFrequency;};
+    explicit HuffmanTree(std::map<NodeType, WeightType>& table) {
+        auto Compare = [](NodePtr node1, NodePtr node2) {return node1->mFrequency > node2->mFrequency; };
         std::priority_queue<NodePtr, std::vector<NodePtr>, decltype(Compare)> minHeap(Compare);
 
-        for (const auto&[k, v] : table) {
-            minHeap.push(std::make_shared<Node>(k, v));
+#if __cplusplus < 201703L
+        for (auto it = table.begin(); it != table.end(); ++it) {
+            minHeap.push(std::make_shared<Node<NodeType, WeightType>>(it->first, it->second));
         }
-
+#elif __cplusplus >= 201703L
+        for (const auto& [k, v] : table) {
+            minHeap.push(std::make_shared<Node<NodeType, WeightType>>(k, v));
+        }
+#endif
+        
         while (minHeap.size() > 1) {
             NodePtr left = minHeap.top();
             minHeap.pop();
             NodePtr right = minHeap.top();
             minHeap.pop();
 
-            minHeap.push(std::make_shared<Node>('\0', left->mFrequency + right->mFrequency, left, right));
+            minHeap.push(std::make_shared<Node<NodeType, WeightType>>('\0', left->mFrequency + right->mFrequency, left, right));
         }
 
         NodePtr root = minHeap.top();
@@ -70,9 +76,15 @@ public:
     }
 
     void PrintCodeTable() const {
+#if __cplusplus < 201703L
+        for (auto it = mCodeTable.begin(); it != mCodeTable.end(); ++it) {
+            std::cout << it->first << ": " << it->second << std::endl;
+        }
+#elif __cplusplus >= 201703L
         for (const auto& [k, v] : mCodeTable) {
             std::cout << k << ": " << v << std::endl;
         }
+#endif
     }
 
 private:
@@ -80,14 +92,14 @@ private:
 };
 
 int main() {
-    // 输入数据：字符与权值
-    std::map<char, int> table = {{'A', 12}, {'B', 24}, {'C', 35},
+    std::map<char, int> table = {
+        {'A', 12}, {'B', 24}, {'C', 35},
         {'D', 67}, {'E', 46}, {'F', 55}
     };
 
-    HuffmanTree huffmanTree(table);
+    HuffmanTree<char, int> tree(table);
 
-    huffmanTree.PrintCodeTable();
+    tree.PrintCodeTable();
 
     return 0;
 }
