@@ -142,7 +142,7 @@ class SocketServer:
         while True:
             data = client.recv(1024)
             if not data or data.decode() == 'bye':
-                # 如果没有发送过来数据就代表客户端close, 或者发过来bye代表连接要断开
+                # 若没有发送过来数据就代表客户端close, 或者发过来bye代表连接要断开
                 print('Over', addr)
                 client.close()
                 break

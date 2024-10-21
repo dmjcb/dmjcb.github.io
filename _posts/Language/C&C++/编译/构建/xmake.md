@@ -6,7 +6,7 @@ tags: [C&C++]
 excerpt: "XMake"
 ---
 
-> [xmake](https://xmake.io/#/zh-cn/about/introduction)
+> [xmake用法](https://xmake.io/#/zh-cn/about/introduction)
 
 # xmake
 

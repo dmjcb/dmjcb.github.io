@@ -26,17 +26,17 @@ int main()
             cont++;
             // 初始化起点的位置
             mid = (left + right) / 2;
-            // 如果该值小于中间值,则缩小区间至[l,mid-1]
+            // 若该值小于中间值,则缩小区间至[l,mid-1]
             if (i < mid)
             {
                 right = mid - 1;
             }
-            // 如果该值大于中间值,则缩小区间至[mid+1,r]
+            // 若该值大于中间值,则缩小区间至[mid+1,r]
             else if (i > mid)
             {
                 left = mid + 1;
             }
-            // 如果猜中,跳出
+            // 若猜中,跳出
             else
             {
                 break;

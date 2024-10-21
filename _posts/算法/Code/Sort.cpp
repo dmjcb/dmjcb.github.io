@@ -21,7 +21,7 @@ void BubbleSort(std::vector<T> &v) {
                 std::swap(v[j], v[j + 1]);
             }
         }
-        // 如果此轮没有发生交换, 则说明已完成排序
+        // 若此轮没有发生交换, 则说明已完成排序
         if (isExchange == false) {
             return;
         }
@@ -56,7 +56,7 @@ void QuickSort(std::vector<T> &v, const int left, const int right) {
         if (v[i] < pivot) {
             // 基准下标右移
             index++;
-            // 如果待交换位置与该位置不重合
+            // 若待交换位置与该位置不重合
             if (index != i) {
                 std::swap(v[i], v[index]);
             }
@@ -78,15 +78,15 @@ void SiftDown(std::vector<T> &v, const int start, const int end) {
     int child = 2 * parent + 1;
     // temp暂存子树根节点
     T temp = v[parent];
-    // 如果左儿子编号未到终点
+    // 若左儿子编号未到终点
     while (child < end) {
-        // 如果右儿子比左儿子小
+        // 若右儿子比左儿子小
         if (child + 1 < end && v[child] < v[child + 1]) {
             // child变为右儿子
             child++;
         }
 
-        //  如果根节点比儿子节点小, 则不需要调整
+        //  若根节点比儿子节点小, 则不需要调整
         if (temp >= v[child]) {
             break;
         }

@@ -10,7 +10,7 @@ void getNextArr(string str, int next[])
     int j = -1;
     while (i < str.length())
     {
-        // 如果越界(到了开头)或者匹配上了
+        // 若越界(到了开头)或者匹配上了
         if (j == -1 || str[i] == str[j])
         {
             // 都往后移

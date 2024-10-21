@@ -50,7 +50,7 @@ class CompanyEmail:
                 </div>
                 <div style="text-align: center;"><font size="4">            
                     我们是浮名科技公司.<br/>
-                    上述验证码10分钟内有效.如果激活失效, 请您重新申请验证码.<br/>
+                    上述验证码10分钟内有效.若激活失效, 请您重新申请验证码.<br/>
                     请勿将信息提供给其他人.<br/>
                     感谢您注册云与浮名科技公司.&nbsp;<br/>
     </font></div>
