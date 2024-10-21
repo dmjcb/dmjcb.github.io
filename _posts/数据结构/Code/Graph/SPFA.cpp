@@ -70,15 +70,9 @@ public:
     }
 
     void PrintShortestPath() const {
-#if __cplusplus < 201703L
         for (auto it = mShortestPath.begin(); it != mShortestPath.end(); ++it) {
             std::cout << it->first << " --- " << it->second << std::endl;
         }
-#elif __cplusplus >= 201703L
-        for (const auto& [k, v] : mShortestPath) {
-            std::cout << k << " --- " << v << std::endl;
-        }
-#endif
     }
 
 private:

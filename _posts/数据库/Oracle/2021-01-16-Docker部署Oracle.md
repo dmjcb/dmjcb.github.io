@@ -8,8 +8,6 @@ excerpt: "Docker部署Oracle"
 
 # Docker部署Oracle
 
-## 指令
-
 ```sh
 docker run -itd --name=orace -p 8080:8080 -p 1521:1521 truevoly/oracle-12c
 ```

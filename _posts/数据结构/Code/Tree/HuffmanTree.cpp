@@ -1,11 +1,3 @@
-/*
- * @Brief        : 哈夫曼算法实现
- * @Author       : dmjcb
- * @Date         : 2024-09-24 20:03:51
- * @LastEditors  : dmjcb@outlook.com
- * @LastEditTime : 2024-10-13 12:12:22
- */
-
 #include <iostream>
 #include <utility>
 #include <vector>
@@ -19,9 +11,6 @@ struct Node {
     WeightType            mFrequency;
     std::shared_ptr<Node> mLeftChild;
     std::shared_ptr<Node> mRightChild;
-
-    Node(NodeType name, WeightType freq) :
-        mName(name), mFrequency(freq), mLeftChild(nullptr), mRightChild(nullptr) {}
 
     Node(NodeType name, WeightType freq, std::shared_ptr<Node> left, std::shared_ptr<Node> right) :
         mName(name), mFrequency(freq), mLeftChild(std::move(left)), mRightChild(std::move(right)) {}
@@ -37,19 +26,14 @@ public:
         auto Compare = [](NodePtr node1, NodePtr node2) {return node1->mFrequency > node2->mFrequency; };
         std::priority_queue<NodePtr, std::vector<NodePtr>, decltype(Compare)> minHeap(Compare);
 
-#if __cplusplus < 201703L
         for (auto it = table.begin(); it != table.end(); ++it) {
-            minHeap.push(std::make_shared<Node<NodeType, WeightType>>(it->first, it->second));
+            minHeap.push(std::make_shared<Node<NodeType, WeightType>>(it->first, it->second, nullptr, nullptr));
         }
-#elif __cplusplus >= 201703L
-        for (const auto& [k, v] : table) {
-            minHeap.push(std::make_shared<Node<NodeType, WeightType>>(k, v));
-        }
-#endif
-        
+
         while (minHeap.size() > 1) {
             NodePtr left = minHeap.top();
             minHeap.pop();
+
             NodePtr right = minHeap.top();
             minHeap.pop();
 
@@ -76,15 +60,9 @@ public:
     }
 
     void PrintCodeTable() const {
-#if __cplusplus < 201703L
         for (auto it = mCodeTable.begin(); it != mCodeTable.end(); ++it) {
             std::cout << it->first << ": " << it->second << std::endl;
         }
-#elif __cplusplus >= 201703L
-        for (const auto& [k, v] : mCodeTable) {
-            std::cout << k << ": " << v << std::endl;
-        }
-#endif
     }
 
 private:

@@ -1,13 +1,3 @@
-/*
- * @Description:
- * @Version: 1.0
- * @Author: dmjcb
- * @Email:
- * @Date: 2024-07-06 20:33:50
- * @LastEditors: dmjcb
- * @LastEditTime: 2024-07-06 20:40:17
- */
-
 #include <iostream>
 #include <numeric>
 #include <algorithm>

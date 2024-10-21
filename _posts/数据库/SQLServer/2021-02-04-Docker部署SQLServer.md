@@ -41,7 +41,7 @@ GO
 ![](https://raw.githubusercontent.com/dmjcb/SelfImgur/main/2020-10-12_13-09-31.jpg)
 
 
-## Python 交互
+## Python交互
 
 ### 连接
 
