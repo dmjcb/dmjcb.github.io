@@ -8,9 +8,18 @@ public:
     AVLTree() : mRoot(nullptr) {}
     ~AVLTree() = default;
 
-    void InsertNode(const T& key) { mRoot = Insert(mRoot, key); }
-    void RemoveNode(const T& key) { mRoot = Remove(mRoot, key); }
-    void PrintInOrder() const { InOrder(mRoot); std::cout << std::endl; }
+    void InsertNode(const T& key) { 
+        mRoot = Insert(mRoot, key); 
+    }
+
+    void RemoveNode(const T& key) { 
+        mRoot = Remove(mRoot, key); 
+    }
+
+    void PrintInOrder() const { 
+        InOrder(mRoot); 
+        std::cout << std::endl; 
+    }
 
 private:
     struct Node {
@@ -132,11 +141,13 @@ private:
             // 单子节点或无子节点情况
             if (!node->mLeftChild || !node->mRightChlid) {
                 std::shared_ptr<Node> temp = node->mLeftChild ? node->mLeftChild : node->mRightChlid;
-                if (!temp) { // 无子节点
+                // 无子节点
+                if (!temp) { 
                     temp = node;
                     node = nullptr;
                 }
-                else { // 单子节点
+                // 单子节点
+                else { 
                     node = temp;
                 }
             }
@@ -148,7 +159,9 @@ private:
             }
         }
 
-        if (!node) return node;
+        if (!node) {
+            return node;
+        }
 
         UpdateHeight(node);
         return BalanceNode(node);
