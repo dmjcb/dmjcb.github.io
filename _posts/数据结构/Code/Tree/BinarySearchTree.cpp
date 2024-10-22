@@ -1,11 +1,3 @@
-/*
- * @Brief        : BST
- * @Author       : dmjcb
- * @Date         : 2022-04-08 22:47:18
- * @LastEditors  : dmjcb@outlook.com
- * @LastEditTime : 2024-10-12 16:04:59
- */
-
 #include <iostream>
 #include <utility>
 #include <vector>

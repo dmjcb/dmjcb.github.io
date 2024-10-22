@@ -22,11 +22,8 @@ class DisjointSetUnion {
 public:
     DisjointSetUnion() = default;
 
-    DisjointSetUnion(std::vector<Line<NodeType>>& lines) {
-        for (const auto& line : lines) {
-            mNodes.insert(line.mStartNode);
-            mNodes.insert(line.mEndNode);
-        }
+    DisjointSetUnion(std::set<NodeType>& nodes) {
+        mNodes = std::move(nodes);
 
         for (const auto& node : mNodes) {
             mParent[node] = node;
@@ -70,28 +67,34 @@ template<class NodeType = std::string>
 class MinimumSpanningTree {
 public:
     MinimumSpanningTree(std::vector<Line<NodeType>>& lines) {
-        mUnions = DisjointSetUnion<NodeType>(lines);
+        std::set<NodeType> nodes;
+        for (const auto& line : lines) {
+            nodes.insert(line.mStartNode);
+            nodes.insert(line.mEndNode);
+        }
+
+        mDSU = DisjointSetUnion<NodeType>(nodes);
 
         std::sort(lines.begin(), lines.end(), [=](const Line<NodeType>& e1, const Line<NodeType>& e2) { return e1.mWeight < e2.mWeight; });
         mLines = std::move(lines);
-        mMSTValue = GetKruskal();
+        mMSTValue = UseKruskal();
     }
 
-    double GetKruskal() {
+    double UseKruskal() {
         double sum = 0;
         for (auto& line : mLines) {
-            if (mUnions.Find(line.mStartNode) != mUnions.Find(line.mEndNode)) {
+            if (mDSU.Find(line.mStartNode) != mDSU.Find(line.mEndNode)) {
                 sum += line.mWeight;
                 line.mIsSelect = true;
 
-                mUnions.Unions(line.mStartNode, line.mEndNode);
+                mDSU.Unions(line.mStartNode, line.mEndNode);
             }
         }
         return sum;
     }
 
     void PrintMSTResult() const {
-        std::cout << "The minimum spanning tree mWeight = " << mMSTValue << std::endl;
+        std::cout << "The minimum spanning tree value = " << mMSTValue << std::endl;
 
         for (const auto& line : mLines) {
             if (line.mIsSelect) {
@@ -101,7 +104,7 @@ public:
     }
 
 private:
-    DisjointSetUnion<NodeType>  mUnions;
+    DisjointSetUnion<NodeType>  mDSU;
     std::vector<Line<NodeType>> mLines;
     double                      mMSTValue;
 };
@@ -115,7 +118,7 @@ int main() {
     };
 
     MinimumSpanningTree<> mst(lines);
-    
+
     mst.PrintMSTResult();
 
     return 0;
