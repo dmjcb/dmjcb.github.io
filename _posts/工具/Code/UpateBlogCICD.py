@@ -5,11 +5,19 @@ import sys
 from codecs import open
 from subprocess import run
 
+# 1. 
+#   SelfBlog/ git push
+# 2. 
+#   2.1 dmjcb.github.io/_posts
+#       git pull
+#   2.2dmjcb.github.io/assets/SelfImgur
+#       git pull
+#   2.3 replace image path
+# 3. 
+#   dmjcb.github.io/ git push
 
-def push_self_blog():
-    dir_path = "C:\\Users\\dmjcb\\Documents\\Code\\SelfBlog"
-    os.chdir(dir_path)
 
+def __push():
     command = "git add ."
     r = run(command, shell=True, capture_output=True, text=True)
     print(r.stdout)
@@ -21,6 +29,32 @@ def push_self_blog():
     command = "git push"
     r = run(command, shell=True, capture_output=True, text=True)
     print(r.stdout)
+
+
+def __pull():
+    command = "git pull"
+    r = run(command, shell=True, capture_output=True, text=True)
+    print(r.stdout)
+
+
+def push_self_blog():
+    dir_path = "C:\\Users\\dmjcb\\Documents\\Code\\SelfBlog"
+    os.chdir(dir_path)
+
+    __push()
+    
+
+def pull_self_blog():
+    dir_path = "C:\\Users\\dmjcb\\Documents\\Code\\dmjcb.github.io\\_posts"
+    os.chdir(dir_path)
+
+    __pull()
+
+def pull_self_imgur():
+    dir_path = "C:\\Users\\dmjcb\\Documents\\Code\\dmjcb.github.io\\assets\\SelfImgur"
+    os.chdir(dir_path)
+
+    __pull()
 
 def replace_imgage_url():
     dir_path = "C:\\Users\\dmjcb\\Documents\\Code\\dmjcb.github.io\\_posts"
@@ -40,17 +74,10 @@ def replace_imgage_url():
                         file.write(line)
 
 
-# 1. 
-#   SelfBlog/ git push
-# 2. 
-#   2.1 dmjcb.github.io/_posts
-#       git pull
-#   2.2dmjcb.github.io/assets/SelfImgur
-#       git pull
-#   2.3 replace image path
-# 3. 
-#   dmjcb.github.io/ git push
+def push_blog():
+    dir_path = "C:\\Users\\dmjcb\\Documents\\Code\\dmjcb.github.io"
+    os.chdir(dir_path)
 
+    __push()
 
-#　replace_imgage_url()
-push_self_blog()
+replace_imgage_url()
