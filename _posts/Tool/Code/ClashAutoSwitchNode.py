@@ -1,7 +1,6 @@
 from json import loads, dumps
 from requests import get, put
 
-
 class AutoSwitchNode:
     __IP = "192.168.3.3"
     __PORT = 9090
