@@ -1,13 +1,5 @@
 #!/bin/bash
 
-###
- # @Brief        : 
- # @Author       : dmjcb
- # @Date         : 2024-09-12 16:29:57
- # @LastEditors  : dmjcb@outlook.com
- # @LastEditTime : 2024-09-12 16:30:10
-### 
-
 login_name=${USER}
 
 login_ip=${SSH_CLIENT%% *}
