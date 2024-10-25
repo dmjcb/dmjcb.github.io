@@ -74,7 +74,7 @@ graph TB
 Get-VM
 ```
 
-![](https://raw.githubusercontent.com/dmjcb/SelfImgur/main/20210207140309.png)
+![](/assets/SelfImgur/20210207140309.png)
 
 此处虚拟机名为CentOS 7
 
@@ -82,7 +82,7 @@ Get-VM
 Get-VMProcessor -VMName 虚拟机名 | fl
 ```
 
-![](https://raw.githubusercontent.com/dmjcb/SelfImgur/main/20210207140508.png)
+![](/assets/SelfImgur/20210207140508.png)
 
 显示嵌套虚拟化选项值为False
 
@@ -92,7 +92,7 @@ Set-VMProcessor -ExposeVirtualizationExtensions $true -VMName 虚拟机名
 
 正常情况没有输出
 
-![](https://raw.githubusercontent.com/dmjcb/SelfImgur/main/20210207140853.png)
+![](/assets/SelfImgur/20210207140853.png)
 
 ### Vmware于Hyper共存
 

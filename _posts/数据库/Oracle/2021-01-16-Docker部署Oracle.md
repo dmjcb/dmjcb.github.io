@@ -34,7 +34,7 @@ select tablespace_name from dba_tablespaces;
 select * from dba_data_files;
 ```
 
-![](https://raw.githubusercontent.com/dmjcb/SelfImgur/main/2020-11-30_15-36-39.jpg)
+![](/assets/SelfImgur/2020-11-30_15-36-39.jpg)
 
 创建名为 space_demo, 路径为'/u01/app/oracle/oradata/xe/space_demo.DBF'的表空间
 

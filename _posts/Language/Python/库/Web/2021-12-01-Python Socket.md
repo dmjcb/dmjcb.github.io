@@ -112,9 +112,9 @@ if __name__ == '__main__':
     s.close()
 ```
 
-![](https://raw.githubusercontent.com/dmjcb/SelfImgur/main/20210112224715.png)
+![](/assets/SelfImgur/20210112224715.png)
 
-![](https://raw.githubusercontent.com/dmjcb/SelfImgur/main/20210112224731.png)
+![](/assets/SelfImgur/20210112224731.png)
 
 ## 多线程 server 端
 

@@ -8,9 +8,9 @@ excerpt: "Bootstrap选项卡"
 
 # Bootstrap选项卡
 
-![](https://raw.githubusercontent.com/dmjcb/SelfImgur/main/20200524194114.png)
+![](/assets/SelfImgur/20200524194114.png)
 
-![](https://raw.githubusercontent.com/dmjcb/SelfImgur/main/20200524194134.png)
+![](/assets/SelfImgur/20200524194134.png)
 
 - nav-link active 即默认选择的选项卡
 

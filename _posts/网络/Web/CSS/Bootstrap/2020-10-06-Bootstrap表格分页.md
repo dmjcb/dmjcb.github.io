@@ -8,17 +8,17 @@ excerpt: "Bootstrap表格分页"
 
 # Bootstrap表格分页
 
-![](https://raw.githubusercontent.com/dmjcb/SelfImgur/main/20200708224302.png)
+![](/assets/SelfImgur/20200708224302.png)
 
 <center>每页显示一定量数据</center>
 
-![](https://raw.githubusercontent.com/dmjcb/SelfImgur/main/20200708224344.png)
+![](/assets/SelfImgur/20200708224344.png)
 
-![](https://raw.githubusercontent.com/dmjcb/SelfImgur/main/20200708224537.png)
+![](/assets/SelfImgur/20200708224537.png)
 
 <center>按关键字显示数据</center>
 
-![](https://raw.githubusercontent.com/dmjcb/SelfImgur/main/20200708234616.png)
+![](/assets/SelfImgur/20200708234616.png)
 
 <center>点击表格后显示被点击行的信息</center>
 

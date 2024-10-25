@@ -8,15 +8,15 @@ excerpt: "Bootstrap表单验证"
 
 # Bootstrap表单
 
-![](https://raw.githubusercontent.com/dmjcb/SelfImgur/main/20200526231712.png)
+![](/assets/SelfImgur/20200526231712.png)
 
-![](https://raw.githubusercontent.com/dmjcb/SelfImgur/main/20200526231734.png)
+![](/assets/SelfImgur/20200526231734.png)
 
-![](https://raw.githubusercontent.com/dmjcb/SelfImgur/main/20200526231855.png)
+![](/assets/SelfImgur/20200526231855.png)
 
 - 项目结构
 
-![](https://raw.githubusercontent.com/dmjcb/SelfImgur/main/20200526233425.png)
+![](/assets/SelfImgur/20200526233425.png)
 
 ## head 部分
 
