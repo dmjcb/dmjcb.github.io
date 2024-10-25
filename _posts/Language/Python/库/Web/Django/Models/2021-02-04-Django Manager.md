@@ -1,5 +1,5 @@
 ---
-title: "python-Django-Manager"
+title: "Python-Django-Manager"
 date: 2021-02-04
 categories: [Python]
 tags: [Python]
