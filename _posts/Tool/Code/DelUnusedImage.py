@@ -34,6 +34,6 @@ def del_unused_img():
                 name = os.path.join(fpathe, f)
                 os.remove(name)
             
-    print(n)
+    print(del_num)
 if __name__ == "__main__":
     del_unused_img()
