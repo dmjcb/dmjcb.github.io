@@ -7,12 +7,9 @@ import subprocess
 class CleanBlogUnusedResource:
     __SYSTEM_PATH            = "c:\\Users\\dmjcb\\Documents\\Code"
     __IMGUR_PATH             = "assets\\SelfImgur"
-    
-    __SELF_BLOG_NAME         = "SelfBlog"
-    __SELF_IO_NAME           = "dmjcb.github.io"
 
-    __SELF_BLOG_DIR          = "{0}\\{1}".format(__SYSTEM_PATH, __SELF_BLOG_NAME)
-    __SELE_IO_DIR            = "{0}\\{1}".format(__SYSTEM_PATH, __SELF_IO_NAME)
+    __SELF_BLOG_DIR          = "{0}\\SelfBlog".format(__SYSTEM_PATH)
+    __SELE_IO_DIR            = "{0}\\dmjcb.github.io".format(__SYSTEM_PATH)
 
     __SELF_BLOG_IMGUR_DIR    = "{0}\\{1}".format(__SELF_BLOG_DIR, __IMGUR_PATH)
     __SELF_IO_IMGUR_DIR      = "{0}\\{1}".format(__SELE_IO_DIR, __IMGUR_PATH)
@@ -68,13 +65,14 @@ class CleanBlogUnusedResource:
     def copy_self_imgur_dir(self):
         copy_count = 0
         src_files = os.listdir(self.__SELF_BLOG_IMGUR_DIR)
-        for file_name in src_files:
-            full_file_name = os.path.join(self.__SELF_BLOG_IMGUR_DIR, file_name)
-            if os.path.isfile(full_file_name):
-                shutil.copy(full_file_name, self.__SELF_IO_IMGUR_DIR)
+        for name in src_files:
+            f = os.path.join(self.__SELF_BLOG_IMGUR_DIR, name)
+            if os.path.isfile(f):
+                shutil.copy(f, self.__SELF_IO_IMGUR_DIR)
                 copy_count += 1
         
         print("2. Copy {0} images".format(copy_count))
+
 
     # 删除dmjcb.github.io/assets/SelfImgur中未使用的图片
     def del_io_imgur_unused_files(self):
@@ -98,7 +96,6 @@ class CleanBlogUnusedResource:
 
 
     def git_pipline(self):
-        print("4. run git")
         def __run(command):
             r = subprocess.run(command, shell=True, capture_output=True, text=True, encoding="utf8")
             print(r.stdout)
@@ -112,6 +109,8 @@ class CleanBlogUnusedResource:
             sh = "git add . && git commit -m {0} && git push".format(sys.argv[1])
             __run(sh)
         
+        print("4. run git")
+
         os.chdir(self.__SELF_BLOG_DIR)
         __push()
 

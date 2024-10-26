@@ -6,7 +6,7 @@ tags: [C&C++]
 excerpt: "new与malloc区别"
 ---
 
-> [C++ 中 malloc 和 new 的区别](https://murphypei.github.io/blog/2021/03/malloc-new-diff.html)
+> - [C++ 中 malloc 和 new 的区别](https://murphypei.github.io/blog/2021/03/malloc-new-diff.html)
 
 # new与malloc区别
 
