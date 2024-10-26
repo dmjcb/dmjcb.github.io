@@ -11,15 +11,19 @@ excerpt: "Docker部署SQLServer"
 ## 部署
 
 ```sh
-docker run -itd -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=dmjcb@13546!" -p 1433:1433 --name sqlserver2019 sqlserver
+docker run -itd -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=dmjcb@13546!" -p 1433:1433 --name sqlserver2019 mcr.microsoft.com/mssql/server:2019-latest
 ```
+
+![](/assets/SelfImgur/20241026_135104.jpg)
 
 ## 命令
 
 ### 进入
 
 ```sh
-/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "dmjcb@13546!"
+docker exec -it sqlserver2019 bash
+
+/opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P "dmjcb@13546!" -C
 ```
 
 ### 显示所有数据库
@@ -29,7 +33,7 @@ SELECT Name FROM Master..SysDatabases ORDER BY Name
 GO
 ```
 
-![](/assets/SelfImgur/2020-10-21_11-05-13.jpg)
+![](/assets/SelfImgur/20241026_135742.jpg)
 
 ### 显示表
 
@@ -38,18 +42,14 @@ SELECT * FROM [表名]
 GO
 ```
 
-![](/assets/SelfImgur/2020-10-12_13-09-31.jpg)
+## 交互
 
+### Python
 
-## Python交互
-
-### 连接
 
 ![](/assets/SelfImgur/20201012105710.png)
 
 主机地址需写为: `ip, 端口`, 注意是`逗号`
-
-![](/assets/SelfImgur/20201012130100.png)
 
 ```py
 import pymssql
@@ -77,5 +77,3 @@ except:
 # 关闭数据库连接
 conn.close()
 ```
-
-![](/assets/SelfImgur/20201012180210.png)
