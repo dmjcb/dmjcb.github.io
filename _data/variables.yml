@@ -27,16 +27,16 @@ default:
       show_readmore: false
       show_info: false
     show_title: true
-    show_edit_on_github: false
+    show_edit_on_github: true
     show_date: true
     show_tags: true
     show_author_profile: false
-    show_subscribe: false
+    show_subscribe: true
     full_width: false
-    sharing: false
+    sharing: true
     comment: true
     license: false
-    pageview: false
+    pageview: true
     search: default
 
 sources:

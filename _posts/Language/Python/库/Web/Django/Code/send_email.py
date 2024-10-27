@@ -1,13 +1,3 @@
-"""
-Description: 
-Version: 1.0
-Author: dmjcb
-Email:  
-Date: 2021-09-24 20:37:24
-LastEditors: dmjcb
-LastEditTime: 2022-04-18 10:34:22
-"""
-
 import datetime
 import smtplib
 from email.header import Header

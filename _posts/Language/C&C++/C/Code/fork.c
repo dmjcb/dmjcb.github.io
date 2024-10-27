@@ -1,11 +1,3 @@
-/*
- * @Brief        : 
- * @Author       : dmjcb
- * @Date         : 2022-02-17 23:53:18
- * @LastEditors  : dmjcb@outlook.com
- * @LastEditTime : 2024-09-28 23:44:17
- */
-
 // only run Linux
 #include <stdio.h>
 #include <stdlib.h>

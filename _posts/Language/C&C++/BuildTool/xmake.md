@@ -6,15 +6,13 @@ tags: [C&C++]
 excerpt: "XMake"
 ---
 
-> [xmake用法](https://xmake.io/#/zh-cn/about/introduction)
+> - [xmake用法](https://xmake.io/#/zh-cn/about/introduction)
 
 # xmake
 
 ## 安装
 
 - Windows
-
-powershell
 
 ```powershell
 Invoke-Expression (Invoke-Webrequest 'https://xmake.io/psget.text' -UseBasicParsing).Content
@@ -36,7 +34,7 @@ sudo apt install xmake
 xmake create -l [项目类型] -P ./[项目名]
 ```
 
-创建一个名叫hello的c控制台工程
+- 创建名为hello C控制台工程
 
 ```sh
 xmake create -l c -P ./hello

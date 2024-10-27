@@ -1,13 +1,3 @@
-"""
-Description: 
-Version: 1.0
-Author: dmjcb
-Email:  
-Date: 2021-12-23 15:07:52
-LastEditors: dmjcb
-LastEditTime: 2022-04-18 10:34:01
-"""
-
 import json
 from django.shortcuts import HttpResponse
 

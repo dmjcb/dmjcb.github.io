@@ -1,16 +1,5 @@
-"""
-Description: 
-Version: 1.0
-Author: dmjcb
-Email:  
-Date: 2022-09-11 23:11:15
-LastEditors: dmjcb
-LastEditTime: 2022-09-11 23:11:27
-"""
-
 import time
 from multiprocessing import Process
-
 
 def work():
     for i in range(10):

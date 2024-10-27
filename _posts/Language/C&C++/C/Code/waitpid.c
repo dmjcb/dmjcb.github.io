@@ -1,11 +1,3 @@
-/*
- * @Brief        : 
- * @Author       : dmjcb
- * @Date         : 2022-02-23 21:44:57
- * @LastEditors  : dmjcb@outlook.com
- * @LastEditTime : 2024-09-28 23:42:22
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
