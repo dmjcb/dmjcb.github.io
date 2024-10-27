@@ -46,9 +46,6 @@ GO
 
 ### Python
 
-
-![](/assets/SelfImgur/20201012105710.png)
-
 主机地址需写为: `ip, 端口`, 注意是`逗号`
 
 ```py
