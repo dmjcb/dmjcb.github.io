@@ -1,13 +1,3 @@
-/*
- * @Description:
- * @Version: 1.0
- * @Author: dmjcb
- * @Email:
- * @Date: 2022-02-24 21:48:26
- * @LastEditors: dmjcb
- * @LastEditTime: 2022-04-05 14:13:52
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

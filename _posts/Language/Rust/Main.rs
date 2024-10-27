@@ -1,11 +1,3 @@
-/*
- * @Brief        : 
- * @Author       : dmjcb
- * @Date         : 2024-09-10 02:06:37
- * @LastEditors  : dmjcb@outlook.com
- * @LastEditTime : 2024-09-23 14:33:53
- */
-
 fn main() {
     // string 类型
     let company_string = "TutorialsPoint";

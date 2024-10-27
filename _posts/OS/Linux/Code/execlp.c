@@ -1,13 +1,3 @@
-/*
- * @Description:
- * @Version: 1.0
- * @Author: dmjcb
- * @Email:
- * @Date: 2022-02-14 18:21:47
- * @LastEditors: dmjcb
- * @LastEditTime: 2022-04-17 09:28:17
- */
-
 #include <stdio.h>
 #include <sys/wait.h>
 #include <string.h>

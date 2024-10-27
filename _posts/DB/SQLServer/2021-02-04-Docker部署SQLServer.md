@@ -30,7 +30,7 @@ docker exec -it sqlserver2019 bash
 
 ```sql
 SELECT Name FROM Master..SysDatabases ORDER BY Name
-GO
+go
 ```
 
 ![](/assets/SelfImgur/20241026_135742.jpg)
@@ -39,7 +39,7 @@ GO
 
 ```sql
 SELECT * FROM [表名]
-GO
+go
 ```
 
 ## 交互
