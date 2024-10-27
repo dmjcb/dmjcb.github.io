@@ -10,7 +10,7 @@ excerpt: "Python Socket"
 
 ## TCP
 
-### TCP 服务端 server
+### 服务端 server
 
 ```py
 import socket
@@ -40,7 +40,7 @@ if __name__ == '__main__':
     s.close()
 ```
 
-### TCP 客户端 client
+### 客户端 client
 
 ```py
 import socket
@@ -62,14 +62,17 @@ while True:
     data = s.recv(1024)
     print('[回复]', data.decode())
 
-
 if __name__ == '__main__':
     s.close()
 ```
 
+![](/assets/SelfImgur/20241027_163131.jpg)
+
+![](/assets/SelfImgur/20241027_163143.jpg)
+
 ## UDP
 
-### 服务端 server
+### 服务端server
 
 ```py
 import socket
@@ -91,7 +94,7 @@ if __name__ == '__main__':
     s.close()
 ```
 
-### 客户端 client
+### 客户端client
 
 ```py
 import socket
@@ -112,9 +115,9 @@ if __name__ == '__main__':
     s.close()
 ```
 
-![](/assets/SelfImgur/20210112224715.png)
+![](/assets/SelfImgur/20241027_162435.jpg)
 
-![](/assets/SelfImgur/20210112224731.png)
+![](/assets/SelfImgur/20241027_162446.jpg)
 
 ## 多线程 server 端
 
