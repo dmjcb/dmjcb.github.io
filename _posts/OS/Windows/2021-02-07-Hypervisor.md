@@ -14,7 +14,7 @@ excerpt: "V"
 
 被Hypervisor用来运行一个或多个虚拟机的电脑称为宿主机(host machine), 这些虚拟机则称为客户机(guest machine)
 
-Hypervisor 提供虚拟的作业平台来运行客户操作系统(guest operating systems), 负责管理其他客操作系统的运行阶段, 这些客操作系统, 共同分享虚拟化后的硬件资源
+Hypervisor 提供虚拟作业平台来运行客户操作系统(guest operating systems), 负责管理其他客操作系统运行阶段, 这些客操作系统, 共同分享虚拟化后的硬件资源
 
 Hypervisor是一种在虚拟环境中的"元"操作系统
 

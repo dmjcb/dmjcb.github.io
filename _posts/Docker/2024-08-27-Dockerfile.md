@@ -10,65 +10,65 @@ excerpt: "Dockerfile"
 
 ## 指令
 
-### RUN
+### run
 
 执行指令
 
 ```sh
-RUN [指令]
+run [指令]
 ```
 
-### COPY
+### copy
 
 拷贝文件
 
 ```sh
-COPY [源路径] [目标路径]
+copy [源路径] [目标路径]
 ```
 
-`COPY` 将从构建上下文目录中的源路径的文件/目录复制到新的一层的镜像内的目标路径/位置
+`copy` 将从构建上下文目录中源路径文件/目录复制到新一层镜像内目标路径/位置
 
-### ADD
+### add
 
 复制文件
 
 ```sh
-ADD [源路径] [目标路径]
+add [源路径] [目标路径]
 ```
 
 若源路径为tar压缩文件且压缩格式为 gzip, bzip2, xz, ADD 指令将会自动解压缩文件到目标路径
 
-### CMD
+### cmd
 
 #### shell格式
 
 ```sh
-CMD [命令]
+cmd [命令]
 ```
 
 - 执行Python指令
 
 ```sh
-CMD python3 manage.py runserver 0.0.0.0:8000
+cmd python3 manage.py runserver 0.0.0.0:8000
 ```
 
 #### exec格式
 
 ```sh
-CMD ["可执行文件", "参数1", "参数2", ...]
+cmd ["可执行文件", "参数1", "参数2", ...]
 ```
 
 - 执行Python指令
 
 ```sh
-CMD ["python3", "manage.py", "runserver 0.0.0.0: 8000"]
+cmd ["python3", "manage.py", "runserver 0.0.0.0: 8000"]
 ```
 
 ```mermaid
 graph LR;
-    X(CMD/RUN区别)
-    X --> A(CMD) --> A1(docker run时运行) --> A2(Dockerfile中只能在末尾有一条CMD指令)
-    X --> B(RUN) --> B1(docker build时运行) --> B2(Dockerfile中可出现若干次)
+    X(cmd/run区别)
+    X --> A(cmd) --> A1(docker run时运行) --> A2(Dockerfile中只能在末尾有一条CMD指令)
+    X --> B(run) --> B1(docker build时运行) --> B2(Dockerfile中可出现若干次)
 ```
 
 ## 构建
@@ -77,13 +77,15 @@ graph LR;
 
 #### 连续构建
 
-```sh
+```docker
 from 镜像名1 as 阶段名1
 
 ...
 
 from 镜像名2 as 阶段名2
 ```
+
+App.go
 
 ```go
 package main
@@ -97,60 +99,58 @@ func main(){
 
 ```docker
 # 第一阶段
-FROM golang:1.9-alpine as builder
+from golang:1.9-alpine as builder
 
-RUN apk --no-cache add git
+workdir /go/src/github.com/go/helloworld/
 
-WORKDIR /go/src/github.com/go/helloworld/
+run apk --no-cache add git
 
-RUN go get -d -v github.com/go-sql-driver/mysql
+run go get -d -v github.com/go-sql-driver/mysql
 
-COPY app.go .
+copy App.go .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
+run CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o App .
 
 # 第二阶段
-FROM alpine:latest as prod
+from alpine:latest as prod
 
-RUN apk --no-cache add ca-certificates
+workdir /root/
 
-WORKDIR /root/
+run apk --no-cache add ca-certificates
 
 # 从第一阶段中拷贝文件
-COPY --from=builder /go/src/github.com/go/helloworld/app .
+copy --from=builder /go/src/github.com/go/helloworld/App .
 
-CMD ["./app"]
+cmd ["./App"]
 ```
 
 #### 仅单阶段构建
 
 ```sh
-FROM [镜像名] AS [阶段名]
+from [镜像名] AS [阶段名]
 ```
 
-- 仅构建 builder 阶段的镜像, 可用 `--target=builder`
+- 仅构建 builder 阶段镜像, 可用 `--target=builder`
 
 ```sh
-FROM golang:1.9-alpine AS builder
+from golang:1.9-alpine as builder
 ```
 
 ```sh
-docker build --target 阶段名 -t 新镜像名:tag .
+docker build --target [阶段名] -t [新镜像名:tag] .
 ```
 
 #### 构建时从其他镜像复制文件
 
 ```sh
-COPY --from=[镜像名] [源路径] [当前路径]
+copy --from=[镜像名] [源路径] [当前路径]
 ```
 
-- 复制nginx:latest镜像中的nginx.conf文件
+- 复制nginx:latest镜像中nginx.conf文件
 
 ```sh
-COPY --from=nginx:latest /etc/nginx/nginx.conf /nginx.conf
+copy --from=nginx:latest /etc/nginx/nginx.conf /nginx.conf
 ```
-
-### 示例
 
 - 搭建g++编译环境
 
@@ -163,8 +163,6 @@ workdir /
 
 run sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && apk add g++
 ```
-
-构建
 
 ```sh
 docker build -t gpp:v1 .

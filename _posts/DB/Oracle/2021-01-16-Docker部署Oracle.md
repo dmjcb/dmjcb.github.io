@@ -16,7 +16,7 @@ docker run -itd --name=orace -p 8080:8080 -p 1521:1521 truevoly/oracle-12c
 
 ### 进入Oracle
 
-sys 用户的默认密码 oracle
+sys 用户默认密码 oracle
 
 ```sh
 sqlplus sys as sysdba
