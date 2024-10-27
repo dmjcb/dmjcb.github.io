@@ -3,7 +3,7 @@ title: "操作系统-Windows-Hypervisor"
 date: 2021-02-07
 categories: [操作系统]
 tags: [操作系统]
-excerpt: "V"
+excerpt: "Hypervisor"
 ---
 
 # Hypervisor
@@ -71,18 +71,18 @@ graph TB
 请确保虚拟机为关闭状态
   
 ```sh
-Get-VM
-```
+> Get-VM
 
-![](/assets/SelfImgur/20210207140309.png)
+Name    State CPUUsage(%) MemoryAssigned(M) Uptime   Status  Version
+------- ----- ----------- ----------------- -------- ------- -------
+CentOS7 Saved 0           0                 00:00:00 正常运行 9.0
+```
 
 此处虚拟机名为CentOS 7
 
 ```sh
 Get-VMProcessor -VMName 虚拟机名 | fl
 ```
-
-![](/assets/SelfImgur/20210207140508.png)
 
 显示嵌套虚拟化选项值为False
 
@@ -91,8 +91,6 @@ Set-VMProcessor -ExposeVirtualizationExtensions $true -VMName 虚拟机名
 ```
 
 正常情况没有输出
-
-![](/assets/SelfImgur/20210207140853.png)
 
 ### Vmware于Hyper共存
 
