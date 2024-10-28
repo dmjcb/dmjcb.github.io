@@ -16,8 +16,8 @@ class AutoUploadBlog:
     __JEYLL_IMGUR_DIR = "{0}\\{1}".format(__JEYLL_DIR, __IMGUR_DIR)
 
 
-    # 从SelfBlog所有.md中获取图片url, 提取图片名
-    def get_used_images(self):
+    # 从所有.md中获取图片url
+    def _get_used_images(self):
         used_images = []
         for fpathe, dirs, fs in os.walk(self.__BLOG_DIR):
             if ".git" not in fpathe:
@@ -35,35 +35,22 @@ class AutoUploadBlog:
                                     used_images.append(image_name)
 
         return used_images
-
-
-    # 从SelfBlog/assets/SelfImgur中获取所有文件名与路径
-    def get_self_imgur_files(self):
-        files = []
-        for fpathe, dirs, fs in os.walk(self.__BLOG_IMGUR_DIR):
-            for f in fs:
-                path = os.path.join(fpathe, f)
-                files.append(f)
-
-        return files
-
-
+    
     # 删除SelfBlog/assets/SelfImgur中未使用的图片
-    def del_self_blog_imgur_usused_files(self):
-        used_files = self.get_used_images()
-        del_count = 0
-
-        for fpathe, dirs, fs in os.walk(self.__BLOG_IMGUR_DIR):
-            for f in fs:     
+    def del_blog_unused_images(self):
+        used_files = self._get_used_images()
+        count = 0
+        for path, dirs, file_list in os.walk(self.__BLOG_IMGUR_DIR):
+            for f in file_list:     
                 if f not in used_files:
-                    del_count += 1
-                    name = os.path.join(fpathe, f)
+                    count += 1
+                    name = os.path.join(path, f)
                     os.remove(name)
 
-        print("1. SelfBlog SelfImgur del {0} images".format(del_count))
+        print("1. SelfBlog SelfImgur del {0} images".format(count))
 
 
-    def copy_self_imgur_dir(self):
+    def copy_imgur_dir(self):
         copy_count = 0
         src_files = os.listdir(self.__BLOG_IMGUR_DIR)
         for name in src_files:
@@ -75,25 +62,35 @@ class AutoUploadBlog:
         print("2. Copy {0} images".format(copy_count))
 
 
+    def _get_imgur_list(self):
+            files = []
+            for path, dirs, file_list in os.walk(__BLOG_IMGUR_DIR):
+                for f in file_list:
+                    path = os.path.join(path, f)
+                    files.append(f)
+
+        return files
+
+
     # 删除dmjcb.github.io/assets/SelfImgur中未使用的图片
-    def del_io_imgur_unused_files(self):
-        used_files = self.get_self_imgur_files()
+    def del_jeyll_unused_images(self):
+        used_files = self._get_imgur_list()
 
-        del_count = 0
-        for fpathe, dirs, fs in os.walk(self.__JEYLL_IMGUR_DIR):
-            for f in fs:
+        count = 0
+        for path, dirs, file_list in os.walk(self.__JEYLL_IMGUR_DIR):
+            for f in file_list:
                 if f not in used_files:
-                    name = os.path.join(fpathe, f)
+                    name = os.path.join(path, f)
                     os.remove(name)
-                    del_count += 1
+                    count += 1
 
-        print("3. dmjgb.github.io SelfImgur del {0} images".format(del_count))
+        print("3. dmjgb.github.io SelfImgur del {0} images".format(count))
 
 
     def update_images(self):
-        self.del_self_blog_imgur_usused_files()
-        self.copy_self_imgur_dir()
-        self.del_io_imgur_unused_files()
+        self.del_blog_unused_images()
+        self.copy_imgur_dir()
+        self.del_jeyll_unused_images()
 
 
     def git_pipline(self):
@@ -130,4 +127,4 @@ class AutoUploadBlog:
 
 if __name__ == "__main__":
     upload = AutoUploadBlog()
-    upload.run()
+    upload.del_blog_unused_images()

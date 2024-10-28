@@ -1,8 +1,8 @@
 ---
-title: "Network-Web-Bootstrap表单验证"
+title: "Language-CSS-Bootstrap表单验证"
 date: 2020-02-13
-categories: [Network]
-tags: [Network]
+categories: [CSS]
+tags: [Language]
 excerpt: "Bootstrap表单验证"
 ---
 

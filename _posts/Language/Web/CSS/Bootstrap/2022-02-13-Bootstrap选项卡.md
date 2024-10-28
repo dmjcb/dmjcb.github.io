@@ -1,8 +1,8 @@
 ---
-title: "Network-Web-Bootstrap选项卡"
+title: "Language-CSS-Bootstrap选项卡"
 date: 2022-02-13
-categories: [Network]
-tags: [Network]
+categories: [CSS]
+tags: [Language]
 excerpt: "Bootstrap选项卡"
 ---
 

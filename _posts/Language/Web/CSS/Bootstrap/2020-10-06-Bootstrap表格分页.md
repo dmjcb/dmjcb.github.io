@@ -1,8 +1,8 @@
 ---
-title: "Network-Web-Bootstrap表格分页"
+title: "Language-Bootstrap表格分页"
 date: 2020-10-06
-categories: [Network]
-tags: [Network]
+categories: [CSS]
+tags: [Language]
 excerpt: "Bootstrap表格分页"
 ---
 
