@@ -15,92 +15,82 @@ class AutoUploadBlog:
     __BLOG_IMGUR_DIR  = "{0}\\{1}".format(__BLOG_DIR, __IMGUR_DIR)
     __JEYLL_IMGUR_DIR = "{0}\\{1}".format(__JEYLL_DIR, __IMGUR_DIR)
 
+    __BLOG_CODE_DIR   = "{0}\\{1}".format(__BLOG_DIR, __CODE_DIR)
+    __JEYLL_CODE_DIR  = "{0}\\{1}".format(__JEYLL_DIR, __CODE_DIR)
 
-    # 从SelfBlog所有.md中获取图片url, 提取图片名
-    def get_used_images(self):
-        used_images = []
-        for fpathe, dirs, fs in os.walk(self.__BLOG_DIR):
-            if ".git" not in fpathe:
-                for f in fs:
-                    name = os.path.join(fpathe, f)
-                    if ".md" in name:
-                        with codecs.open(name, "rb", "utf-8", errors="ignore") as text:
-                            for line in text:
-                                line = line.replace("\r\n", "")
-                                # 示例, ![](/assets/SelfImgur/20241022204809.png)
-                                if "/assets/SelfImgur/" in line:
-                                    # 去除末尾)符号
-                                    line = line[:-1]
-                                    image_name = line.split('/')[-1]
-                                    used_images.append(image_name)
+    blog_used_images    = []
+    blog_imgur_files    = []
 
-        return used_images
+    def __init__(self):
+        self.get_in_used_images()
 
+    def extract_file_name(self, file_path):
+        f = '\\'
+        if '/' in file_path:
+            f = '/'
+        return file_path.split(f)[-1]
 
-    # 从SelfBlog/assets/SelfImgur中获取所有文件名与路径
-    def get_self_imgur_files(self):
+    def get_dir_file_ap(self, dir_path):
         files = []
-        for fpathe, dirs, fs in os.walk(self.__BLOG_IMGUR_DIR):
+        for path, dirs, fs in os.walk(dir_path):
+            if ".git" in path:
+                continue
             for f in fs:
-                path = os.path.join(fpathe, f)
-                files.append(f)
-
+                ap = os.path.join(path, f)
+                files.append(ap)
         return files
 
+    def extract_imgur_url(self, md_file):
+        with codecs.open(md_file, "rb", "utf-8", errors="ignore") as text:
+            for line in text:
+                line = line.replace("\r\n", "")
+                # example: ![](/assets/SelfImgur/20241022204809.png)
+                if "/assets/SelfImgur/" in line:
+                    name = self.extract_file_name(line[:-1])
+                    self.blog_used_images.append(name)
 
-    # 删除SelfBlog/assets/SelfImgur中未使用的图片
-    def del_self_blog_imgur_usused_files(self):
-        used_files = self.get_used_images()
-        del_count = 0
+    def get_in_used_images(self):
+        files = self.get_dir_file_ap(self.__BLOG_DIR)
+        for f in files:
+            if "md" == f[-2:]:              
+                self.extract_imgur_url(f)
 
-        for fpathe, dirs, fs in os.walk(self.__BLOG_IMGUR_DIR):
-            for f in fs:     
-                if f not in used_files:
-                    del_count += 1
-                    name = os.path.join(fpathe, f)
-                    os.remove(name)
+    def del_unused_images(self, dir_path):
+        count = 0
+        for ap in self.get_dir_file_ap(dir_path):
+            if self.extract_file_name(ap) not in self.blog_used_images:
+                count += 1
+                os.remove(ap)
+        return count
+    
+    def clean_folder(self, folder_path):
+        if os.path.exists(folder_path) and os.path.isdir(folder_path):
+            for name in os.listdir(folder_path):
+                path = os.path.join(folder_path, name)
+                if os.path.isfile(path):
+                    os.remove(path)
+                elif os.path.isdir(path):
+                    shutil.rmtree(path)
+            print(f"{folder_path} already clean")
+        else:
+            print(f"{folder_path} not exist")
+    
+    def copy_folder(self, source_dir, target_dir):
+        if os.path.exists(source_dir) and os.path.isdir(source_dir):
+            shutil.copytree(source_dir, target_dir, dirs_exist_ok=True)
+            print(f"{source_dir} already copy {target_dir}")
 
-        print("1. SelfBlog SelfImgur del {0} images".format(del_count))
+    def manage_resource(self):
+        count = self.del_unused_images(self.__BLOG_IMGUR_DIR)
+        print("SelfBlog SelfImgur del {0} images".format(count))
 
-
-    def copy_self_imgur_dir(self):
-        copy_count = 0
-        src_files = os.listdir(self.__BLOG_IMGUR_DIR)
-        for name in src_files:
-            f = os.path.join(self.__BLOG_IMGUR_DIR, name)
-            if os.path.isfile(f):
-                shutil.copy(f, self.__JEYLL_IMGUR_DIR)
-                copy_count += 1
-        
-        print("2. Copy {0} images".format(copy_count))
-
-
-    # 删除dmjcb.github.io/assets/SelfImgur中未使用的图片
-    def del_io_imgur_unused_files(self):
-        used_files = self.get_self_imgur_files()
-
-        del_count = 0
-        for fpathe, dirs, fs in os.walk(self.__JEYLL_IMGUR_DIR):
-            for f in fs:
-                if f not in used_files:
-                    name = os.path.join(fpathe, f)
-                    os.remove(name)
-                    del_count += 1
-
-        print("3. dmjgb.github.io SelfImgur del {0} images".format(del_count))
-
-
-    def update_images(self):
-        self.del_self_blog_imgur_usused_files()
-        self.copy_self_imgur_dir()
-        self.del_io_imgur_unused_files()
-
+        self.copy_folder(self.__BLOG_IMGUR_DIR, self.__JEYLL_IMGUR_DIR)
+        self.copy_folder(self.__BLOG_CODE_DIR, self.__JEYLL_CODE_DIR)
 
     def git_pipline(self):
         def __run(command):
             r = subprocess.run(command, shell=True, capture_output=True, text=True, encoding="utf8")
             print(r.stdout)
-            print()
         
         def __pull():
             sh = "git pull"
@@ -123,8 +113,7 @@ class AutoUploadBlog:
 
 
     def run(self):
-        self.update_images()
-
+        self.manage_resource()
         self.git_pipline()
 
 

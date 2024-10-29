@@ -1,8 +1,8 @@
 ---
-title: "Network-Python Socket"
+title: "Python-Web-Socket"
 date: 2021-12-01
-categories: [Network]
-tags: [Network]
+categories: [Python]
+tags: [Python]
 excerpt: "Python Socket"
 ---
 
