@@ -18,11 +18,13 @@ class AutoUploadBlog:
     __BLOG_CODE_DIR   = "{0}\\{1}".format(__BLOG_DIR, __CODE_DIR)
     __JEYLL_CODE_DIR  = "{0}\\{1}".format(__JEYLL_DIR, __CODE_DIR)
 
-    blog_used_images    = []
-    blog_imgur_files    = []
+    blog_used_images  = []
 
     def __init__(self):
-        self.get_in_used_images()
+        for f in self.get_files_ap(self.__BLOG_DIR):
+            if "md" == f[-2:]:              
+                urls = self.extract_imgurs_url(f)
+                self.blog_used_images.extend(urls)
 
     def extract_file_name(self, file_path):
         f = '\\'
@@ -30,7 +32,7 @@ class AutoUploadBlog:
             f = '/'
         return file_path.split(f)[-1]
 
-    def get_dir_file_ap(self, dir_path):
+    def get_files_ap(self, dir_path):
         files = []
         for path, dirs, fs in os.walk(dir_path):
             if ".git" in path:
@@ -40,24 +42,21 @@ class AutoUploadBlog:
                 files.append(ap)
         return files
 
-    def extract_imgur_url(self, md_file):
+    def extract_imgurs_url(self, md_file):
+        x = []
         with codecs.open(md_file, "rb", "utf-8", errors="ignore") as text:
             for line in text:
                 line = line.replace("\r\n", "")
                 # example: ![](/assets/SelfImgur/20241022204809.png)
                 if "/assets/SelfImgur/" in line:
                     name = self.extract_file_name(line[:-1])
-                    self.blog_used_images.append(name)
+                    x.append(name)
 
-    def get_in_used_images(self):
-        files = self.get_dir_file_ap(self.__BLOG_DIR)
-        for f in files:
-            if "md" == f[-2:]:              
-                self.extract_imgur_url(f)
+        return x
 
-    def del_unused_images(self, dir_path):
+    def del_unused_images(self):
         count = 0
-        for ap in self.get_dir_file_ap(dir_path):
+        for ap in self.get_files_ap(self.__BLOG_IMGUR_DIR):
             if self.extract_file_name(ap) not in self.blog_used_images:
                 count += 1
                 os.remove(ap)
@@ -72,18 +71,18 @@ class AutoUploadBlog:
                 elif os.path.isdir(path):
                     shutil.rmtree(path)
             print(f"{folder_path} already clean")
-        else:
-            print(f"{folder_path} not exist")
-    
+
     def copy_folder(self, source_dir, target_dir):
         if os.path.exists(source_dir) and os.path.isdir(source_dir):
             shutil.copytree(source_dir, target_dir, dirs_exist_ok=True)
             print(f"{source_dir} already copy {target_dir}")
 
     def manage_resource(self):
-        count = self.del_unused_images(self.__BLOG_IMGUR_DIR)
+        count = self.del_unused_images()
         print("SelfBlog SelfImgur del {0} images".format(count))
 
+        self.clean_folder(self.__JEYLL_IMGUR_DIR)
+        self.clean_folder(self.__JEYLL_CODE_DIR)
         self.copy_folder(self.__BLOG_IMGUR_DIR, self.__JEYLL_IMGUR_DIR)
         self.copy_folder(self.__BLOG_CODE_DIR, self.__JEYLL_CODE_DIR)
 
@@ -97,7 +96,10 @@ class AutoUploadBlog:
             __run(sh)
 
         def __push():
-            sh = "git add . && git commit -m {0} && git push".format(sys.argv[1])
+            msg = sys.argv[1]
+            if msg == "":
+                msg = "defualt add"
+            sh = "git add . && git commit -m {0} && git push".format(msg)
             __run(sh)
         
         print("4. run git")
@@ -110,7 +112,6 @@ class AutoUploadBlog:
 
         os.chdir(self.__JEYLL_DIR)
         __push()
-
 
     def run(self):
         self.manage_resource()

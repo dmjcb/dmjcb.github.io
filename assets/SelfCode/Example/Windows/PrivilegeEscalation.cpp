@@ -1,11 +1,3 @@
-/*
- * @Brief        : 
- * @Author       : dmjcb
- * @Date         : 2024-10-12 21:33:39
- * @LastEditors  : dmjcb@outlook.com
- * @LastEditTime : 2024-10-12 21:34:19
- */
-
 #include <windows.h>
 #include <iostream>
 

@@ -62,6 +62,16 @@ class AutoUploadBlog:
                 os.remove(ap)
         return count
     
+    def clean_folder(self, folder_path):
+        if os.path.exists(folder_path) and os.path.isdir(folder_path):
+            for name in os.listdir(folder_path):
+                path = os.path.join(folder_path, name)
+                if os.path.isfile(path):
+                    os.remove(path)
+                elif os.path.isdir(path):
+                    shutil.rmtree(path)
+            print(f"{folder_path} already clean")
+
     def copy_folder(self, source_dir, target_dir):
         if os.path.exists(source_dir) and os.path.isdir(source_dir):
             shutil.copytree(source_dir, target_dir, dirs_exist_ok=True)
@@ -71,8 +81,10 @@ class AutoUploadBlog:
         count = self.del_unused_images()
         print("SelfBlog SelfImgur del {0} images".format(count))
 
-        # self.copy_folder(self.__BLOG_IMGUR_DIR, self.__JEYLL_IMGUR_DIR)
-        # self.copy_folder(self.__BLOG_CODE_DIR, self.__JEYLL_CODE_DIR)
+        self.clean_folder(self.__JEYLL_IMGUR_DIR)
+        self.clean_folder(self.__JEYLL_CODE_DIR)
+        self.copy_folder(self.__BLOG_IMGUR_DIR, self.__JEYLL_IMGUR_DIR)
+        self.copy_folder(self.__BLOG_CODE_DIR, self.__JEYLL_CODE_DIR)
 
     def git_pipline(self):
         def __run(command):
@@ -84,7 +96,10 @@ class AutoUploadBlog:
             __run(sh)
 
         def __push():
-            sh = "git add . && git commit -m {0} && git push".format(sys.argv[1])
+            msg = sys.argv[1]
+            if msg == "":
+                msg = "defualt add"
+            sh = "git add . && git commit -m {0} && git push".format(msg)
             __run(sh)
         
         print("4. run git")
