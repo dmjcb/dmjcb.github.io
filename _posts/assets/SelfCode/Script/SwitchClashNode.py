@@ -5,6 +5,7 @@ class AutoSwitchNode:
     __IP = "192.168.3.3"
     __PORT = 9090
 
+
     def __init__(self):
         self.__url = '{0}:{1}'.format(self.__IP, self.__PORT)
 
@@ -47,6 +48,6 @@ class AutoSwitchNode:
 
         return False
 
-
-auto = AutoSwitchNode()
-auto.switch_fastest_proxy()
+if __name__ == "__main__":
+    auto = AutoSwitchNode()
+    auto.switch_fastest_proxy()

@@ -1,13 +1,5 @@
 #!/bin/bash
 
-###
- # @Brief        : 
- # @Author       : dmjcb
- # @Date         : 2021-07-10 13:27:20
- # @LastEditors  : dmjcb@outlook.com
- # @LastEditTime : 2024-09-24 23:25:59
-### 
-
 init_system(){
     sudo sed -i 's#security.ubuntu.com#mirrors.aliyun.com#g' /etc/apt/sources.list
     sudo sed -i 's#cn.archive.ubuntu.com#mirrors.aliyun.com#g' /etc/apt/sources.list
