@@ -51,7 +51,6 @@ class AutoUploadBlog:
                 if "/assets/SelfImgur/" in line:
                     name = self.extract_file_name(line[:-1])
                     x.append(name)
-
         return x
 
     def del_unused_images(self):
