@@ -1,15 +1,5 @@
 #!/bin/bash
 
-###
- # @Description: 
- # @Version: 1.0
- # @Author: dmjcb
- # @Email:  
- # @Date: 2022-01-17 02:05:53
- # @LastEditors: dmjcb
- # @LastEditTime: 2023-04-21 23:32:32
-### 
-
 init(){
     sudo sed -i '1iServer = http://mirrors.aliyun.com/archlinux/$repo/os/$arch' /etc/pacman.d/mirrorlist
 
