@@ -1,6 +1,6 @@
 # 说明
 
-![](/assets/SelfImgur/head.jpg)
+![](/Resource/Imgur/head.jpg)
 
 > [个人博客网站](https://dmjcb.github.io/)
 

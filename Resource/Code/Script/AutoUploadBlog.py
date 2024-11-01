@@ -6,8 +6,8 @@ import subprocess
 
 class AutoUploadBlog:
     __ROOT_DIR        = "c:\\Users\\dmjcb\\Documents\\Code"
-    __IMGUR_DIR       = "assets\\SelfImgur"
-    __CODE_DIR        = "assets\\SelfCode"
+    __IMGUR_DIR       = "Resource\\Imgur"
+    __CODE_DIR        = "Resource\\Code"
 
     __BLOG_DIR        = "{0}\\SelfBlog".format(__ROOT_DIR)
     __JEYLL_DIR       = "{0}\\dmjcb.github.io".format(__ROOT_DIR)
@@ -47,8 +47,8 @@ class AutoUploadBlog:
         with codecs.open(md_file, "rb", "utf-8", errors="ignore") as text:
             for line in text:
                 line = line.replace("\r\n", "")
-                # example: ![](/assets/SelfImgur/20241022204809.png)
-                if "/assets/SelfImgur/" in line:
+                # example: ![](/Resource/Imgur/20241022204809.png)
+                if "/Resource/Imgur/" in line:
                     name = self.extract_file_name(line[:-1])
                     x.append(name)
         return x
@@ -114,7 +114,7 @@ class AutoUploadBlog:
 
     def run(self):
         self.manage_resource()
-        self.git_pipline()
+        # self.git_pipline()
 
 
 if __name__ == "__main__":

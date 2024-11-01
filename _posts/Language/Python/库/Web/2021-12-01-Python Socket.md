@@ -66,9 +66,9 @@ if __name__ == '__main__':
     s.close()
 ```
 
-![](/assets/SelfImgur/20241027_163131.jpg)
+![](/Resource/Imgur/20241027_163131.jpg)
 
-![](/assets/SelfImgur/20241027_163143.jpg)
+![](/Resource/Imgur/20241027_163143.jpg)
 
 ## UDP
 
@@ -115,9 +115,9 @@ if __name__ == '__main__':
     s.close()
 ```
 
-![](/assets/SelfImgur/20241027_162435.jpg)
+![](/Resource/Imgur/20241027_162435.jpg)
 
-![](/assets/SelfImgur/20241027_162446.jpg)
+![](/Resource/Imgur/20241027_162446.jpg)
 
 ## 多线程 server 端
 
