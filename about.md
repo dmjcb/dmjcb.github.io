@@ -10,7 +10,7 @@ titles:
 key: page-about
 ---
 
-![](/assets/SelfImgur/head.jpg)
+![](/Resource/Imgur/head.jpg)
 
 ## 收藏
 

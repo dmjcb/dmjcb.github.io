@@ -114,7 +114,7 @@ class AutoUploadBlog:
 
     def run(self):
         self.manage_resource()
-        # self.git_pipline()
+        self.git_pipline()
 
 
 if __name__ == "__main__":
