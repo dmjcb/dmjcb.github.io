@@ -14,8 +14,6 @@ excerpt: "SQLServer"
 docker run -itd -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=dmjcb@13546!" -p 1433:1433 --name sqlserver2019 mcr.microsoft.com/mssql/server:2019-latest
 ```
 
-![](/assets/SelfImgur/20241026_135104.jpg)
-
 ## 命令
 
 ### 进入

@@ -2,7 +2,7 @@
 title: "软件-Docker-Dockerfile"
 date: 2024-08-27
 categories: [Docker]
-tags: [软件]
+tags: [Docker]
 excerpt: "Dockerfile"
 ---
 
@@ -167,8 +167,6 @@ run sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 ```sh
 docker build -t gpp:v1 .
 ```
-
-![](/assets/SelfImgur/20241021232529.png)
 
 - 拉取qemu
 
