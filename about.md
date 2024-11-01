@@ -3,38 +3,38 @@ layout: article
 titles:
   # @start locale config
   en      : &EN       About
-  en-GB   : *EN
-  en-US   : *EN
-  en-CA   : *EN
-  en-AU   : *EN
   zh-Hans : &ZH_HANS  关于
   zh      : *ZH_HANS
   zh-CN   : *ZH_HANS
-  zh-SG   : *ZH_HANS
-  zh-Hant : &ZH_HANT  關於
-  zh-TW   : *ZH_HANT
-  zh-HK   : *ZH_HANT
-  ko      : &KO       소개
-  ko-KR   : *KO
-  fr      : &FR       À propos
-  fr-BE   : *FR
-  fr-CA   : *FR
-  fr-CH   : *FR
-  fr-FR   : *FR
-  fr-LU   : *FR
   # @end locale config
 key: page-about
 ---
 
 ![](/assets/SelfImgur/head.jpg)
 
-## 诗云
+## 收藏
 
-> 五十年来梦亦真, 今朝撒手谢红尘
+- 题西林壁
 
-## 邮箱
+横看成岭侧成峰, 远近高低各不同.
 
-> dmjcb@outlook.com
+不识庐山真面目, 只缘身在此山中.
 
+- 赠药山高僧惟俨二首
+
+练得身形似鹤形, 千株松下两函经.
+
+我来问道无馀说, 云在青霄水在瓶.
+
+- 绝命
+
+五十年来梦幻真, 今朝撒手谢红尘.
+
+他年水泛含龙日, 认取香烟是后身.
+
+## 联系
+
+- Github: https://github.com/dmjcb
+- 邮箱: dmjcb@outlook.com
 
 若有勘误, 请联系指教, 万分感谢!

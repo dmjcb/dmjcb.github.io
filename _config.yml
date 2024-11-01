@@ -36,7 +36,7 @@ author:
   type      : # "person" (default), "organization"
   name      : dmjcb
   url       : dmjcb.github.io
-  avatar    : https://raw.githubusercontent.com/dmjcb/SelfImgur/main/pexels-pedrofurtadoo-28893434.jpg # path or url of avatar image (square)
+  avatar    : https://raw.githubusercontent.com/dmjcb/SelfImgur/main/head.jpg # path or url of avatar image (square)
   bio       : I am an amazing person.
   email     : dmjcb@outlook.com
   facebook  : # "user_name" the last part of your profile url, e.g. https://www.facebook.com/user_name
@@ -48,7 +48,7 @@ author:
   zhihu     : # "user_name" the last part of your profile url, e.g. https://www.zhihu.com/people/user_name
   douban    : # "user_name" the last part of your profile url, e.g. https://www.douban.com/people/user_name
   linkedin  : # "user_name" the last part of your profile url, e.g. https://www.linkedin.com/in/user_name
-  github    : # "user_name" the last part of your profile url, e.g. https://github.com/user_name
+  github    : https://github.com/dmjcb #"user_name" the last part of your profile url, e.g. https://github.com/user_name
   npm       : # "user_name" the last part of your profile url, e.g. https://www.npmjs.com/~user_name
 
 

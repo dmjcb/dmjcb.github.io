@@ -1,13 +1,3 @@
-/*
- * @Description:
- * @Version: 1.0
- * @Author: dmjcb
- * @Email:
- * @Date: 2021-10-06 13:11:32
- * @LastEditors: dmjcb
- * @LastEditTime: 2023-04-17 16:27:00
- */
-
 #include <iostream>
 #include <stack>
 
