@@ -3,7 +3,9 @@
 <script>
   window.Lazyload.js('{{ _sources.mermaid }}', function() {
     mermaid.initialize({
-      startOnLoad: true
+      startOnLoad: true,
+      securityLevel: 'loose', // add this
+      theme: 'dark', // add this
     });
     mermaid.init(undefined, '.language-mermaid');
   });

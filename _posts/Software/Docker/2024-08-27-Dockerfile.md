@@ -1,8 +1,8 @@
 ---
-title: "软件-Docker-Dockerfile"
+title: "软件-docker-Dockerfile"
 date: 2024-08-27
-categories: [Docker]
-tags: [Docker]
+categories: [docker]
+tags: [docker]
 excerpt: "Dockerfile"
 ---
 
