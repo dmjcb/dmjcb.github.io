@@ -18,13 +18,14 @@ class AutoUploadBlog:
     __BLOG_CODE_DIR   = "{0}\\{1}".format(__BLOG_DIR, __CODE_DIR)
     __JEYLL_CODE_DIR  = "{0}\\{1}".format(__JEYLL_DIR, __CODE_DIR)
 
-    blog_used_images  = []
+    __used_imgs  = []
+
 
     def __init__(self):
         for f in self.get_files_ap(self.__BLOG_DIR):
             if "md" == f[-2:]:              
                 urls = self.extract_imgurs_url(f)
-                self.blog_used_images.extend(urls)
+                self.__used_imgs.extend(urls)
 
     def extract_file_name(self, file_path):
         f = '\\'
@@ -56,7 +57,7 @@ class AutoUploadBlog:
     def del_unused_images(self):
         count = 0
         for ap in self.get_files_ap(self.__BLOG_IMGUR_DIR):
-            if self.extract_file_name(ap) not in self.blog_used_images:
+            if self.extract_file_name(ap) not in self.__used_imgs:
                 count += 1
                 os.remove(ap)
         return count

@@ -18,15 +18,19 @@ excerpt: "Dockerfile"
 run [指令]
 ```
 
+- 构建时执行更新源命令
+
+```docker
+run apt udpate && apt upgrade -y
+```
+
 ### copy
 
-拷贝文件
+`copy` 将从构建上下文目录中源路径文件/目录复制到新一层镜像内目标路径/位置
 
 ```sh
 copy [源路径] [目标路径]
 ```
-
-`copy` 将从构建上下文目录中源路径文件/目录复制到新一层镜像内目标路径/位置
 
 ### add
 
@@ -66,7 +70,7 @@ cmd ["python3", "manage.py", "runserver 0.0.0.0: 8000"]
 
 ```mermaid
 graph LR;
-    X(cmd/run区别)
+    X(区别)
     X --> A(cmd) --> A1(docker run时运行) --> A2(Dockerfile中只能在末尾有一条CMD指令)
     X --> B(run) --> B1(docker build时运行) --> B2(Dockerfile中可出现若干次)
 ```
@@ -85,6 +89,8 @@ from 镜像名1 as 阶段名1
 from 镜像名2 as 阶段名2
 ```
 
+- 多阶段构建go语言可执行程序
+
 App.go
 
 ```go
@@ -96,6 +102,8 @@ func main(){
     fmt.Printf("Hello World!");
 }
 ```
+
+Dockerfile
 
 ```docker
 # 第一阶段
@@ -126,21 +134,23 @@ cmd ["./App"]
 
 #### 仅单阶段构建
 
+
 ```sh
-from [镜像名] AS [阶段名]
+docker build --target=[阶段名] -t [新镜像名:tag] .
 ```
 
-- 仅构建 builder 阶段镜像, 可用 `--target=builder`
+- 仅构建 builder 阶段镜像
+
 
 ```sh
 from golang:1.9-alpine as builder
+
+···
+
+docker build --target=builder -t only_builder:v1 .
 ```
 
-```sh
-docker build --target [阶段名] -t [新镜像名:tag] .
-```
-
-#### 构建时从其他镜像复制文件
+#### 构建时复制文件
 
 ```sh
 copy --from=[镜像名] [源路径] [当前路径]
@@ -151,6 +161,8 @@ copy --from=[镜像名] [源路径] [当前路径]
 ```sh
 copy --from=nginx:latest /etc/nginx/nginx.conf /nginx.conf
 ```
+
+## 示例
 
 - 搭建g++编译环境
 
