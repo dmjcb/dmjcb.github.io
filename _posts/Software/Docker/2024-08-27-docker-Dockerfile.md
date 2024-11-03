@@ -1,5 +1,5 @@
 ---
-title: "软件-docker-Dockerfile"
+title: "docker-Dockerfile"
 date: 2024-08-27
 categories: [docker]
 tags: [docker]
