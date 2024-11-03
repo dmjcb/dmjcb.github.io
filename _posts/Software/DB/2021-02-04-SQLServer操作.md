@@ -1,12 +1,12 @@
 ---
-title: "软件-数据库-SQLServer"
+title: "软件-数据库-SQLServer操作"
 date: 2021-02-04
 categories: [数据库]
 tags: [软件]
 excerpt: "SQLServer"
 ---
 
-# SQLServer
+# SQLServer操作
 
 ## 部署
 
