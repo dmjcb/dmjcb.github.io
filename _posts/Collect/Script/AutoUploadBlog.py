@@ -57,9 +57,14 @@ class AutoUploadBlog:
     def del_unused_images(self):
         count = 0
         for ap in self.get_files_ap(self.__BLOG_IMGUR_DIR):
-            if self.extract_file_name(ap) not in self.__used_imgs:
-                count += 1
-                os.remove(ap)
+            name = self.extract_file_name(ap)
+            
+            if name not in self.__used_imgs:
+                if name in ("head.jpg", "workbench.jpg"):
+                    pass
+                else:
+                    count += 1
+                    os.remove(ap)
         return count
     
     def clean_folder(self, folder_path):
@@ -115,7 +120,7 @@ class AutoUploadBlog:
 
     def run(self):
         self.manage_resource()
-        self.git_pipline()
+        # self.git_pipline()
 
 
 if __name__ == "__main__":

@@ -12,9 +12,7 @@ key: page-about
 
 ## 自序
 
-极简主义者, 偏爱安静有序整齐环境, 不断码字中
-
-日常爱好是整理线缆和打扫卫生
+90后中年人, 极简偏执主义, 喜爱安静有序整齐环境, 日常热衷于整理各类线缆
 
 - github: [https://github.com/dmjcb](https://github.com/dmjcb)
 
