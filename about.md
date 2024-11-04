@@ -14,6 +14,10 @@ key: page-about
 
 90后中年人, 极简偏执主义, 喜爱安静有序整齐环境, 日常热衷于整理各类线缆
 
+最近刚刚折腾一个简单桌面, 后续可能继续升级
+
+![](/Resource/Imgur/workbench.jpg)
+
 - github: [https://github.com/dmjcb](https://github.com/dmjcb)
 
 - 邮箱: dmjcb@outlook.com
