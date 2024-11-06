@@ -1,4 +1,4 @@
-/.vscode/
+.vscode/
 !Makefile
 *
 !*.txt
@@ -186,3 +186,5 @@ cython_debug/
 /Build/
 
 !Dockerfile
+
+Build/
