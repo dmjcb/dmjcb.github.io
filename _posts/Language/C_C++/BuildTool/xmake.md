@@ -31,14 +31,17 @@ sudo apt install xmake
 ### 创建
 
 ```sh
-xmake create -l [项目类型] -P ./[项目名]
+xmake create -language=[项目类型] --project=[项目名]
 ```
 
-- 创建名为hello C控制台工程
+- 创建名为Hello C控制台工程
 
 ```sh
-xmake create -l c -P ./hello
+xmake create --language=c --project=Hello
 ```
+
+![](/Resource/Imgur/20241107_005519.jpg)
+
 
 ### 构建
 
@@ -46,16 +49,15 @@ xmake create -l c -P ./hello
 xmake
 ```
 
-```sh
-cd hello
-xmake
-```
+- 构建上一步Hello工程
+
+![](/Resource/Imgur/20241107_005926.jpg)
 
 ### 运行
 
 ```sh
-xmake run [项目名]
+xmake run (项目名)
 ```
 
-### 调试
+![](/Resource/Imgur/20241107_010121.jpg)
 
