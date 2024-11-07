@@ -77,6 +77,32 @@ graph LR;
 
 ## 构建
 
+### 单阶段构建
+
+在Dockerfile目录下执行
+
+```sh
+docker build -t .
+```
+
+- 搭建g++编译环境
+
+Dockerfile
+
+```dockerfile
+from alpine as builder
+
+label dmjcb <>
+
+workdir /
+
+run sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && apk add g++
+```
+
+```sh
+docker build -t gpp:v1 .
+```
+
 ### 多阶段构建
 
 #### 连续构建
@@ -160,32 +186,4 @@ copy --from=[镜像名] [源路径] [当前路径]
 
 ```sh
 copy --from=nginx:latest /etc/nginx/nginx.conf /nginx.conf
-```
-
-## 示例
-
-- 搭建g++编译环境
-
-```dockerfile
-from alpine as builder
-
-label dmjcb <>
-
-workdir /
-
-run sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && apk add g++
-```
-
-```sh
-docker build -t gpp:v1 .
-```
-
-- 拉取qemu
-
-```sh
-docker run --rm --privileged multiarch/qemu-user-static --reset --persistent yes
-```
-
-```sh
-docker pull arm32v7/gcc:9
 ```

@@ -12,112 +12,105 @@ class AutoUploadBlog:
 
     __RESOURCE_DIR    = "Resource"
 
-    __used_imgs  = []
-
-    def __init__(self):
-        for f in self.get_files_ap(self.__BLOG_DIR):
-            if "md" == f[-2:]:              
-                urls = self.extract_imgurs_url(f)
-                self.__used_imgs.extend(urls)
-
-    def extract_file_name(self, file_path):
-        f = '\\'
-        if '/' in file_path:
-            f = '/'
-        return file_path.split(f)[-1]
-
-    def get_files_ap(self, dir_path):
-        files = []
-        for path, dirs, fs in os.walk(dir_path):
-            if ".git" in path:
-                continue
-            for f in fs:
-                ap = os.path.join(path, f)
-                files.append(ap)
-        return files
-
-    def extract_imgurs_url(self, md_file):
-        x = []
-        with codecs.open(md_file, "rb", "utf-8", errors="ignore") as text:
-            for line in text:
-                line = line.replace("\r\n", "")
-                # example: ![](/Resource/Imgur/20241022204809.png)
-                if "/Resource/Imgur/" in line:
-                    name = self.extract_file_name(line[:-1])
-                    x.append(name)
-        return x
-
     def del_unused_images(self):
-        imgur_path  = "{0}\\{1}\\Imgur".format(self.__BLOG_DIR, self.__RESOURCE_DIR)
+        def __extract_file_name(path):
+            f = '\\'
+            if '/' in path:
+                f = '/'
+            return path.split(f)[-1]
+
+        def __get_files_ap(dir_path):
+            files = []
+            for path, dirs, fs in os.walk(dir_path):
+                if ".git" in path:
+                    continue
+                for f in fs:
+                    ap = os.path.join(path, f)
+                    files.append(ap)
+            return files
+
+        def __extract_imgurs_url(md_file):
+            imgs = []
+            with codecs.open(md_file, "rb", "utf-8", errors="ignore") as text:
+                for line in text:
+                    line = line.replace("\r\n", "")
+                    # example: ![](/Resource/Imgur/20241022204809.png)
+                    if "/Resource/Imgur/" in line:
+                        name = __extract_file_name(line[:-1])
+                        imgs.append(name)
+            return imgs
+
+        used_imgs = ["head.jpg", "workbench.jpg"]
+        for f in __get_files_ap(self.__BLOG_DIR):
+            if "md" == f[-2:]:              
+                urls = __extract_imgurs_url(f)
+                used_imgs.extend(urls)
+
+        imgur_dir  = "{0}\\{1}\\Imgur".format(self.__BLOG_DIR, self.__RESOURCE_DIR)
         count = 0
-        for ap in self.get_files_ap(imgur_path):
-            name = self.extract_file_name(ap)
-            
-            if name not in self.__used_imgs:
-                if name in ("head.jpg", "workbench.jpg"):
-                    pass
-                else:
-                    count += 1
-                    os.remove(ap)
+        for ap in __get_files_ap(imgur_dir):
+            name = __extract_file_name(ap)
+            if name not in used_imgs:
+                count += 1
+                os.remove(ap)
+                    
         return count
+
+
+    def run_cmd(self, command):
+        r = subprocess.run(command, shell=True, capture_output=True, text=True, encoding="utf8")
+        print(r.stdout)
     
-    def clean_folder(self, folder_path):
-        if os.path.exists(folder_path) and os.path.isdir(folder_path):
-            for name in os.listdir(folder_path):
-                path = os.path.join(folder_path, name)
-                if os.path.isfile(path):
-                    os.remove(path)
-                elif os.path.isdir(path):
-                    shutil.rmtree(path)
-            print(f"{folder_path} already clean")
 
-    def copy_folder(self, source_dir, target_dir):
-        if os.path.exists(source_dir) and os.path.isdir(source_dir):
-            shutil.copytree(source_dir, target_dir, dirs_exist_ok=True)
-            print(f"{source_dir} already copy {target_dir}")
-
-    def manage_resource(self):
-        blog_resouce_dir = "{0}\\{1}".format(self.__BLOG_DIR, self.__RESOURCE_DIR)
-        jeyll_resource_dir = "{0}\\{1}".format(self.__JEYLL_DIR, self.__RESOURCE_DIR)
-
-        count = self.del_unused_images()
-        print("SelfBlog SelfImgur del {0} images".format(count))
-
-        self.clean_folder(jeyll_resource_dir)
-        self.copy_folder(blog_resouce_dir, jeyll_resource_dir)
-
-    def git_pipline(self):
-        def __run(command):
-            r = subprocess.run(command, shell=True, capture_output=True, text=True, encoding="utf8")
-            print(r.stdout)
-        
-        def __pull():
-            sh = "git pull"
-            __run(sh)
-
-        def __push():
-            msg = sys.argv[1]
-            if msg == "":
-                msg = "defualt add"
+    def git_push(self):
+        msg = sys.argv[1]
+        if msg == "":
+            msg = "defualt add"
             sh = "git add . && git commit -m {0} && git push".format(msg)
-            __run(sh)
-        
-        print("4. run git")
+            self.run_cmd(sh)
+
+
+    def upload_blog(self):
+        count = self.del_unused_images()
+        print("blog del {0} images".format(count))
 
         os.chdir(self.__BLOG_DIR)
-        __push()
+        self.git_push()
+    
 
+    def update_resource(self):
+        def __clean_folder(folder_path):
+            if os.path.exists(folder_path) and os.path.isdir(folder_path):
+                for name in os.listdir(folder_path):
+                    path = os.path.join(folder_path, name)
+                    if os.path.isfile(path):
+                        os.remove(path)
+                    elif os.path.isdir(path):
+                        shutil.rmtree(path)
+                print(f"{folder_path} already clean")
+
+        def __copy_folder(source_dir, target_dir):
+            if os.path.exists(source_dir) and os.path.isdir(source_dir):
+                shutil.copytree(source_dir, target_dir, dirs_exist_ok=True)
+                print(f"{source_dir} already copy {target_dir}")
+
+        SOURRC_DIR = "{0}\\_posts\\{1}".format(self.__JEYLL_DIR, self.__RESOURCE_DIR)
+        TARGET_DIR = "{0}\\{1}".format(self.__JEYLL_DIR, self.__RESOURCE_DIR)
+
+        __clean_folder(TARGET_DIR)
+        __copy_folder(SOURRC_DIR, TARGET_DIR)
+
+    def upload_jekyll(self):
         os.chdir("{0}\\_posts".format(self.__JEYLL_DIR))
-        __pull()
+        self.run_cmd("git pull")
+
+        self.update_resource()
 
         os.chdir(self.__JEYLL_DIR)
-        __push()
-
-    def run(self):
-        self.manage_resource()
-        # self.git_pipline()
+        self.git_push()
 
 
 if __name__ == "__main__":
-    upload = AutoUploadBlog()
-    upload.run()
+    auto = AutoUploadBlog()
+    auto.upload_blog()
+    # auto.upload_jekyll()

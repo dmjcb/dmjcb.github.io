@@ -4,10 +4,4 @@ project(HelloAPI)
 
 add_library(${PROJECT_NAME} SHARED "")
 
-target_include_directories(${PROJECT_NAME} PUBLIC
-    ${CMAKE_SOURCE_DIR}/HelloAPI.hpp
-)
-
-target_sources(${PROJECT_NAME} PUBLIC
-    ${CMAKE_SOURCE_DIR}/HelloAPI.cpp
-)
+target_sources(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/HelloAPI.cpp)
