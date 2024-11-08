@@ -40,12 +40,14 @@ class AutoUploadBlog:
                         imgs.append(name)
             return imgs
 
+        # 提取md中已使用图片URL
         used_imgs = ["head.jpg", "workbench.jpg"]
         for f in __get_files_ap(self.__BLOG_DIR):
             if "md" == f[-2:]:              
                 urls = __extract_imgurs_url(f)
                 used_imgs.extend(urls)
 
+        # 删除未使用图片
         imgur_dir  = "{0}\\{1}\\Imgur".format(self.__BLOG_DIR, self.__RESOURCE_DIR)
         count = 0
         for ap in __get_files_ap(imgur_dir):
@@ -101,6 +103,7 @@ class AutoUploadBlog:
         __clean_folder(TARGET_DIR)
         __copy_folder(SOURRC_DIR, TARGET_DIR)
 
+
     def upload_jekyll(self):
         os.chdir("{0}\\_posts".format(self.__JEYLL_DIR))
         self.run_cmd("git pull")
@@ -114,4 +117,4 @@ class AutoUploadBlog:
 if __name__ == "__main__":
     auto = AutoUploadBlog()
     auto.upload_blog()
-    # auto.upload_jekyll()
+    auto.upload_jekyll()
