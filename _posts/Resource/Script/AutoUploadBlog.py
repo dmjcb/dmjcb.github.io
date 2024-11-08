@@ -66,8 +66,9 @@ class AutoUploadBlog:
         msg = sys.argv[1]
         if msg == "":
             msg = "defualt add"
-            sh = "git add . && git commit -m {0} && git push".format(msg)
-            self.run_cmd(sh)
+
+        sh = "git add . && git commit -m {0} && git push".format(msg)
+        self.run_cmd(sh)
 
 
     def upload_blog(self):
