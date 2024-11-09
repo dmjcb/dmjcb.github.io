@@ -1,6 +1,0 @@
-[submodule "Resource/Imgur"]
-	path = Resource/Imgur
-	url = git@github.com:dmjcb/Imgur.git
-[submodule "Resource/Code"]
-	path = Resource/Code
-	url = git@github.com:dmjcb/Code.git
