@@ -14,13 +14,13 @@ excerpt: "Dockerfile"
 
 执行指令
 
-```sh
+```shell
 run [指令]
 ```
 
 - 构建时执行更新源命令
 
-```docker
+```shell
 run apt udpate && apt upgrade -y
 ```
 
@@ -160,13 +160,11 @@ cmd ["./App"]
 
 #### 仅单阶段构建
 
-
 ```sh
 docker build --target=[阶段名] -t [新镜像名:tag] .
 ```
 
 - 仅构建 builder 阶段镜像
-
 
 ```sh
 from golang:1.9-alpine as builder
