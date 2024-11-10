@@ -1,10 +1,5 @@
----
-title: "C_C++-STL-vector"
-date: 2021-11-15
-categories: [C_C++, STL]
-tags: [C_C++]
-excerpt: "vector"
----
+> - [**dmjcb个人博客**](https://dmjcb.github.io/)
+> - [原文地址](https://dmjcb.github.io/c_c++/stl/vector)
 
 # std::vector
 
@@ -14,13 +9,13 @@ excerpt: "vector"
 
 #### 赋值
 
-```c++
+```c
 std::vector<int> v = {1, 2, 3, 4, 5};
 ```
 
 #### 拷贝
 
-```c++
+```c
 std::vector<T> v(count, value);
 ```
 
@@ -34,7 +29,7 @@ std::vector<int> v(10, 0);
 
 若知道需保存数据量size, 可用reserve提前申请, 避免多次动态申请内存消耗时间
 
-```c++
+```c
 std::vector<T> v;
 
 v.reserve(size);
@@ -50,7 +45,7 @@ std::vector<vector<T> > v;
 
 #### 尾部插入
 
-```c++
+```c
 std::vector<T> v;
 
 v.push_back(value);
@@ -58,7 +53,7 @@ v.push_back(value);
 
 #### 指定位置插入
 
-```c++
+```c
 std::vector<T> v;
 
 // 在index位置插入value
@@ -69,7 +64,7 @@ v.insert(v.begin() + index, value);
 
 #### 迭代器访问
 
-```c++
+```c
 std::vector<T> v;
 
 for(vector<T>::iterator it = v.begin(); it != v.end(); it++) {
@@ -83,7 +78,7 @@ for(auto it = v.begin(); it != v.end(); it++) {
 
 #### 下标访问
 
-```c++
+```c
 std::vector<T> v;
 
 for(unsigned int i = 0; i < v.size(); i++){
@@ -147,7 +142,7 @@ std::sort(v.begin(), v.end());
 
 - 对象排序
 
-```c++
+```c
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -173,7 +168,7 @@ std::sort(stu.begin(), stu.end(), Cmp);
 
 - 最值
 
-```c++
+```c
 #include <functional>
 #include <algorithm>
 
@@ -188,12 +183,12 @@ int index = v.begin() - it;
 
 - 累加
 
-```c++
+```c
 accumulate(v.begin(), v.end(), 0, plus<T>())
 ```
 
 - 累乘
 
-```c++
+```c
 accumulate(v.begin(), v.end(), 1, multiplies<T>())
 ```
