@@ -10,17 +10,59 @@ excerpt: "Dockerfile"
 
 ## 指令
 
+### from
+
+from 用来指定构建镜像的基础镜像
+
+每个 Dockerfile 都需要以 from 开头来定义要基于哪个镜像创建, 基础镜像可以是官方 Docker 镜像、其他开源镜像
+
+```docker
+from [image](:tag)
+```
+image 指定要基于的镜像名称, 例如 ubuntu、node 
+
+tag 指定镜像的标签(版本), 不指定会默认使用 latest 版本
+
+#### 多阶段构建
+
+多阶段构建可在Dockerfile 中使用多个from, 方便在构建过程中从不同的基础镜像中提取特定文件或工具, 减少最终镜像体积
+
+```docker
+# 第一阶段, 构建应用程序
+from node:14 AS builder
+workdir /app
+
+copy . .
+run npm install && npm run build
+
+# 第二阶段, 构建最终的生产镜像
+from nginx:alpine
+copy --from=builder /app/build /usr/share/nginx/html
+```
+
+#### 指定平台
+
+```docker
+from --platform=[platform] [image](:tag)
+```
+
+- 指定使用适用于 ARM 架构的 Alpine Linux 镜像
+
+```docker
+from --platform=linux/arm64 alpine:latest
+```
+
 ### run
 
 执行指令
 
-```shell
+```docker
 run [指令]
 ```
 
 - 构建时执行更新源命令
 
-```shell
+```docker
 run apt udpate && apt upgrade -y
 ```
 
@@ -28,7 +70,7 @@ run apt udpate && apt upgrade -y
 
 `copy` 将从构建上下文目录中源路径文件/目录复制到新一层镜像内目标路径/位置
 
-```sh
+```docker
 copy [源路径] [目标路径]
 ```
 
@@ -36,7 +78,7 @@ copy [源路径] [目标路径]
 
 复制文件
 
-```sh
+```docker
 add [源路径] [目标路径]
 ```
 
@@ -46,25 +88,25 @@ add [源路径] [目标路径]
 
 #### shell格式
 
-```sh
+```docker
 cmd [命令]
 ```
 
 - 执行Python指令
 
-```sh
+```docker
 cmd python3 manage.py runserver 0.0.0.0:8000
 ```
 
 #### exec格式
 
-```sh
+```docker
 cmd ["可执行文件", "参数1", "参数2", ...]
 ```
 
 - 执行Python指令
 
-```sh
+```docker
 cmd ["python3", "manage.py", "runserver 0.0.0.0: 8000"]
 ```
 
@@ -77,7 +119,7 @@ graph LR;
 
 ## 构建
 
-### 单阶段构建
+### 普通构建
 
 在Dockerfile目录下执行
 
@@ -158,7 +200,7 @@ copy --from=builder /go/src/github.com/go/helloworld/App .
 cmd ["./App"]
 ```
 
-#### 仅单阶段构建
+#### 仅构建某阶段
 
 ```sh
 docker build --target=[阶段名] -t [新镜像名:tag] .
