@@ -1,7 +1,8 @@
 {%- include snippets/get-sources.html -%}
 {%- assign _sources = __return -%}
 <script>
-  window.Lazyload.js('{{ _sources.mermaid }}', function() {
+  // window.Lazyload.js('{{ _sources.mermaid }}', function() {
+  window.Lazyload.js('{{ site.assets_path }}/js/mermaid.min.js', function() {
     mermaid.initialize({
       startOnLoad: true,
       securityLevel: 'loose', // add this
