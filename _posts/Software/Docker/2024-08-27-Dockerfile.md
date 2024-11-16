@@ -46,10 +46,18 @@ copy --from=builder /app/build /usr/share/nginx/html
 from --platform=[platform] [image](:tag)
 ```
 
-- 指定使用适用于 ARM 架构的 Alpine Linux 镜像
+- 指定使用适用于 ARM 架构 Alpine Linux 镜像
 
 ```docker
 from --platform=linux/arm64 alpine:latest
+```
+
+### workdir
+
+设置工作路径
+
+```docker
+workdir [路径]
 ```
 
 ### run
@@ -68,21 +76,33 @@ run apt udpate && apt upgrade -y
 
 ### copy
 
-`copy` 将从构建上下文目录中源路径文件/目录复制到新一层镜像内目标路径/位置
+`copy` 将构建上下文目录中源路径的文件/目录复制到镜像内目标路径/位置
 
 ```docker
-copy [源路径] [目标路径]
+copy (--from=镜像名) [源路径] [目标路径]
+```
+
+- 复制当前目录下所有文件到镜像工作路径
+
+```sh
+copy . .
+```
+
+- 复制nginx镜像中nginx.conf文件
+
+```sh
+copy --from=nginx:latest /etc/nginx/nginx.conf /nginx.conf
 ```
 
 ### add
 
-复制文件
+复制文件功能与`copy`一致, 额外拥有拷贝网络文件及解压压缩文件功能
 
 ```docker
-add [源路径] [目标路径]
+add [源路径(压缩文件/网络文件)] [目标路径]
 ```
 
-若源路径为tar压缩文件且压缩格式为 gzip, bzip2, xz, ADD 指令将会自动解压缩文件到目标路径
+若源路径为tar压缩文件且压缩格式为 gzip, bzip2, xz, `add` 将会自动解压缩文件到目标路径
 
 ### cmd
 
@@ -101,7 +121,7 @@ cmd python3 manage.py runserver 0.0.0.0:8000
 #### exec格式
 
 ```docker
-cmd ["可执行文件", "参数1", "参数2", ...]
+cmd ["execute", "arg1", "arg2", ...]
 ```
 
 - 执行Python指令
@@ -124,26 +144,26 @@ graph LR;
 在Dockerfile目录下执行
 
 ```sh
-docker build -t .
+docker build -t [镜像名:tag] .
 ```
 
-- 搭建g++编译环境
+- 构建g++镜像
 
 Dockerfile
 
 ```dockerfile
 from alpine as builder
-
-label dmjcb <>
-
 workdir /
 
-run sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && apk add g++
+run sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && \
+    apk update && apk add g++
 ```
 
 ```sh
 docker build -t gpp:v1 .
 ```
+
+![](/Resource/Imgur/20241116_145225.jpg)
 
 ### 多阶段构建
 
@@ -151,9 +171,7 @@ docker build -t gpp:v1 .
 
 ```docker
 from 镜像名1 as 阶段名1
-
 ...
-
 from 镜像名2 as 阶段名2
 ```
 
@@ -165,7 +183,6 @@ App.go
 package main
 
 import "fmt"
-
 func main(){
     fmt.Printf("Hello World!");
 }
@@ -176,11 +193,9 @@ Dockerfile
 ```docker
 # 第一阶段
 from golang:1.9-alpine as builder
-
 workdir /go/src/github.com/go/helloworld/
 
 run apk --no-cache add git
-
 run go get -d -v github.com/go-sql-driver/mysql
 
 copy App.go .
@@ -189,7 +204,6 @@ run CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o App .
 
 # 第二阶段
 from alpine:latest as prod
-
 workdir /root/
 
 run apk --no-cache add ca-certificates
@@ -214,16 +228,4 @@ from golang:1.9-alpine as builder
 ···
 
 docker build --target=builder -t only_builder:v1 .
-```
-
-#### 构建时复制文件
-
-```sh
-copy --from=[镜像名] [源路径] [当前路径]
-```
-
-- 复制nginx:latest镜像中nginx.conf文件
-
-```sh
-copy --from=nginx:latest /etc/nginx/nginx.conf /nginx.conf
 ```
