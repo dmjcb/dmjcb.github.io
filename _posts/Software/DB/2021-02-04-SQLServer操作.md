@@ -1,5 +1,5 @@
 ---
-title: "数据库-SQLServer操作"
+title: "SQLServer操作"
 date: 2021-02-04
 categories: [数据库]
 tags: [数据库]

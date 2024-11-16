@@ -1,5 +1,5 @@
 ---
-title: "Python-模块-collections"
+title: "Python_collections"
 date: 2022-10-26
 categories: [Python]
 tags: [Python]
