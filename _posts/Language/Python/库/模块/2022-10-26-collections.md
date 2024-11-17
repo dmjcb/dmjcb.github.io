@@ -10,7 +10,9 @@ excerpt: "collections"
 
 $collections$ 是 $python$ 内置模块, 提供很多方便且高性能关于集合操作
 
-## namedtuple
+## 使用
+
+### namedtuple
 
 $namedtuple()$ 返回一个新元组子类
 
@@ -56,7 +58,7 @@ user = User("admin", 20, 60)
 print(user._asdict()) 
 ```
 
-## ChainMap
+### ChainMap
 
 $ChainMap()$ 可以将多个字典集合到一个字典中去, 对外提供统一视图
 
@@ -89,7 +91,7 @@ for key, value in users.items():
 
 同时可通过返回新视图来更新原来字典数据, 进一步验证了该操作不是做拷贝, 而是直接指向原字典
 
-## deque
+### deque
 
 $dqueue$ 指 $double-ended$ $queue$, 是一种类似列表($list$)容器, 实现了在两端快速添加($append$)和弹出(pop)操作, 大大加快了遍历速度
 
@@ -109,7 +111,7 @@ print(q)
 print(q.popleft())
 ```
 
-## Counter
+### Counter
 
 $Counter$ 可以简单理解为一个计数器, 可以统计每个元素出现次数
 
