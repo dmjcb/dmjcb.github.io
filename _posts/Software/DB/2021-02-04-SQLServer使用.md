@@ -1,12 +1,12 @@
 ---
-title: "SQLServer操作"
+title: "SQLServer使用"
 date: 2021-02-04
 categories: [数据库]
 tags: [数据库]
 excerpt: "SQLServer"
 ---
 
-# SQLServer操作
+# 使用
 
 ## 部署
 
