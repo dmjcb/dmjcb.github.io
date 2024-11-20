@@ -16,7 +16,7 @@ key: page-about
 
 最近刚刚折腾一个简单桌面, 后续可能继续升级
 
-![](/Resource/Imgur/workbench.jpg)
+![](/assets/image/workbench.jpg)
 
 - github: [https://github.com/dmjcb](https://github.com/dmjcb)
 
