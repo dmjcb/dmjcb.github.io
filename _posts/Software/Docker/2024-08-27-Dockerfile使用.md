@@ -8,7 +8,7 @@ excerpt: "Dockerfile"
 
 # 使用
 
-## 指令
+## 关键字
 
 ### from
 

@@ -42,8 +42,6 @@ class AutoUploadBlog:
 
     auto_git = AutoGit()
 
-    is_imgur_modify = False
-
     def is_exist_modify(self, path):
         return not self.auto_git.status(path)
 
@@ -77,8 +75,8 @@ class AutoUploadBlog:
                 with codecs.open(file, "rb", "utf-8", errors="ignore") as text:
                     for line in text:
                         line = line.replace("\r\n", "")
-                        # example: ![](/assets/Imgur/20241022204809.png)
-                        if "/assets/Imgur/" in line:
+                        # example: ![](/assets/image/20241022204809.png)
+                        if "/assets/image/" in line:
                             name = extract_filename(line.strip()[:-1])
                             imgs.append(name)
                 return imgs
@@ -113,8 +111,6 @@ class AutoUploadBlog:
         if self.is_exist_modify(self._BLOG_IMAGE_PATH):
             print("更新 Imgur")
 
-            self.is_imgur_modify = True
-
             shutil.rmtree(self._IMGUR_PROJECT)
             shutil.copytree(self._BLOG_IMAGE_PATH, self._IMGUR_PROJECT, dirs_exist_ok=True)
 
@@ -141,7 +137,7 @@ class AutoUploadBlog:
         copy_with_ignore_git(src_dir, des_dir)
 
         # 更新assets/image
-        src_dir = "{0}\\_posts\\{1}".format(self._JEKYLL_PROJECT, self._BLOG_IMAGE)
+        src_dir = self._BLOG_IMAGE_PATH
         des_dir = "{0}\\{1}".format(self._JEKYLL_PROJECT, self._BLOG_IMAGE)
         copy_with_ignore_git(src_dir, des_dir)
 
