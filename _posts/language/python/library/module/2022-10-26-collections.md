@@ -1,8 +1,8 @@
 ---
 title: "Python collections"
 date: 2022-10-26
-categories: [Python]
-tags: [Python]
+categories: [python]
+tags: [python]
 excerpt: "collections"
 ---
 
