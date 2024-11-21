@@ -132,7 +132,7 @@ class AutoUploadBlog:
         print("更新dmjcb.github.io项目")
     
         # 直接把SelfBlog下目录拷贝到_posts 
-        src_dir = self._BLOG_PROJECT
+        src_dir = self._BLOG_PROJECT   
         des_dir =  "{0}\\_posts".format(self._JEKYLL_PROJECT)
         copy_with_ignore_git(src_dir, des_dir)
 
@@ -141,7 +141,7 @@ class AutoUploadBlog:
         des_dir = "{0}\\{1}".format(self._JEKYLL_PROJECT, self._BLOG_IMAGE)
         copy_with_ignore_git(src_dir, des_dir)
 
-        # self.auto_git.push(self._JEKYLL_PROJECT, msg)
+        self.auto_git.push(self._JEKYLL_PROJECT, msg)
 
     # 将博客转换为发布模式
     def change_md_to_public(self, md_name):
