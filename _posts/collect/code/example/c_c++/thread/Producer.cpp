@@ -1,11 +1,3 @@
-/*
- * @Brief        : 
- * @Author       : dmjcb
- * @Date         : 2022-11-19 22:04:55
- * @LastEditors  : dmjcb@outlook.com
- * @LastEditTime : 2024-09-28 22:24:34
- */
-
 #include <iostream>
 #include <thread>
 #include <mutex>

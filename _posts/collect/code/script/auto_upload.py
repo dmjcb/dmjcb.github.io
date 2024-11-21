@@ -5,6 +5,7 @@ import sys
 import subprocess
 from datetime import datetime
 
+
 class AutoGit:
     def run_cmd(self, command):
         r = subprocess.run(command, shell=True, capture_output=True, text=True, encoding="utf8")
@@ -26,21 +27,30 @@ class AutoGit:
             return True
         return False
 
+    def clone(self, path, address):
+        os.chdir(path)
+        self.run_cmd("git clone {0}".format(address))
+
 
 class AutoUploadBlog:
-    _ROOT            = "c:\\Users\\dmjcb\\Documents\\Code"
-    _BLOG_PROJECT    = "{0}\\SelfBlog".format(_ROOT)
-    _JEKYLL_PROJECT  = "{0}\\dmjcb.github.io".format(_ROOT)
-    _IMGUR_PROJECT   = "{0}\\Imgur".format(_ROOT)
+    _ROOT           = "c:\\Users\\dmjcb\\Documents\\Code"
+    _BLOG_DIR       = "{0}\\SelfBlog".format(_ROOT)
+    _JEKYLL_DIR     = "{0}\\dmjcb.github.io".format(_ROOT)
+    _IMGUR_DIR      = "{0}\\Imgur".format(_ROOT)
+    _ASSETS_IMAGE   = "assets\\image"
+    _ASSETS_PUBLIC  = "assets\\public"
+    _BLOG_IMAGE_DIR = "{0}\\{1}".format(_BLOG_DIR, _ASSETS_IMAGE)
 
-    _BLOG_IMAGE      = "assets\\image"
-    _BLOG_PUBLIC     = "assets\\public"
-
-    _BLOG_IMAGE_PATH = "{0}\\{1}".format(_BLOG_PROJECT, _BLOG_IMAGE)
-
-    _URL             = "https://dmjcb.github.io"
+    _URL            = "https://dmjcb.github.io"
+    _BLOG_PROJECT   = "git@github.com:dmjcb/SelfBlog.git"
+    _JEKYLL_PROJECT = "git@github.com:dmjcb/dmjcb.github.io.git"
+    _IMGUR_PROJECT  = "git@github.com:dmjcb/Imgur.git"
 
     auto_git = AutoGit()
+
+    def clone_project(self):
+        for url in (self._BLOG_PROJECT, self._JEKYLL_PROJECT, self._IMGUR_PROJECT):
+            auto_git.clone(self._ROOT, url)
 
     def is_exist_modify(self, path):
         return not self.auto_git.status(path)
@@ -52,14 +62,8 @@ class AutoUploadBlog:
             x = os.path.dirname(x)
         return x
 
-    def del_unused_images(self):
-        def extract_filename(path):
-            f = '\\'
-            if '/' in path:
-                f = '/'
-            return path.split(f)[-1]
-
-        def get_files_ap(folder):
+    def clean_unused_images(self):
+        def extract_files_ap(folder):
             files = []
             for path, dirs, fs in os.walk(folder):
                 if ".git" in path or "PublicBlog" in path:
@@ -69,54 +73,57 @@ class AutoUploadBlog:
                     files.append(ap)
             return files
 
-        def get_used_images(folder):
-            def extract_img_name(file):
-                imgs = []
-                with codecs.open(file, "rb", "utf-8", errors="ignore") as text:
-                    for line in text:
+        def get_used_images_ap(project_folder):
+            def get_ap(image_name):
+                return "{0}\\{1}".format(self._BLOG_IMAGE_DIR, image_name)
+
+            def extract_image_ap(md_file):
+                aps = []
+                with codecs.open(md_file, "rb", "utf-8", errors="ignore") as t:
+                    for line in t:
                         line = line.replace("\r\n", "")
                         # example: ![](/assets/image/20241022204809.png)
                         if "/assets/image/" in line:
-                            name = extract_filename(line.strip()[:-1])
-                            imgs.append(name)
-                return imgs
+                            name = line.split('/')[-1][:-1]
+                            aps.append(get_ap(name))
+                return aps
 
-            used = ["head.jpg", "workbench.jpg"]
-            for f in get_files_ap(folder):
+            image_ap = [get_ap("head.jpg"), get_ap("workbench.jpg")]
+            md_files =  extract_files_ap(project_folder)
+            for f in md_files:
                 if "md" == f[-2:]:              
-                    urls = extract_img_name(f)
-                    used.extend(urls)
-            return used
+                    image_ap.extend(extract_image_ap(f))
+            
+            return image_ap
+    
+        used_images_ap = get_used_images_ap(self._BLOG_DIR)
+        now_images_ap = extract_files_ap(self._BLOG_IMAGE_DIR)
 
-        used_imgs = get_used_images(self._BLOG_PROJECT)
-        dir_imgs = get_files_ap(self._BLOG_IMAGE_PATH)
-        # 删除未使用图片
-        del_count = 0
-        for ap in dir_imgs:
-            name = extract_filename(ap)
-            if name not in used_imgs:
-                print('name = ', name)
-                del_count += 1
+        count = 0
+        for ap in now_images_ap:
+            if ap not in used_images_ap:
+                count += 1
+                print('name = ', ap)
                 os.remove(ap)
-
-        return del_count
+        
+        return count
 
 
     def upload_blog(self, msg):
         print("更新SelfBlog项目")
 
-        count = self.del_unused_images()
+        count = self.clean_unused_images()
 
         # 若assets/image 有更新, 同步更新Imgur项目
-        if self.is_exist_modify(self._BLOG_IMAGE_PATH):
+        if self.is_exist_modify(self._BLOG_IMAGE_DIR):
             print("更新 Imgur")
 
-            shutil.rmtree(self._IMGUR_PROJECT)
-            shutil.copytree(self._BLOG_IMAGE_PATH, self._IMGUR_PROJECT, dirs_exist_ok=True)
+            shutil.rmtree(self._IMGUR_DIR)
+            shutil.copytree(self._BLOG_IMAGE_DIR, self._IMGUR_DIR, dirs_exist_ok=True)
 
-            self.auto_git.push(self._IMGUR_PROJECT, msg)
+            self.auto_git.push(self._IMGUR_DIR, msg)
         
-        self.auto_git.push(self._BLOG_PROJECT, msg)
+        self.auto_git.push(self._BLOG_DIR, msg)
 
 
     def upload_jekyll(self, msg):
@@ -131,21 +138,20 @@ class AutoUploadBlog:
         
         print("更新dmjcb.github.io项目")
     
-        # 直接把SelfBlog下目录拷贝到_posts 
-        src_dir = self._BLOG_PROJECT   
-        des_dir =  "{0}\\_posts".format(self._JEKYLL_PROJECT)
+        # 把SelfBlog下目录拷贝到_posts 
+        src_dir = self._BLOG_DIR   
+        des_dir =  "{0}\\_posts".format(self._JEKYLL_DIR)
         copy_with_ignore_git(src_dir, des_dir)
 
-        # 更新assets/image
-        src_dir = self._BLOG_IMAGE_PATH
-        des_dir = "{0}\\{1}".format(self._JEKYLL_PROJECT, self._BLOG_IMAGE)
+        # 把SelfBlog/assets/image 拷贝到 assets/image
+        src_dir = self._BLOG_IMAGE_DIR
+        des_dir = "{0}\\{1}".format(self._JEKYLL_DIR, self._ASSETS_IMAGE)
         copy_with_ignore_git(src_dir, des_dir)
 
-        self.auto_git.push(self._JEKYLL_PROJECT, msg)
+        self.auto_git.push(self._JEKYLL_DIR, msg)
 
     # 将博客转换为发布模式
     def change_md_to_public(self, md_name):
-        # 获取原文地址
         def get_original_address(categories, file_name):
             x = categories.replace("/r", "").replace("/n", "").replace(" ", "").split(":")[-1]
             x = x[1:-2].lower().split(',')
@@ -160,15 +166,14 @@ class AutoUploadBlog:
             url = "{0}{1}/{2}".format(self._URL, y, title)
             return url
 
-        # 根据文件名查找绝对地址
-        def find_file_in_directory(md_name):
-            for root, dirs, files in os.walk(self._BLOG_PROJECT):
-                if md_name in files:
-                    return os.path.abspath(os.path.join(root, md_name))
+        def find_file_absolute_path(folder, name):
+            for root, dirs, files in os.walk(folder):
+                if name in files:
+                    return os.path.abspath(os.path.join(root, name))
             return None
 
         def get_md_content(md_name):
-            path = find_file_in_directory(md_name)
+            path = find_file_absolute_path(self._BLOG_DIR, md_name)
             if path == None:
                 return
 
@@ -194,7 +199,7 @@ class AutoUploadBlog:
             new_text.append(text)
 
         title = lines[1].replace("/r", "").replace("/n", "").split(":")[-1]
-        path = "{0}\\{1}\\{2}.md".format(self._BLOG_PROJECT, self._BLOG_PUBLIC, title[2:-2])
+        path = "{0}\\{1}\\{2}.md".format(self._BLOG_DIR, self._ASSETS_PUBLIC, title[2:-2])
         with open(path, 'w', encoding='utf-8') as f:
             f.writelines(new_text)
     
@@ -223,7 +228,7 @@ if __name__ == "__main__":
     index = input('1. 删除无用图片\n2. 上传blog\n3. 上传jekyll\n4. 都上传\n5. 转换博客为发行格式\n6. 创建新博客\n')
     index = int(index)
     if index == 1:
-        r = auto.del_unused_images()
+        r = auto.clean_unused_images()
         print(r)
     elif index == 2:
         msg = input('commit info: ')
