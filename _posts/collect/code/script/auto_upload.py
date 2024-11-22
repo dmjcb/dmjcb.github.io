@@ -64,14 +64,13 @@ class AutoUploadBlog:
 
     def clean_unused_images(self):
         def extract_files_ap(folder):
-            files = []
+            aps = []
             for path, dirs, fs in os.walk(folder):
                 if ".git" in path or "PublicBlog" in path:
                     continue
                 for f in fs:
-                    ap = os.path.join(path, f)
-                    files.append(ap)
-            return files
+                    aps.append(os.path.join(path, f))
+            return aps  
 
         def get_used_images_ap(project_folder):
             def get_ap(image_name):
@@ -118,7 +117,21 @@ class AutoUploadBlog:
         if self.is_exist_modify(self._BLOG_IMAGE_DIR):
             print("更新 Imgur")
 
-            shutil.rmtree(self._IMGUR_DIR)
+            def delete_except_git(directory):
+                # 遍历指定目录中的所有条目
+                for item in os.listdir(directory):
+                    item_path = os.path.join(directory, item)
+                    # 如果是 .git 目录，跳过
+                    if item == '.git':
+                        continue
+                    # 如果是文件，删除文件
+                    if os.path.isfile(item_path) or os.path.islink(item_path):
+                        os.unlink(item_path)
+                    # 如果是目录，递归删除
+                    elif os.path.isdir(item_path):
+                        shutil.rmtree(item_path)
+
+            delete_except_git(self._IMGUR_DIR)
             shutil.copytree(self._BLOG_IMAGE_DIR, self._IMGUR_DIR, dirs_exist_ok=True)
 
             self.auto_git.push(self._IMGUR_DIR, msg)
