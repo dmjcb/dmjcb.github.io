@@ -196,7 +196,7 @@ class AutoUploadBlog:
 
         lines = get_md_content(md_name)
         origin_url = get_original_address(lines[3], md_name)
-        new_text = ['> - [dmjcb个人博客](https://dmjcb.github.io/)\n', '> - [原文地址]({0})\n'.format(origin_url)]
+        new_text = ['> [dmjcb个人博客](https://dmjcb.github.io/)\n', '> [原文地址]({0})\n'.format(origin_url)]
         for i, text in enumerate(lines):
             if i < 7:
                 continue
