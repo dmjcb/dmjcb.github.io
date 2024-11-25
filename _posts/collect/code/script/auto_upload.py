@@ -52,8 +52,10 @@ class AutoUploadBlog:
         for url in (self._BLOG_PROJECT, self._JEKYLL_PROJECT, self._IMGUR_PROJECT):
             auto_git.clone(self._ROOT, url)
 
+
     def is_exist_modify(self, path):
         return not self.auto_git.status(path)
+
 
     def get_root_path(self):
         absolute_path = os.path.abspath(__file__)
@@ -61,6 +63,7 @@ class AutoUploadBlog:
         for i in range(5):
             x = os.path.dirname(x)
         return x
+
 
     def clean_unused_images(self):
         def extract_files_ap(folder):
@@ -113,25 +116,20 @@ class AutoUploadBlog:
 
         count = self.clean_unused_images()
 
-        # 若assets/image 有更新, 同步更新Imgur项目
         if self.is_exist_modify(self._BLOG_IMAGE_DIR):
             print("更新 Imgur")
 
-            def delete_except_git(directory):
-                # 遍历指定目录中的所有条目
-                for item in os.listdir(directory):
-                    item_path = os.path.join(directory, item)
-                    # 如果是 .git 目录，跳过
+            def del_files_except_git(folder):
+                for item in os.listdir(folder):
+                    item_path = os.path.join(folder, item)
                     if item == '.git':
                         continue
-                    # 如果是文件，删除文件
                     if os.path.isfile(item_path) or os.path.islink(item_path):
                         os.unlink(item_path)
-                    # 如果是目录，递归删除
                     elif os.path.isdir(item_path):
                         shutil.rmtree(item_path)
 
-            delete_except_git(self._IMGUR_DIR)
+            del_files_except_git(self._IMGUR_DIR)
             shutil.copytree(self._BLOG_IMAGE_DIR, self._IMGUR_DIR, dirs_exist_ok=True)
 
             self.auto_git.push(self._IMGUR_DIR, msg)
@@ -144,26 +142,23 @@ class AutoUploadBlog:
             if os.path.exists(dst_dir):
                 shutil.rmtree(dst_dir)
 
-            # 忽略函数，忽略 ".git" 文件夹
             def ignore_git(dir, files):
                 return [".git"] if ".git" in files else []
             shutil.copytree(src_dir, dst_dir, ignore=ignore_git, dirs_exist_ok=True)
         
         print("更新dmjcb.github.io项目")
     
-        # 把SelfBlog下目录拷贝到_posts 
         src_dir = self._BLOG_DIR   
         des_dir =  "{0}\\_posts".format(self._JEKYLL_DIR)
         copy_with_ignore_git(src_dir, des_dir)
 
-        # 把SelfBlog/assets/image 拷贝到 assets/image
         src_dir = self._BLOG_IMAGE_DIR
         des_dir = "{0}\\{1}".format(self._JEKYLL_DIR, self._ASSETS_IMAGE)
         copy_with_ignore_git(src_dir, des_dir)
 
         self.auto_git.push(self._JEKYLL_DIR, msg)
 
-    # 将博客转换为发布模式
+
     def change_md_to_public(self, md_name):
         def get_original_address(categories, file_name):
             x = categories.replace("/r", "").replace("/n", "").replace(" ", "").split(":")[-1]
@@ -215,7 +210,8 @@ class AutoUploadBlog:
         path = "{0}\\{1}\\{2}.md".format(self._BLOG_DIR, self._ASSETS_PUBLIC, title[2:-2])
         with open(path, 'w', encoding='utf-8') as f:
             f.writelines(new_text)
-    
+
+
     def create_new_blog(self, name):        
         date = datetime.now().strftime("%Y-%m-%d")
         file_name = "{0}-{1}.md".format(date, name)
