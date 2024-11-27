@@ -38,7 +38,7 @@ class AutoUploadBlog:
     _JEKYLL_DIR     = "{0}\\dmjcb.github.io".format(_ROOT)
     _IMGUR_DIR      = "{0}\\Imgur".format(_ROOT)
     _ASSETS_IMAGE   = "assets\\image"
-    _ASSETS_PUBLIC  = "assets\\public"
+    _ASSETS_PUBLIC  = "public"
     _BLOG_IMAGE_DIR = "{0}\\{1}".format(_BLOG_DIR, _ASSETS_IMAGE)
 
     _URL            = "https://dmjcb.github.io"
@@ -168,20 +168,22 @@ class AutoUploadBlog:
             for i in x:
                 y = '{0}/{1}'.format(y, i)
 
-            title = file_name.split('-')[-1]
-            title = title[:-3]
+            title = file_name.split('-')[-1][:-3]
 
             url = "{0}{1}/{2}".format(self._URL, y, title)
             return url
 
         def find_file_absolute_path(folder, name):
             for root, dirs, files in os.walk(folder):
-                if name in files:
-                    return os.path.abspath(os.path.join(root, name))
+                if files:
+                    for f in files:
+                        if name in f:
+                            x = os.path.abspath(os.path.join(root, f))
+                            print(x)
+                            return x, f
             return None
 
-        def get_md_content(md_name):
-            path = find_file_absolute_path(self._BLOG_DIR, md_name)
+        def get_md_content(path):
             if path == None:
                 return
 
@@ -189,8 +191,9 @@ class AutoUploadBlog:
                 x = f.readlines()
             return x
 
-        lines = get_md_content(md_name)
-        origin_url = get_original_address(lines[3], md_name)
+        path, name = find_file_absolute_path(self._BLOG_DIR, md_name)
+        lines = get_md_content(path)
+        origin_url = get_original_address(lines[3], name)
         new_text = ['> [dmjcb个人博客](https://dmjcb.github.io/)\n', '> [原文地址]({0})\n'.format(origin_url)]
         for i, text in enumerate(lines):
             if i < 7:
