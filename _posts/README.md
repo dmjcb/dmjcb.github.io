@@ -1,7 +1,34 @@
-# 说明
+# 简介
 
-> [个人博客网站](https://dmjcb.github.io/)
+## 自序
 
-若有勘误, 请联系 [dmjcb@outlook.com](dmjcb@outlook.com) 指教
+90后中年人, 极简偏执主义, 喜爱安静有序整齐环境, 日常热衷于整理各类线缆
 
-万分感谢!
+最近刚折腾一个简单桌面, 后续可能继续升级☆*: .｡. o(≧▽≦)o .｡.:*☆
+
+![](/assets/image/workbench.jpg)
+
+- github: [https://github.com/dmjcb](https://github.com/dmjcb)
+
+- 邮箱: dmjcb@outlook.com
+  
+- 个人博客网站: [https://dmjcb.github.io/](https://dmjcb.github.io/)
+
+若有勘误, 请联系指教, 万分感谢
+
+## 诗词三首
+
+> - 题西林壁·苏轼
+> 
+> 横看成岭侧成峰, 远近高低各不同
+> 不识庐山真面目, 只缘身在此山中
+
+> - 赠药山高僧惟俨二首·李翱
+>
+> 练得身形似鹤形, 千株松下两函经
+> 我来问道无余说, 云在青天水在瓶
+
+>- 绝命诗·和珅
+>
+> 五十年来梦幻真, 今朝撒手谢红尘
+> 他年水泛含龙日, 认取香烟是后身
