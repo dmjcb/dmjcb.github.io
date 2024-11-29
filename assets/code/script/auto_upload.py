@@ -36,20 +36,19 @@ class AutoUploadBlog:
     _ROOT           = "c:\\Users\\dmjcb\\Documents\\Code"
     _BLOG_DIR       = "{0}\\SelfBlog".format(_ROOT)
     _JEKYLL_DIR     = "{0}\\dmjcb.github.io".format(_ROOT)
-    _IMGUR_DIR      = "{0}\\Imgur".format(_ROOT)
-    _ASSETS_IMAGE   = "assets\\image"
-    _ASSETS_PUBLIC  = "public"
-    _BLOG_IMAGE_DIR = "{0}\\{1}".format(_BLOG_DIR, _ASSETS_IMAGE)
+    _ASSETS_DIR     = "{0}\\self_assets".format(_ROOT)
+
+    _BLOG_ASSETS_IMAGE_DIR= "{0}\\assets\\image".format(_BLOG_DIR)
 
     _URL            = "https://dmjcb.github.io"
     _BLOG_PROJECT   = "git@github.com:dmjcb/SelfBlog.git"
     _JEKYLL_PROJECT = "git@github.com:dmjcb/dmjcb.github.io.git"
-    _IMGUR_PROJECT  = "git@github.com:dmjcb/Imgur.git"
+    _ASSETS_PROJECT  = "git@github.com:dmjcb/self_assets.git"
 
     auto_git = AutoGit()
 
     def clone_project(self):
-        for url in (self._BLOG_PROJECT, self._JEKYLL_PROJECT, self._IMGUR_PROJECT):
+        for url in (self._BLOG_PROJECT, self._JEKYLL_PROJECT, self._ASSETS_PROJECT):
             auto_git.clone(self._ROOT, url)
 
 
@@ -77,7 +76,7 @@ class AutoUploadBlog:
 
         def get_used_images_ap(project_folder):
             def get_ap(image_name):
-                return "{0}\\{1}".format(self._BLOG_IMAGE_DIR, image_name)
+                return "{0}\\{1}".format(self._BLOG_ASSETS_IMAGE_DIR, image_name)
 
             def extract_image_ap(md_file):
                 aps = []
@@ -99,7 +98,7 @@ class AutoUploadBlog:
             return image_ap
     
         used_images_ap = get_used_images_ap(self._BLOG_DIR)
-        now_images_ap = extract_files_ap(self._BLOG_IMAGE_DIR)
+        now_images_ap = extract_files_ap(self._BLOG_ASSETS_IMAGE_DIR)
 
         count = 0
         for ap in now_images_ap:
@@ -116,8 +115,9 @@ class AutoUploadBlog:
 
         count = self.clean_unused_images()
 
-        if self.is_exist_modify(self._BLOG_IMAGE_DIR):
-            print("更新 Imgur")
+        assets_dir = "{0}\\assets".format(self._BLOG_DIR)
+        if self.is_exist_modify(assets_dir):
+            print("更新self_assets")
 
             def del_files_except_git(folder):
                 for item in os.listdir(folder):
@@ -129,10 +129,10 @@ class AutoUploadBlog:
                     elif os.path.isdir(item_path):
                         shutil.rmtree(item_path)
 
-            del_files_except_git(self._IMGUR_DIR)
-            shutil.copytree(self._BLOG_IMAGE_DIR, self._IMGUR_DIR, dirs_exist_ok=True)
+            del_files_except_git(self._ASSETS_DIR)
+            shutil.copytree(assets_dir, self._ASSETS_DIR, dirs_exist_ok=True)
 
-            self.auto_git.push(self._IMGUR_DIR, msg)
+            self.auto_git.push(self._ASSETS_DIR, msg)
         
         self.auto_git.push(self._BLOG_DIR, msg)
 
@@ -147,14 +147,14 @@ class AutoUploadBlog:
             shutil.copytree(src_dir, dst_dir, ignore=ignore_git, dirs_exist_ok=True)
         
         print("更新dmjcb.github.io项目")
-    
         src_dir = self._BLOG_DIR   
         des_dir =  "{0}\\_posts".format(self._JEKYLL_DIR)
         copy_with_ignore_git(src_dir, des_dir)
 
-        src_dir = self._BLOG_IMAGE_DIR
-        des_dir = "{0}\\{1}".format(self._JEKYLL_DIR, self._ASSETS_IMAGE)
-        copy_with_ignore_git(src_dir, des_dir)
+        for f in ("image", "code"):
+            src_dir = "{0}\\assets\\{1}".format(self._BLOG_DIR, f)
+            des_dir = "{0}\\assets\\{1}".format(self._JEKYLL_DIR, f)
+            copy_with_ignore_git(src_dir, des_dir)
 
         self.auto_git.push(self._JEKYLL_DIR, msg)
 

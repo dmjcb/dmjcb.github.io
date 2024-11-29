@@ -1,0 +1,1 @@
+int globalValue = 0xFF; 
