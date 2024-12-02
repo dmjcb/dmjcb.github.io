@@ -16,7 +16,9 @@ docker run -itd -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=dmjcb@13546!" -p 1433:1433 --
 
 ## 命令
 
-### 进入
+### 交互
+
+#### 进入
 
 ```sh
 docker exec -it sqlserver2019 bash
@@ -24,7 +26,9 @@ docker exec -it sqlserver2019 bash
 /opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P "dmjcb@13546!" -C
 ```
 
-### 显示所有数据库
+### 查看
+
+#### 显示所有数据库
 
 ```sql
 SELECT Name FROM Master..SysDatabases ORDER BY Name
@@ -33,14 +37,14 @@ go
 
 ![](/assets/image/20241026_135742.jpg)
 
-### 显示表
+#### 显示表
 
 ```sql
 SELECT * FROM [表名]
 go
 ```
 
-## 交互
+## 开发
 
 ### Python
 
