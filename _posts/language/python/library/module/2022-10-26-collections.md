@@ -1,5 +1,5 @@
 ---
-title: "Python collections"
+title: "python collections"
 date: 2022-10-26
 categories: [python]
 tags: [python]
@@ -14,7 +14,7 @@ $collections$ 是 $python$ 内置模块, 提供很多方便且高性能关于集
 
 $namedtuple()$ 返回一个新元组子类
 
-其规定元组元素个数, 同时除了使用下标获取元素之外, 还可以通过属性直接获取
+其规定元组元素个数, 同时除了使用下标获取元素之外, 还可通过属性直接获取
 
 ```py
 from collections import namedtuple

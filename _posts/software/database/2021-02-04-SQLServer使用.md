@@ -6,7 +6,9 @@ tags: [数据库]
 excerpt: "SQLServer"
 ---
 
-## 部署
+## 安装
+
+### docker部署
 
 ```sh
 docker run -itd -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=dmjcb@13546!" -p 1433:1433 --name sqlserver2019 mcr.microsoft.com/mssql/server:2019-latest
