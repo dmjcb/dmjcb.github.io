@@ -6,8 +6,6 @@ tags: [python]
 excerpt: "collections"
 ---
 
-# collections
-
 $collections$ 是 $python$ 内置模块, 提供很多方便且高性能关于集合操作
 
 ## 使用
