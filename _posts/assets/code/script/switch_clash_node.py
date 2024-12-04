@@ -11,7 +11,6 @@ class AutoSwitchNode:
     def get_proxy_name_list(self):
         d = get('http://{0}/proxies'.format(self.__url))
         d = loads(d.text)
-
         return d['proxies']['Proxy']['all']
 
     def get_proxy_delay(self, name):
@@ -33,7 +32,6 @@ class AutoSwitchNode:
 
     def switch_fastest_proxy(self):
         name, v = self.get_fastest_proxy_delay()
-
         r = put('http://{0}/proxies/Proxy'.format(self.__url), data=dumps({'name': name}),headers={"Content-Type": "application/json"})
         if r.status_code == 204:
             print('select: {0}, delay: {1}'.format(name, v))

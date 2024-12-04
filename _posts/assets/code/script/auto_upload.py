@@ -1,10 +1,9 @@
 import os
 import shutil
 import codecs
-import sys
 import subprocess
+import tempfile
 from datetime import datetime
-
 
 class AutoGit:
     def run_cmd(self, command):
@@ -29,7 +28,8 @@ class AutoGit:
 
     def clone(self, path, address):
         os.chdir(path)
-        self.run_cmd("git clone {0}".format(address))
+        print('clone ', path)
+        self.run_cmd("git clone {0} .".format(address))
 
 
 class AutoUploadBlog:
@@ -37,6 +37,7 @@ class AutoUploadBlog:
     _BLOG_DIR       = "{0}\\self_blog".format(_ROOT)
     _JEKYLL_DIR     = "{0}\\dmjcb.github.io".format(_ROOT)
     _ASSETS_DIR     = "{0}\\self_assets".format(_ROOT)
+    _ASSETS_PUBLIC  = "assets\\public"
 
     _BLOG_ASSETS_IMAGE_DIR= "{0}\\assets\\image".format(_BLOG_DIR)
 
@@ -68,7 +69,7 @@ class AutoUploadBlog:
         def extract_files_ap(folder):
             aps = []
             for path, dirs, fs in os.walk(folder):
-                if ".git" in path or "PublicBlog" in path:
+                if ".git" in path or "public" in path:
                     continue
                 for f in fs:
                     aps.append(os.path.join(path, f))
@@ -143,7 +144,9 @@ class AutoUploadBlog:
                 shutil.rmtree(dst_dir)
 
             def ignore_git(dir, files):
-                return [".git"] if ".git" in files else []
+                ignore_list = {".git", "public"}
+                return {name for name in files if name in ignore_list}
+                
             shutil.copytree(src_dir, dst_dir, ignore=ignore_git, dirs_exist_ok=True)
         
         print("更新dmjcb.github.io项目")
@@ -151,10 +154,9 @@ class AutoUploadBlog:
         des_dir =  "{0}\\_posts".format(self._JEKYLL_DIR)
         copy_with_ignore_git(src_dir, des_dir)
 
-        for f in ("image", "code"):
-            src_dir = "{0}\\assets\\{1}".format(self._BLOG_DIR, f)
-            des_dir = "{0}\\assets\\{1}".format(self._JEKYLL_DIR, f)
-            copy_with_ignore_git(src_dir, des_dir)
+        src_dir = "{0}\\assets\\image".format(self._BLOG_DIR)
+        des_dir = "{0}\\assets\\image".format(self._JEKYLL_DIR)
+        copy_with_ignore_git(src_dir, des_dir)
 
         self.auto_git.push(self._JEKYLL_DIR, msg)
 
@@ -163,7 +165,6 @@ class AutoUploadBlog:
         def get_original_address(categories, file_name):
             x = categories.replace("/r", "").replace("/n", "").replace(" ", "").split(":")[-1]
             x = x[1:-2].lower().split(',')
-            
             y = ''
             for i in x:
                 y = '{0}/{1}'.format(y, i)
@@ -186,7 +187,6 @@ class AutoUploadBlog:
         def get_md_content(path):
             if path == None:
                 return
-
             with open(path, 'r', encoding='utf-8') as f:
                 x = f.readlines()
             return x
@@ -200,10 +200,8 @@ class AutoUploadBlog:
                 continue
             if text == '```c++\n' or text == '```cmake\n':
                 text = '```c\n'
-            
             if text == '```sh\n':
                 text = '```shell\n'
-
             if '/assets/image' in text:
                 text = text.replace('/assets/image', 'https://raw.githubusercontent.com/dmjcb/self_assets/main/image')
 
@@ -215,14 +213,14 @@ class AutoUploadBlog:
             f.writelines(new_text)
 
 
-    def create_new_blog(self, name):        
+    def create_new_blog(self, name):  
         date = datetime.now().strftime("%Y-%m-%d")
         file_name = "{0}-{1}.md".format(date, name)
 
         lines = [
             "---\n",
             'title: "{0}"\n'.format(name),
-            "date: {0}\n".format(datetime.now().strftime("%Y-%m-%d")),
+            "date: {0}\n".format(date),
             "categories: []\n",
             "tags: []\n",
             'excerpt: "{0}"\n'.format(name),
@@ -232,11 +230,9 @@ class AutoUploadBlog:
         with open(file_name, "w") as f:
             f.writelines(lines)
 
-
 if __name__ == "__main__":
     auto = AutoUploadBlog()
     print(auto.get_root_path())
-
     index = input('1. 删除无用图片\n2. 上传blog\n3. 上传jekyll\n4. 都上传\n5. 转换博客为发行格式\n6. 创建新博客\n')
     index = int(index)
     if index == 1:

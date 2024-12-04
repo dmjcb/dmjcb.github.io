@@ -189,3 +189,4 @@ cython_debug/
 
 Build/
 .vscode
+assets/public/*

@@ -1,4 +1,4 @@
-# 监听粘贴板, 发现内容为Snipaste截取图片地址后修改为图床地址
+# 监听粘贴板, 发现内容为截取图片地址后修改为图床地址
 import pyperclip
 import time
 import re
@@ -21,7 +21,7 @@ def listen_clipboard():
         else:
             print("null")
 
-        time.sleep(1)
+        time.sleep(5)
 
 if __name__ == "__main__":
     listen_clipboard()

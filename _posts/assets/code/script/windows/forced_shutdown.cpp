@@ -2,14 +2,14 @@
 #include <iostream>
 
 void ForceShutdown() {
-    // 获取当前进程的访问令牌
+    // 获取当前进程访问令牌
     HANDLE hToken;
     if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken)) {
         std::cerr << "OpenProcessToken failed. Error: " << GetLastError() << std::endl;
         return;
     }
 
-    // 获取系统的 shutdown 权限
+    // 获取系统shutdown权限
     LUID luid;
     if (!LookupPrivilegeValue(NULL, SE_SHUTDOWN_NAME, &luid)) {
         std::cerr << "LookupPrivilegeValue failed. Error: " << GetLastError() << std::endl;
@@ -30,10 +30,8 @@ void ForceShutdown() {
         return;
     }
 
-    // 释放句柄
     CloseHandle(hToken);
 
-    // 强制关机
     if (!ExitWindowsEx(EWX_SHUTDOWN | EWX_FORCE, SHTDN_REASON_MAJOR_SOFTWARE | SHTDN_REASON_MINOR_NONE)) {
         std::cerr << "ExitWindowsEx failed. Error: " << GetLastError() << std::endl;
     }
