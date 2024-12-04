@@ -53,14 +53,7 @@ go
 ```py
 import pymssql
 
-conn = pymssql.connect(
-    host = IP:端口,
-    user = "sa",
-    password = 密码,
-    database = 数据库,
-    charset = 'utf8'
-)
-
+conn = pymssql.connect(host = IP:端口, user = "sa", password = 密码, database = 数据库, charset = 'utf8')
 # 使用cursor()方法获取操作游标
 cursor = conn.cursor()
 
