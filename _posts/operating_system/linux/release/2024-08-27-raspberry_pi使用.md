@@ -1,9 +1,9 @@
 ---
-title: "树莓派配置"
+title: "raspberry_pi使用"
 date: 2024-08-27
 categories: [linux]
 tags: [linux]
-excerpt: "树莓派配置"
+excerpt: "raspberry_pi使用"
 ---
 
 ## 配置
