@@ -1,4 +1,4 @@
-#include "CPPModule.hpp"
+#include "cpp_module.hpp"
 
 int AddNum(int x, int y) {
     return x + y;
