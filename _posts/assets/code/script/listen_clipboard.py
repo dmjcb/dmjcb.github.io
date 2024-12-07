@@ -21,7 +21,7 @@ def listen_clipboard():
         else:
             print("null")
 
-        time.sleep(5)
+        time.sleep(2)
 
 if __name__ == "__main__":
     listen_clipboard()
