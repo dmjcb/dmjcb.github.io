@@ -5,6 +5,7 @@ import subprocess
 import tempfile
 from datetime import datetime
 
+
 class AutoGit:
     def run_cmd(self, command):
         r = subprocess.run(command, shell=True, capture_output=True, text=True, encoding="utf8")
@@ -154,6 +155,7 @@ class AutoUploadBlog:
         des_dir =  "{0}\\_posts".format(self._JEKYLL_DIR)
         copy_with_ignore_git(src_dir, des_dir)
 
+        # 拷贝静态资源
         src_dir = "{0}\\assets\\image".format(self._BLOG_DIR)
         des_dir = "{0}\\assets\\image".format(self._JEKYLL_DIR)
         copy_with_ignore_git(src_dir, des_dir)
@@ -162,7 +164,7 @@ class AutoUploadBlog:
 
 
     def change_md_to_public(self, md_name):
-        def get_original_address(categories, file_name):
+        def get_url(categories, file_name):
             x = categories.replace("/r", "").replace("/n", "").replace(" ", "").split(":")[-1]
             x = x[1:-2].lower().split(',')
             y = ''
@@ -180,8 +182,8 @@ class AutoUploadBlog:
                     for f in files:
                         if name in f:
                             x = os.path.abspath(os.path.join(root, f))
-                            print(x)
-                            return x, f
+                            if 'public' not in x:
+                                return x, f
             return None
 
         def get_md_content(path):
@@ -193,7 +195,7 @@ class AutoUploadBlog:
 
         path, name = find_file_absolute_path(self._BLOG_DIR, md_name)
         lines = get_md_content(path)
-        origin_url = get_original_address(lines[3], name)
+        origin_url = get_url(lines[3], name)
         new_text = ['> [dmjcb个人博客](https://dmjcb.github.io/)\n', '> [原文地址]({0})\n'.format(origin_url)]
         for i, text in enumerate(lines):
             if i < 7:
