@@ -20,7 +20,7 @@ highlight_theme: tomorrow-night # "default" (default), "tomorrow", "tomorrow-nig
 url     : https://dmjcb.github.io/ # the base hostname & protocol for your site e.g. https://www.someone.com
 baseurl : "" # does not include hostname
 title   : dmjcb个人博客
-description: 个人博客, 记录日常 # this means to ignore newlines until "Language & timezone"
+description: 只言片语, 记录日常 # this means to ignore newlines until "Language & timezone"
   
 
 
