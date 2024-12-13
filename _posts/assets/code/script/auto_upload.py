@@ -34,7 +34,7 @@ class AutoGit:
 
 
 class AutoUploadBlog:
-    _ROOT           = "c:\\Users\\dmjcb\\Documents\\Code"
+    _ROOT           = "c:\\Users\\dmjcb\\Documents\\code"
     _BLOG_DIR       = "{0}\\self_blog".format(_ROOT)
     _JEKYLL_DIR     = "{0}\\dmjcb.github.io".format(_ROOT)
     _ASSETS_DIR     = "{0}\\self_assets".format(_ROOT)
