@@ -18,7 +18,9 @@ class AutoGit:
 
     def push(self, path, msg):
         os.chdir(path)
-        self.run_cmd("git add . && git commit -m {0} && git push".format(msg))
+        self.run_cmd("git add .")
+        self.run_cmd("git commit -m {0}".format(msg))
+        self.run_cmd("git push")
     
     def status(self, path):
         os.chdir(path)
