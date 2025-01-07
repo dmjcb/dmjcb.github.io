@@ -12,7 +12,7 @@ template<typename T>
 T Sub(T x, T y);
 
 template<typename T>
-class TemplateAPI {
+typename TemplateAPI {
 public:
     TemplateAPI() = default;
     ~TemplateAPI() = default;

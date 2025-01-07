@@ -3,7 +3,7 @@
 #include <vector>
 #include <memory>
 
-template <class ValueType>
+template <typename ValueType>
 struct BSTNode {
     ValueType                mValue;
     std::shared_ptr<BSTNode> mLeftSon;
@@ -13,7 +13,7 @@ struct BSTNode {
         mValue(value), mLeftSon(std::move(leftSon)), mRightSon(std::move(rightSon)) {}
 };
 
-template <class ValueType>
+template <typename ValueType>
 class BinarySearchTree {
 public:
     using BSTNodePtr = std::shared_ptr<BSTNode<ValueType>>;

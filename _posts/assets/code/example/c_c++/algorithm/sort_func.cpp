@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 
-template<class T>
+template<typename T>
 void BubbleSort(std::vector<T> &v) {
     // 记录是否发生过交换
     bool isExchange;
@@ -20,7 +20,7 @@ void BubbleSort(std::vector<T> &v) {
     }
 }
 
-template<class T>
+template<typename T>
 void InsertSort(std::vector<T> &v) {
     for (int i = 1, size = v.size(); i < size; i++) {
         if (v[i - 1] > v[i]) {
@@ -38,7 +38,7 @@ void InsertSort(std::vector<T> &v) {
     }
 }
 
-template<class T>
+template<typename T>
 void QuickSort(std::vector<T> &v, const int left, const int right) {
     // index表示基准下标, index左侧值均比v[index]小;右侧值均比v[index]大
     int index = left;
@@ -64,7 +64,7 @@ void QuickSort(std::vector<T> &v, const int left, const int right) {
     }
 }
 
-template<class T>
+template<typename T>
 void SiftDown(std::vector<T> &v, const int start, const int end) {
     int parent = start;
     int child = 2 * parent + 1;
@@ -93,7 +93,7 @@ void SiftDown(std::vector<T> &v, const int start, const int end) {
 }
 
 // 堆排序函数
-template<class T>
+template<typename T>
 void HeapSort(std::vector<T> &v) {
     for (int i = (v.size() - 2) / 2; i >= 0; i--) {
         // 建立一个小根堆
