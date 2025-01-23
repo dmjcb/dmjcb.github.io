@@ -2,7 +2,7 @@ import os
 import shutil
 import codecs
 import subprocess
-import tempfile
+import platform
 from datetime import datetime
 
 
@@ -36,28 +36,35 @@ class AutoGit:
 
 
 class AutoUploadBlog:
-    _ROOT           = "c:\\Users\\dmjcb\\Documents\\code"
-    _BLOG_DIR       = "{0}\\self_blog".format(_ROOT)
-    _JEKYLL_DIR     = "{0}\\dmjcb.github.io".format(_ROOT)
-    _ASSETS_DIR     = "{0}\\self_assets".format(_ROOT)
-    _ASSETS_PUBLIC  = "assets\\public"
+    def __init__(self):
+        self.git = AutoGit()
 
-    _BLOG_ASSETS_IMAGE_DIR= "{0}\\assets\\image".format(_BLOG_DIR)
+        self._SEPARAROR = '/' if platform.system() == "Linux" else "\\"
 
-    _URL            = "https://dmjcb.github.io"
-    _BLOG_PROJECT   = "git@github.com:dmjcb/self_blog.git"
-    _JEKYLL_PROJECT = "git@github.com:dmjcb/dmjcb.github.io.git"
-    _ASSETS_PROJECT  = "git@github.com:dmjcb/self_assets.git"
+        self._WINDOWS_ROOT = "c:\\Users\\dmjcb\\Documents\\code"
+        self._LINUX_ROOT   = "/home/dmjcb/code"
+        
+        self._ROOT           = self._LINUX_ROOT if platform.system() == "Linux" else self._WINDOWS_ROOT
+        self._BLOG_DIR       = "{0}{1}self_blog".format(self._ROOT, self._SEPARAROR)
+        self._JEKYLL_DIR     = "{0}{1}dmjcb.github.io".format(self._ROOT, self._SEPARAROR)
+        self._ASSETS_DIR     = "{0}{1}self_assets".format(self._ROOT, self._SEPARAROR)
+        self._ASSETS_PUBLIC  = "assets{0}public".format(self._SEPARAROR)
 
-    auto_git = AutoGit()
+        self._BLOG_ASSETS_IMAGE_DIR= "{0}{1}assets{1}image".format(self._BLOG_DIR, self._SEPARAROR)
 
+        self._URL            = "https://dmjcb.github.io"
+        self._BLOG_PROJECT   = "git@github.com:dmjcb/self_blog.git"
+        self._JEKYLL_PROJECT = "git@github.com:dmjcb/dmjcb.github.io.git"
+        self._ASSETS_PROJECT  = "git@github.com:dmjcb/self_assets.git"
+
+    
     def clone_project(self):
         for url in (self._BLOG_PROJECT, self._JEKYLL_PROJECT, self._ASSETS_PROJECT):
-            auto_git.clone(self._ROOT, url)
+            self.git.clone(self._ROOT, url)
 
 
     def is_exist_modify(self, path):
-        return not self.auto_git.status(path)
+        return not self.git.status(path)
 
 
     def get_root_path(self):
@@ -71,7 +78,7 @@ class AutoUploadBlog:
     def clean_unused_images(self):
         def extract_files_ap(folder):
             aps = []
-            for path, dirs, fs in os.walk(folder):
+            for path, _, fs in os.walk(folder):
                 if ".git" in path or "public" in path:
                     continue
                 for f in fs:
@@ -79,8 +86,8 @@ class AutoUploadBlog:
             return aps  
 
         def get_used_images_ap(project_folder):
-            def get_ap(image_name):
-                return "{0}\\{1}".format(self._BLOG_ASSETS_IMAGE_DIR, image_name)
+            def get_ap(name):
+                return "{0}{1}{2}".format(self._BLOG_ASSETS_IMAGE_DIR, self._SEPARAROR, name)
 
             def extract_image_ap(md_file):
                 aps = []
@@ -89,7 +96,10 @@ class AutoUploadBlog:
                         line = line.replace("\r\n", "")
                         # example: ![](/assets/image/20241022204809.png)
                         if "/assets/image/" in line:
+                            if '\n' in line:
+                                line = line.replace('\n', '')
                             name = line.split('/')[-1][:-1]
+                            
                             aps.append(get_ap(name))
                 return aps
 
@@ -103,7 +113,6 @@ class AutoUploadBlog:
     
         used_images_ap = get_used_images_ap(self._BLOG_DIR)
         now_images_ap = extract_files_ap(self._BLOG_ASSETS_IMAGE_DIR)
-
         count = 0
         for ap in now_images_ap:
             if ap not in used_images_ap:
@@ -119,7 +128,7 @@ class AutoUploadBlog:
 
         count = self.clean_unused_images()
 
-        assets_dir = "{0}\\assets".format(self._BLOG_DIR)
+        assets_dir = "{0}{1}assets".format(self._BLOG_DIR, self._SEPARAROR)
         if self.is_exist_modify(assets_dir):
             print("更新self_assets")
 
@@ -136,9 +145,9 @@ class AutoUploadBlog:
             del_files_except_git(self._ASSETS_DIR)
             shutil.copytree(assets_dir, self._ASSETS_DIR, dirs_exist_ok=True)
 
-            self.auto_git.push(self._ASSETS_DIR, msg)
+            self.git.push(self._ASSETS_DIR, msg)
         
-        self.auto_git.push(self._BLOG_DIR, msg)
+        self.git.push(self._BLOG_DIR, msg)
 
 
     def upload_jekyll(self, msg):
@@ -154,15 +163,15 @@ class AutoUploadBlog:
         
         print("更新dmjcb.github.io项目")
         src_dir = self._BLOG_DIR   
-        des_dir =  "{0}\\_posts".format(self._JEKYLL_DIR)
+        des_dir =  "{0}{1}_posts".format(self._JEKYLL_DIR, self._SEPARAROR)
         copy_with_ignore_git(src_dir, des_dir)
 
         # 拷贝静态资源
-        src_dir = "{0}\\assets\\image".format(self._BLOG_DIR)
-        des_dir = "{0}\\assets\\image".format(self._JEKYLL_DIR)
+        src_dir = "{0}{1}assets{1}image".format(self._BLOG_DIR, self._SEPARAROR)
+        des_dir = "{0}{1}assets{1}image".format(self._JEKYLL_DIR, self._SEPARAROR)
         copy_with_ignore_git(src_dir, des_dir)
 
-        self.auto_git.push(self._JEKYLL_DIR, msg)
+        self.git.push(self._JEKYLL_DIR, msg)
 
 
     def change_md_to_public(self, md_name):
@@ -212,7 +221,7 @@ class AutoUploadBlog:
             new_text.append(text)
 
         title = lines[1].replace("/r", "").replace("/n", "").split(":")[-1]
-        path = "{0}\\{1}\\{2}.md".format(self._BLOG_DIR, self._ASSETS_PUBLIC, title[2:-2])
+        path = "{0}{3}{1}{3}{2}.md".format(self._BLOG_DIR, self._ASSETS_PUBLIC, title[2:-2], self._SEPARAROR)
         with open(path, 'w', encoding='utf-8') as f:
             f.writelines(new_text)
 

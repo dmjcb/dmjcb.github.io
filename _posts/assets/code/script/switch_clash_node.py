@@ -2,7 +2,7 @@ from json import loads, dumps
 from requests import get, put
 
 class AutoSwitchNode:
-    __IP = "192.168.3.3"
+    __IP = "192.168.3.104"
     __PORT = 9090
 
     def __init__(self):
@@ -41,4 +41,4 @@ class AutoSwitchNode:
 if __name__ == "__main__":
     auto = AutoSwitchNode()
     auto.switch_fastest_proxy()
-    #http://112.126.28.203/
+    # http://112.126.28.203/

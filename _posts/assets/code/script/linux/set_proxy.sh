@@ -1,27 +1,25 @@
 #!/bin/bash
 
 set_proxy(){
-    readonly _URL="https://cdn.woccloud.org/s/RR5AuofL98Pchv39?clash=2&extend=1"
-    readonly _PATH=".config/clash/config.yaml"
-
-    readonly _HTTP_PORT=7890
-    readonly _HTTPS_PORT=7891
-    readonly _API_PORT=9090
+    readonly URL="https://cdn.woccloud.org/s/CF2E5P19fAsejCwf?clash=1&log-level=info"
+    readonly _PATH=".config/clash"
+    readonly HTTP_PORT=7890
+    readonly HTTPS_PORT=7891
+    readonly API_PORT=9090
 
     admin_port=43999
 
-    sudo mkdir -p "${HOME}/.config/clash"
-
-    sudo wget ${_URL} -O "${HOME}/${_PATH}"
-
-    sudo docker run -itd                                                             \
-        --name=self_clash                                                            \
-        --restart=always                                                             \
-        --mount type=bind,source="${HOME}/${_PATH}",target="/root/${_PATH}",readonly \
-        -p ${_HTTP_PORT}:7890                                                        \
-        -p ${_HTTPS_PORT}:7891                                                       \
-        -p ${_API_PORT}:9090                                                         \
-        -p ${admin_port}:8080                                                        \
+    mkdir -p "${HOME}/${_PATH}"
+    wget ${URL} -O "${HOME}/${_PATH}/config.yaml"
+    
+    docker run -itd                                                  \
+        --name=self_clash                                            \
+        --restart=always                                             \
+        -v ${HOME}/${_PATH}/config.yaml:/root/${_PATH}/config.yaml   \
+        -p ${HTTP_PORT}:7890                                         \
+        -p ${HTTPS_PORT}:7891                                        \
+        -p ${API_PORT}:9090                                          \
+        -p ${admin_port}:8080                                        \
         laoyutang/clash-and-dashboard:latest
 }
 
