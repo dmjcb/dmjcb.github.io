@@ -39,18 +39,15 @@ class AutoUploadBlog:
     def __init__(self):
         self.git = AutoGit()
 
-        self._SEPARAROR = '/' if platform.system() == "Linux" else "\\"
-
         self._WINDOWS_ROOT = "c:\\Users\\dmjcb\\Documents\\code"
         self._LINUX_ROOT   = "/home/dmjcb/code"
         
         self._ROOT           = self._LINUX_ROOT if platform.system() == "Linux" else self._WINDOWS_ROOT
-        self._BLOG_DIR       = "{0}{1}self_blog".format(self._ROOT, self._SEPARAROR)
-        self._JEKYLL_DIR     = "{0}{1}dmjcb.github.io".format(self._ROOT, self._SEPARAROR)
-        self._ASSETS_DIR     = "{0}{1}self_assets".format(self._ROOT, self._SEPARAROR)
-        self._ASSETS_PUBLIC  = "assets{0}public".format(self._SEPARAROR)
-
-        self._BLOG_ASSETS_IMAGE_DIR= "{0}{1}assets{1}image".format(self._BLOG_DIR, self._SEPARAROR)
+        self._BLOG_DIR       = os.sep.join([self._ROOT, "self_blog"])
+        self._JEKYLL_DIR     = os.sep.join([self._ROOT, "dmjcb.github.io"])
+        self._ASSETS_DIR     = os.sep.join([self._ROOT, "self_assets"])
+        self._ASSETS_PUBLIC  = os.sep.join(["assets", "public"])
+        self._BLOG_ASSETS_IMAGE_DIR = os.sep.join([self._BLOG_DIR, "assets", "image"])
 
         self._URL            = "https://dmjcb.github.io"
         self._BLOG_PROJECT   = "git@github.com:dmjcb/self_blog.git"
@@ -76,6 +73,7 @@ class AutoUploadBlog:
 
 
     def clean_unused_images(self):
+        # 提取目录下所有文件绝对路径
         def extract_files_ap(folder):
             aps = []
             for path, _, fs in os.walk(folder):
@@ -85,26 +83,26 @@ class AutoUploadBlog:
                     aps.append(os.path.join(path, f))
             return aps  
 
-        def get_used_images_ap(project_folder):
+        # 获取所使用图片绝对路径
+        def get_used_images_ap(folder):
+            # 根据文件名生成路径
             def get_ap(name):
-                return "{0}{1}{2}".format(self._BLOG_ASSETS_IMAGE_DIR, self._SEPARAROR, name)
+                return os.sep.join([self._BLOG_ASSETS_IMAGE_DIR, name])
 
+            # 提取md中图片路径
             def extract_image_ap(md_file):
                 aps = []
                 with codecs.open(md_file, "rb", "utf-8", errors="ignore") as t:
                     for line in t:
-                        line = line.replace("\r\n", "")
+                        line = line.replace("\r", "").replace("\n", "")
                         # example: ![](/assets/image/20241022204809.png)
                         if "/assets/image/" in line:
-                            if '\n' in line:
-                                line = line.replace('\n', '')
                             name = line.split('/')[-1][:-1]
-                            
                             aps.append(get_ap(name))
                 return aps
 
             image_ap = [get_ap("head.jpg"), get_ap("workbench.jpg")]
-            md_files =  extract_files_ap(project_folder)
+            md_files =  extract_files_ap(folder)
             for f in md_files:
                 if "md" == f[-2:]:              
                     image_ap.extend(extract_image_ap(f))
@@ -112,6 +110,7 @@ class AutoUploadBlog:
             return image_ap
     
         used_images_ap = get_used_images_ap(self._BLOG_DIR)
+        # 现有所有图片路径
         now_images_ap = extract_files_ap(self._BLOG_ASSETS_IMAGE_DIR)
         count = 0
         for ap in now_images_ap:
@@ -124,24 +123,22 @@ class AutoUploadBlog:
 
 
     def upload_blog(self, msg):
+        def del_files_except_git(folder):
+            for item in os.listdir(folder):
+                item_path = os.path.join(folder, item)
+                if item == '.git':
+                    continue
+                if os.path.isfile(item_path) or os.path.islink(item_path):
+                    os.unlink(item_path)
+                elif os.path.isdir(item_path):
+                    shutil.rmtree(item_path)
+
         print("更新self_blog项目")
 
         count = self.clean_unused_images()
-
-        assets_dir = "{0}{1}assets".format(self._BLOG_DIR, self._SEPARAROR)
+        assets_dir = os.sep.join([self._BLOG_DIR, "assets"])
         if self.is_exist_modify(assets_dir):
             print("更新self_assets")
-
-            def del_files_except_git(folder):
-                for item in os.listdir(folder):
-                    item_path = os.path.join(folder, item)
-                    if item == '.git':
-                        continue
-                    if os.path.isfile(item_path) or os.path.islink(item_path):
-                        os.unlink(item_path)
-                    elif os.path.isdir(item_path):
-                        shutil.rmtree(item_path)
-
             del_files_except_git(self._ASSETS_DIR)
             shutil.copytree(assets_dir, self._ASSETS_DIR, dirs_exist_ok=True)
 
@@ -162,13 +159,12 @@ class AutoUploadBlog:
             shutil.copytree(src_dir, dst_dir, ignore=ignore_git, dirs_exist_ok=True)
         
         print("更新dmjcb.github.io项目")
-        src_dir = self._BLOG_DIR   
-        des_dir =  "{0}{1}_posts".format(self._JEKYLL_DIR, self._SEPARAROR)
-        copy_with_ignore_git(src_dir, des_dir)
+
+        copy_with_ignore_git(self._BLOG_DIR, os.sep.join([self._JEKYLL_DIR, "_posts"]))
 
         # 拷贝静态资源
-        src_dir = "{0}{1}assets{1}image".format(self._BLOG_DIR, self._SEPARAROR)
-        des_dir = "{0}{1}assets{1}image".format(self._JEKYLL_DIR, self._SEPARAROR)
+        src_dir = os.sep.join([self._BLOG_DIR, "assets", "image"])
+        des_dir = os.sep.join([self._JEKYLL_DIR, "assets", "image"])
         copy_with_ignore_git(src_dir, des_dir)
 
         self.git.push(self._JEKYLL_DIR, msg)
@@ -188,7 +184,7 @@ class AutoUploadBlog:
             return url
 
         def find_file_absolute_path(folder, name):
-            for root, dirs, files in os.walk(folder):
+            for root, _, files in os.walk(folder):
                 if files:
                     for f in files:
                         if name in f:
@@ -221,7 +217,7 @@ class AutoUploadBlog:
             new_text.append(text)
 
         title = lines[1].replace("/r", "").replace("/n", "").split(":")[-1]
-        path = "{0}{3}{1}{3}{2}.md".format(self._BLOG_DIR, self._ASSETS_PUBLIC, title[2:-2], self._SEPARAROR)
+        path = os.sep.join([self._BLOG_DIR, self._ASSETS_PUBLIC, title[2:-2]])
         with open(path, 'w', encoding='utf-8') as f:
             f.writelines(new_text)
 
