@@ -39,20 +39,19 @@ class AutoUploadBlog:
     def __init__(self):
         self.git = AutoGit()
 
-        self._WINDOWS_ROOT = "c:\\Users\\dmjcb\\Documents\\code"
-        self._LINUX_ROOT   = "/home/dmjcb/code"
+        self._WINDOWS_ROOT   = "c:\\Users\\dmjcb\\Documents\\code"
+        self._LINUX_ROOT     = "/home/dmjcb/code"
         
         self._ROOT           = self._LINUX_ROOT if platform.system() == "Linux" else self._WINDOWS_ROOT
         self._BLOG_DIR       = os.sep.join([self._ROOT, "self_blog"])
         self._JEKYLL_DIR     = os.sep.join([self._ROOT, "dmjcb.github.io"])
         self._ASSETS_DIR     = os.sep.join([self._ROOT, "self_assets"])
         self._ASSETS_PUBLIC  = os.sep.join(["assets", "public"])
-        self._BLOG_ASSETS_IMAGE_DIR = os.sep.join([self._BLOG_DIR, "assets", "image"])
 
         self._URL            = "https://dmjcb.github.io"
         self._BLOG_PROJECT   = "git@github.com:dmjcb/self_blog.git"
         self._JEKYLL_PROJECT = "git@github.com:dmjcb/dmjcb.github.io.git"
-        self._ASSETS_PROJECT  = "git@github.com:dmjcb/self_assets.git"
+        self._ASSETS_PROJECT = "git@github.com:dmjcb/self_assets.git"
 
     
     def clone_project(self):
@@ -73,6 +72,8 @@ class AutoUploadBlog:
 
 
     def clean_unused_images(self):
+        BLOG_ASSETS_IMAGE_DIR = os.sep.join([self._BLOG_DIR, "assets", "image"])
+
         # 提取目录下所有文件绝对路径
         def extract_files_ap(folder):
             aps = []
@@ -87,7 +88,7 @@ class AutoUploadBlog:
         def get_used_images_ap(folder):
             # 根据文件名生成路径
             def get_ap(name):
-                return os.sep.join([self._BLOG_ASSETS_IMAGE_DIR, name])
+                return os.sep.join([BLOG_ASSETS_IMAGE_DIR, name])
 
             # 提取md中图片路径
             def extract_image_ap(md_file):
@@ -111,7 +112,7 @@ class AutoUploadBlog:
     
         used_images_ap = get_used_images_ap(self._BLOG_DIR)
         # 现有所有图片路径
-        now_images_ap = extract_files_ap(self._BLOG_ASSETS_IMAGE_DIR)
+        now_images_ap = extract_files_ap(BLOG_ASSETS_IMAGE_DIR)
         count = 0
         for ap in now_images_ap:
             if ap not in used_images_ap:
@@ -179,7 +180,6 @@ class AutoUploadBlog:
                 y = '{0}/{1}'.format(y, i)
 
             title = file_name.split('-')[-1][:-3]
-
             url = "{0}{1}/{2}".format(self._URL, y, title)
             return url
 
@@ -225,7 +225,6 @@ class AutoUploadBlog:
     def create_new_blog(self, name):  
         date = datetime.now().strftime("%Y-%m-%d")
         file_name = "{0}-{1}.md".format(date, name)
-
         lines = [
             "---\n",
             'title: "{0}"\n'.format(name),
@@ -235,7 +234,6 @@ class AutoUploadBlog:
             'excerpt: "{0}"\n'.format(name),
             "---\n"
         ]
-
         with open(file_name, "w") as f:
             f.writelines(lines)
 

@@ -34,7 +34,7 @@ class AutoSwitchNode:
         name, v = self.get_fastest_proxy_delay()
         r = put('http://{0}/proxies/Proxy'.format(self.__url), data=dumps({'name': name}),headers={"Content-Type": "application/json"})
         if r.status_code == 204:
-            print('select: {0}, delay: {1}'.format(name, v))
+            print('切换: {0}, 当前延迟: {1}'.format(name, v))
         else:
             print('select error')
 
