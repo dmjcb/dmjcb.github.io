@@ -19,14 +19,21 @@ class AutoSwitchNode:
             return -1
 
         r = loads(r.text)
-        return r['history'][0]['delay']
+        # print(r)
+        if r['history']:
+            return r['history'][0]['delay']
+
+        return -1
 
     def get_fastest_proxy_delay(self):
         delay = {}
+        t = -1
         for name in self.get_proxy_name_list():
             t = self.get_proxy_delay(name)
             if t > 0:
                 delay[name] = t
+        if t < 0:
+            return None
         x = sorted(delay.items(), key=lambda x:x[1], reverse=False)
         return x[0]
 
