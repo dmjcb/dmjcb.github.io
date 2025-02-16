@@ -18,8 +18,6 @@ if os.path.exists(path):
     f.close()
 ```
 
-![](/assets/image/20241214_005046.jpg)
-
 ### 临时文件
 
 tempfile.NamedTemporaryFile 函数用于创建具有特定名称的临时文件
@@ -44,11 +42,10 @@ path = 'a.txt'
 with open(path, 'w', encoding = 'utf-8') as f:
     f.write("11111111111\n")
 
+# 追加
 with open(path, 'a', encoding = 'utf-8') as f:
     f.write("22222222222\n")
 ```
-
-![](/assets/image/20241214_005125.jpg)
 
 ### 重命名
   
