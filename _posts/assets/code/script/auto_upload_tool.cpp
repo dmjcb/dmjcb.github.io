@@ -129,7 +129,7 @@ public:
                  std::filesystem::copy_options::overwrite_existing);
 
         if (GitHelper::is_clean(assets_repo)) {
-            std::cout << "assets 无改动，跳过\n";
+            std::cout << "assets 无改动, 跳过\n";
             return true;
         }
         return GitHelper::push(assets_repo, msg, false);
@@ -197,7 +197,7 @@ int main() {
 
         if (choice == 2 || choice == 4) {
             if (!autoUpload.upload_blog(msg)) {
-                std::cerr << "⛔ blog 失败，流程终止\n";
+                std::cerr << "⛔ blog 失败, 流程终止\n";
                 return 1;
             }
         }

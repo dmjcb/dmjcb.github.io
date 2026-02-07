@@ -8,53 +8,35 @@ excerpt: "动态库"
 
 ## 概念
 
-`dynamic library`(动态库)是一种库文件, 包含可被多程序同时所使用的代码和数据, 其在程序运行时被加载到内存中
+`dynamic library`(动态库)是一类在程序运行时加载的库文件, 包含可被多个程序共享使用的代码和数据
 
-动态库在windows与类unix操作系统中分别以`dynamic link library`(动态库链接库)与`shared object file`(共享对象文件)两种方式实现
+在不同系统中, 动态库的实现方式不同:
 
-动态链接库(`dll`)是windows操作系统中动态库实现方式, 以`.dll`为扩展名, 当程序加载`dll`时, 并不会将`dll`整个内容复制到地址空间中, 而是仅在需要时引用`dll`中函数或数据
+- Windows：Dynamic Link Library(DLL), 扩展名 `.dll`
 
-共享对象文件是类unix操作系统(如linux、macOS等)中动态库实现方式, 以`.so`作为扩展名
+- 类 Unix 系统(Linux/macOS)：Shared Object File(SO), 扩展名 `.so`
 
-两者分别属于不同操作系统平台, 具体实现和文件格式有所不同, 在概念上相似, 都是用于实现代码和数据共享, 允许程序在运行时加载, 而不是在编译时静态地链接到库
+动态库的特点：
 
-### 特点
+- 运行时加载：程序在编译阶段只包含对库函数的引用, 函数实现到程序运行时才加载
 
-#### runtime loading(运行时加载)
+- 共享性：多个程序可共享同一动态库, 减少内存和磁盘占用
 
-程序使用动态库中时, 编译阶段只会生成对库中函数引用信息, 不会将函数实现包含在程序中
+- 可独立更新：更新动态库无需重新编译所有依赖程序
 
-链接阶段, 链接器会将引用信息解析为动态库中符号, 不会将动态库内容复制到程序中
+- 多语言支持：可被多种语言调用(需注意语言间类型兼容)
 
-程序执行, 到需要使用动态库中函数时, 操作系统会根据程序中引用信息和动态库路径信息, 将动态库加载到内存中
+## 开发动态库
 
-加载过程中, 操作系统会解析动态库中符号表, 并将程序中引用信息与动态库中的函数实现进行链接, 加载完成后程序就可以像调用静态库中函数一样调用动态库中函数
+### 关键特性
 
-#### 共享性
-
-多程序可共享同个动态库, 共享内存中相同代码, 减少资源占用
-
-#### 版本控制
-
-动态库可单独更新, 若功能更改只需替换库文件, 而不必重新编译所有相关程序
-
-#### 支持多语言
-
-动态库通常可被多种编程语言调用, 可在不同开发环境中灵活使用
-
-## 开发
-
-### 特性
-
-在创建C和C++动态库时有一些关键特性
+在创建c和c++动态库时有一些关键特性
 
 #### name mangling
 
-c++编译器为支持函数重载, 存在`name mangling`机制, 编译时会对所有原函数名进行修改生成新唯一函数名
+c++存在`name mangling`机制, 编译时会对所有原函数名进行修改生成唯一符号;c无此机制
 
-c编译器无此机制, 编译时原函数名不变, 如果c程序直接调用c++动态库会导致连接器无法找到正确符号, 产生链接错误
-
-- extern "C"
+跨语言调用时，需要用 `extern "C"` 进行屏蔽
 
 ```c++
 extern "C" {
@@ -62,21 +44,11 @@ extern "C" {
 }
 ```
 
-c++提供`extern "C"`/`extern "C" {}`接口, 规定其后续或范围内函数名编译时屏蔽`name mangling`, 按照c语言规则生成函数名
-
-`extern "C"` 只能用于函数和全局变量声明, 不能用于类成员或模板, 同时其修饰函数内不能出现C++所有特性
+> 注意：extern "C" 只能用于函数或全局变量，不能用于类成员或模板
 
 #### export symbol(导出符号)
 
-为将函数从动态库中导出被其他程序调用, 需在函数前添加导出符号
-
-若没有正确导出符号, 动态库中函数、变量或对象将无法被其他程序或库调用, 引发链接错误
-
-linux中使用`_attribute__((visibility("default")))`
-
-windows中使用`__declspec(dllexport)`
-
-- 示例, 为函数添加导出符号
+为了让库函数被外部程序调用，需要将函数标记为导出
 
 ```c++
 #if defined(_WIN32)
@@ -89,59 +61,21 @@ windows中使用`__declspec(dllexport)`
 __EXPORT void hello();
 ```
 
-### 流程
+### 编译流程
 
-目标, 将`.c/.cpp`按规则编译成`.so/.dll`格式库文件
+#### 编译器生成
+
+源文件 .c/.cpp → 编译 → 动态库 .so/.dll
 
 ```mermaid
 graph LR;
     A[/.c/.cpp/]-->B(编译器)-->C[/.so/.dll/]
 ```
 
-- 示例, 将test_api.c 生成动态库libtest_api, 提供接口函数`add`、`print`
-
-```c++
-// test_api.h
-#ifndef __INCLUDE_TEST_API_H__
-#define __INCLUDE_TEST_API_H__
-
-#include <stdio.h>
-
-// 定义导出符号
-#if defined(_WIN32)
-    #define __EXPORT __declspec(dllexport)
-#elif defined(__linux__)
-    #define __EXPORT __attribute__((visibility("default")))
-#endif
-
-// 导出接口函数
-__EXPORT int add(int x, int y);
-__EXPORT void print();
-
-#endif // __INCLUDE_TEST_API_H__
-```
-
-```c++
-// test_api.c
-#include "test_api.h"
-
-int func_add(int x, int y) {
-    return x + y;
-}
-
-void func_print() {
-    printf("Hello World\n");
-}
-```
-
-#### 生成
-
-##### 编译器方式
-
-调用编译器指令生成动态库
+- 示例, linux上将生成动态库, 提供接口函数`add`、`print`
 
 ```sh
-编译器 源文件 -fPIC -shared -o 库文件
+clang -fPIC -shared test_api.c -o libtest_api.so
 ```
 
 ```mermaid
@@ -152,33 +86,20 @@ graph LR;
     X-->B("-shared")-->B1(指示编译器生成共享库)
 ```
 
-- 示例, 使用`clang`生成库libtest_api.so
-
-```sh
-clang test_api.c -fPIC -shared -o libtest_api.so
-```
-
-查看符号表, 可发现c编译后函数名不变
+查看符号表
 
 ```sh
 nm libtest_api.so
 ```
 
 ```sh
-....
-0000000000001110 T func_add
-0000000000001130 T func_print
-....
+0000000000001110 T add
+0000000000001130 T print
 ```
 
-##### cmake方式
-
-使用cmake等构建工具生成动态库
-
-- 示例
+##### cmake生成
 
 ```cmake
-# CMakeLists.txt
 cmake_minimum_required(VERSION 3.16)
 project(test_api)
 
@@ -186,12 +107,9 @@ add_library(${PROJECT_NAME} SHARED "")
 target_sources(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/test_api.c)
 ```
 
-##### xmake方式
-
-- 示例
+##### xmake生成
 
 ```lua
--- xmake.lua
 add_rules("mode.debug", "mode.release")
 
 target("test_api")
@@ -201,15 +119,13 @@ target("test_api")
 
 执行`xmake`编译动态库
 
-#### VS生成
+##### VS生成
 
 创建项目`test_project`、动态库项目`test_dll`, 在test_project中调用test_dll所生成动态库
 
 ![](/assets/image/20241225_232037.jpg)
 
 ##### 创建
-
-- 新建
 
 ```c++
 // test_dll/test_dll.h
@@ -315,7 +231,7 @@ int main() {
 
 之后即可运行
 
-## 调用
+## 调用动态库
 
 链接阶段, 链接器将动态库与目标文件链接生成可执行文件
 
@@ -330,11 +246,11 @@ graph LR;
     B-->C(可执行文件)
 ```
 
-### 隐式调用
+### Implicit Linking(隐式调用)
 
-编译阶段, 编译器会将动态库符号和导入函数信息写入所生成中可执行文件特定区段
+编译阶段, 编译器将动态库符号和导入函数信息写入所生成中可执行文件特定区段
 
-程序加载时, 操作系统会自动查找并加载所需动态库, 并根据动态库导出表与程序中导入表相配对以确定程序使用动态库中代码位置
+加载时, 操作系统会自动查找并加载所需动态库, 并根据动态库导出表与程序中导入表相配对以确定程序使用动态库中代码位置
 
 #### 过程
 
@@ -400,11 +316,9 @@ target_sources(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/main.cpp)
 target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/libtest_api.so)
 ```
 
-### 显式调用
+### Explicit Linking(显式调用)
 
-运行时由程序代码主动使用API加载动态库到进程地址空间中, 再使用API获取库中函数地址进行调用, 允许程序在需要时才加载特定库
-
-#### 流程
+程序在运行时通过 API 动态加载库
 
 ```mermaid
 graph LR;
@@ -415,10 +329,6 @@ graph LR;
 graph LR;
     X(linux)-->A1(加载 dlopen)-->B1(获取函数地址 dlsym)-->C1(关闭 dlclose)
 ```
-
-#### 使用
-
-- 示例, 显式链接动态库
 
 ```c++
 // main.cpp
@@ -433,7 +343,6 @@ graph LR;
 typedef void(*void_func)();
 
 int main() {
-    // 加载
 #if defined(_WIN32) || defined(_WIN64)
     HMODULE handle = LoadLibrary("libtest_api.dll");
     if (!handle) {
@@ -461,7 +370,6 @@ int main() {
 
     print_func();
 
-    // 卸载
 #if defined(_WIN32) || defined(_WIN64)
     FreeLibrary(handle);
 #elif defined (__linux__)
@@ -475,12 +383,6 @@ int main() {
 ##### 编译器
 
 linux下需额外链接加载器库`libdl`
-
-```sh
-clang++ 源文件名 -o 可执行文件名 (-ldl)
-```
-
-- 示例, 编译main.cpp
 
 ```sh
 clang++ main.cpp -ldl -o main
@@ -500,17 +402,9 @@ if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
 endif()
 ```
 
-执行构建指令
-
-```sh
-cmake -B build
-cmake --build build
-```
-
 ##### xmake
 
 ```lua
--- xmake.lua
 add_rules("mode.debug", "mode.release")
 
 target("main")
@@ -523,7 +417,7 @@ target("main")
     end
 ```
 
-### 其他语言
+### 跨语言调用
 
 #### python
 
@@ -746,7 +640,7 @@ c++调用c语言动态库时, 需注意:
 
 1. 用`extern "C" {}` 包裹动态库头文件, 防止`name mangling`机制修改函数名
 
-2. `struct` 和 `enum` 可直接使用，但 c++ `bool` 类型和 c `int` 可能有差异
+2. `struct` 和 `enum` 可直接使用, 但 c++ `bool` 类型和 c `int` 可能有差异
 
 - 示例, c++调用libc_api.so
 
@@ -868,13 +762,13 @@ int main() {
 
 c++调用c++动态库时, 需注意:
 
-1. 只要在同一编译器下，一般不会有 name mangling 的问题
+1. 只要在同一编译器下, 一般不会有 name mangling 的问题
 
-2. ABI兼容性, 不同编译器可能有不同的 c++ ABI（如 GCC vs Clang vs MSVC),导致同c++ 动态库在不同编译器下可能无法直接使用
+2. ABI兼容性, 不同编译器可能有不同的 c++ ABI(如 GCC vs Clang vs MSVC),导致同c++ 动态库在不同编译器下可能无法直接使用
 
-3. 类和模板, 导出类到动态库时，虚函数表、构造析构函数需要小心, 尽量用纯 C 风格接口，或者提供工厂函数返回指针。
+3. 类和模板, 导出类到动态库时, 虚函数表、构造析构函数需要小心, 尽量用纯 C 风格接口, 或者提供工厂函数返回指针
 
-4. c++异常可以在同编译器下传递，但跨DLL边界要小心，尤其在windows下
+4. c++异常可以在同编译器下传递, 但跨DLL边界要小心, 尤其在windows下
 
 ##### 含类动态库
 
@@ -1133,9 +1027,9 @@ int main() {
 
 存在问题
 
-1. c++支持函数重载，会对函数名进行name mangling, 如果c直接调用c++函数，会找不到符号, 需c++库中用 extern "C" 导出函数。
+1. c++支持函数重载, 会对函数名进行name mangling, 如果c直接调用c++函数, 会找不到符号, 需c++库中用 extern "C" 导出函数
 
-2. C语言没有异常机制，如果 c++ 函数抛出异常，c 端无法捕获，会导致程序崩溃, 在c++导出的函数里捕获异常，并返回错误码
+2. C语言没有异常机制, 如果 c++ 函数抛出异常, c 端无法捕获, 会导致程序崩溃, 在c++导出的函数里捕获异常, 并返回错误码
 
 3. c++特性限制, c语言无法直接使用类、模板、引用、STL等 c++ 特性
 
