@@ -35,6 +35,7 @@ class GitHelper:
         print(f"✔ git push 成功 ({repo.name})")
         return True
 
+
 class AutoUploadBlog:
     IMG_RE = re.compile(r"!\[.*?\]\(/assets/image/(.*?)\)")
 

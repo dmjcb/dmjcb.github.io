@@ -18,10 +18,10 @@
 #include <QTextBrowser>
 #include <QMessageBox>
 #include <QDebug>
-#include <QTime>
+#include <QTimer>
 
 #include <vector>
-#include <windows.h>
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -41,21 +41,21 @@ public:
 
     void ClearLine(QLineEdit *a[9]);
 
-    void SetDefaultInput(QString str, QLineEdit *a[9]);
+    void set_default_input(QString str, QLineEdit *a[9]);
 
-    void SetInputLineStatus(QLineEdit *line[9], bool flag);
+    void set_line_status(QLineEdit *line[9], bool flag);
 
-    QString SpliceInputStr(QLineEdit *line[9]);
+    QString splice_str(QLineEdit *line[9]);
 
-    std::string CreateRandomStr();
+    std::string get_random();
 
-    void WaitTime(int times);
+    void wait_time(int ms);
 
-    void OutputPath(int num);
+    void output_path(int num);
 
-    void OuputTable(QTextBrowser text, std::vector<std::string> v);
+    void output_table(QTextBrowser text, std::vector<std::string> v);
 
-    bool JudgeInputValidity(QString s);
+    bool judge(QString s);
 
 private slots:
     void DoClickedAutoOutputButton();
@@ -81,15 +81,15 @@ private slots:
 protected:
     Ui::MainWindow *ui;
 
-    QLineEdit *mStartLine[9], *mEndLine[9];
+    QLineEdit *m_s_line[9], *m_end_line[9];
 
-    Game mGame;
+    Game m_game;
 
-    QString mStartInputStr;
+    QString m_start_s;
 
-    QString mEndInputStr;
+    QString m_end_s;
 
-    int mRunningStep = 0;
+    int m_step = 0;
 };
 
 #endif

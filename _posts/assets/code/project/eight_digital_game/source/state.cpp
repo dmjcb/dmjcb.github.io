@@ -10,79 +10,78 @@
 
 #include "include/state.h"
 
-State::State(std::string node, std::string fatherNode, int g, int h)
+State::State(std::string node, std::string f_node, int g, int h)
 {
-    mNode = std::move(node);
-    mFatherNode = std::move(fatherNode);
-    mFValue = g + h;
-    mGValue = g;
-    mHValue = h;
+    m_node = std::move(node);
+    m_f_node = std::move(f_node);
+    m_f_value = g + h;
+    m_g_value = g;
+    m_h_value = h;
 }
 
-const std::string State::GetNowNode() const
+const std::string State::get_now_node() const
 {
-    return mNode;
+    return m_node;
 }
 
-void State::SetNowNode(std::string node)
+void State::set_now_node(std::string node)
 {
-    mNode = node;
+    m_node = node;
 }
 
-const std::string State::GetFatherNode() const
+const std::string State::get_f_node() const
 {
-    return mFatherNode;
+    return m_f_node;
 }
 
-void State::SetFatherNode(std::string fatherNode)
+void State::set_f_node(std::string f_node)
 {
-    mFatherNode = fatherNode;
+    m_f_node = f_node;
 }
 
-const int State::GetFValue() const
+const int State::get_f_value() const
 {
-    return mFValue;
+    return m_f_value;
 }
 
-void State::SetFValue(const int f)
+void State::set_f_value(const int f)
 {
-    mFValue = f;
+    m_f_value = f;
 }
 
-const int State::GetGValue() const
+const int State::get_g_value() const
 {
-    return mGValue;
+    return m_g_value;
 }
 
-void State::SetGValue(const int g)
+void State::set_g_value(const int g)
 {
-    mGValue = g;
+    m_g_value = g;
 }
 
-const int State::GetHValue() const
+const int State::get_h_value() const
 {
-    return mHValue;
+    return m_h_value;
 }
 
-void State::SetHValue(const int h)
+void State::set_h_value(const int h)
 {
-    mHValue = h;
+    m_h_value = h;
 }
 
 bool State::operator<(const State &s) const
 {
-    return s.mFValue < mFValue;
+    return s.m_f_value < m_f_value;
 }
 
 bool State::operator==(const State &s) const
 {
-    return s.mNode == mNode;
+    return s.m_node == m_node;
 }
 
-// 更新父节点和g值
-void State::UpdateFatherAndGValue(const std::string &fatherNode, const int g)
+void State::update_f_and_g_value(const std::string &f_node, const int g)
 {
-    mFatherNode = fatherNode;
-    mFValue = g + mHValue;
-    mGValue = g;
+    m_f_node = f_node;
+    m_f_value = g + m_h_value;
+    m_g_value = g;
 }

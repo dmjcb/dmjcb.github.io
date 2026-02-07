@@ -7,7 +7,7 @@
  * @LastEditors: dmjcb
  * @LastEditTime: 2024-07-19 17:45:14
  */
-#include "include/mainwindow.h"
+#include "include/MainWindow.h"
 
 #include <QApplication>
 

@@ -1,27 +1,21 @@
 #include "include/game.h"
 
-Game::Game(std::string startConfiguration, std::string endConfiguration)
-{
-    mStartConfiguration = std::move(startConfiguration);
-    mEndConfiguration = std::move(endConfiguration);
+Game::Game(std::string start_config, std::string end_config){
+    m_start_config = std::move(start_config);
+    m_end_config = std::move(end_config);
 }
 
-bool Game::IsOdevity(std::string s1, std::string s2)
-{
+bool Game::is_odevity(std::string s1, std::string s2){
     int oss = 0;
     int fss = 0;
-    for (int i = 1; i < 9; ++i)
-    {
+    for (int i = 1; i < 9; ++i){
         int a = 0;
         int b = 0;
-        for (int j = 0; j < i; j++)
-        {
-            if (s1[j] > s1[i] && s1[i] != '0')
-            {
+        for (int j = 0; j < i; j++){
+            if (s1[j] > s1[i] && s1[i] != '0'){
                 a++;
             }
-            if (s2[j] > s2[i] && s2[i] != '0')
-            {
+            if (s2[j] > s2[i] && s2[i] != '0'){
                 b++;
             }
         }
@@ -31,74 +25,67 @@ bool Game::IsOdevity(std::string s1, std::string s2)
     return oss % 2 == fss % 2;
 }
 
-void Game::UpdateState(State state)
-{
+void Game::update_state(State state){
     std::stringstream ss;
-    int blankPos = state.GetNowNode().find('0');
-    for (int i = 0; i < 4; i++)
-    {
-        if (mRemoveablePos[blankPos][i] != -1)
-        {
-            std::string nextStr = state.GetNowNode();
-            std::swap(nextStr[mRemoveablePos[blankPos][i]], nextStr[blankPos]);
-            if (GetNodePos(nextStr, mCloseState) == -1)
-            {
-                int n = GetNodePos(nextStr, mOpenState);
+    int blank_p = state.get_now_node().find('0');
+    for (int i = 0; i < 4; i++){
+        if (m_enable_position[blank_p][i] != -1){
+            std::string next_s = state.get_now_node();
+            std::swap(next_s[m_enable_position[blank_p][i]], next_s[blank_p]);
+            if (get_node_position(next_s, m_close_state) == -1){
+                int n = get_node_position(next_s, m_open_state);
                 // 若该字符串也未在open表中
-                if (n == -1)
-                {
-                    ss << (mOpenTable.size() + 1) << ":" << nextStr << "不在open表中,加入";
+                if (n == -1){
+                    ss << (m_open_table.size() + 1) << ":" << next_s << "不在open表中,加入";
 
-                    mOpenTable.push_back(QString::fromStdString(ss.str()));
+                    m_open_table.push_back(QString::fromStdString(ss.str()));
 
                     ss.str("");
                     ss.clear();
 
-                    mOpenState.emplace_back(nextStr, state.GetNowNode(), state.GetGValue() + 1, SetWValue(nextStr));
+                    m_open_state.emplace_back(next_s, state.get_now_node(), state.get_g_value() + 1, set_m_w_value(next_s));
                 }
 
                 // 否则若经过当前状态可以使路径更优
-                else if (state.GetGValue() + 1 < mOpenState[n].GetGValue())
-                {
+                else if (state.get_g_value() + 1 < m_open_state[n].get_g_value()){
                     // 将当前状态的节点设为交换后状态的父节点,并更新g值
-                    mOpenState[n].UpdateFatherAndGValue(state.GetNowNode(), state.GetGValue() + 1);
+                    m_open_state[n].update_f_and_g_value(state.get_now_node(), state.get_g_value() + 1);
 
-                    ss << (mOpenTable.size() + 1) << ":" << nextStr << "在open表中,g值更新为" << (state.GetGValue() + 1);
-                    mOpenTable.push_back(QString::fromStdString(ss.str()));
+                    ss << (m_open_table.size() + 1) << ":" << next_s << "在open表中,g值更新为" << (state.get_g_value() + 1);
+                    m_open_table.push_back(QString::fromStdString(ss.str()));
                     ss.str("");
                     ss.clear();
                 }
             }
 
-            if (nextStr == mEndConfiguration)
-            {
-                mIsFinished = true;
+            if (next_s == m_end_config){
+                m_is_finished = true;
                 return;
             }
         }
     }
 
-    mOpenState.erase(find(mOpenState.begin(), mOpenState.end(), state));
-    mCloseState.push_back(state);
+    m_open_state.erase(find(m_open_state.begin(), m_open_state.end(), state));
+    m_close_state.push_back(state);
 
-    ss << (mOpenTable.size() + 1) << ":" << state.GetNowNode() << "被移除open表";
-    mOpenTable.push_back(QString::fromStdString(ss.str()));
+    ss << (m_open_table.size() + 1) << ":" << state.get_now_node() << "被移除open表";
+    m_open_table.push_back(QString::fromStdString(ss.str()));
 
     ss.str("");
     ss.clear();
 
-    ss << (mCloseTable.size() + 1) << ":" << state.GetNowNode() << "被加入close表";
-    mCloseTable.push_back(QString::fromStdString(ss.str()));
+    ss << (m_close_table.size() + 1) << ":" << state.get_now_node() << "被加入close表";
+    m_close_table.push_back(QString::fromStdString(ss.str()));
 
     ss.str("");
     ss.clear();
 }
 
-int Game::GetNodePos(const std::string &s, const std::vector<State> &v)
+int Game::get_node_position(const std::string &s, const std::vector<State> &v)
 {
     for (int i = 0, size = v.size(); i < size; ++i)
     {
-        if (v[i].GetNowNode() == s)
+        if (v[i].get_now_node() == s)
         {
             return i;
         }
@@ -106,7 +93,7 @@ int Game::GetNodePos(const std::string &s, const std::vector<State> &v)
     return -1;
 }
 
-int Game::SetWValue(std::string node)
+int Game::set_m_w_value(std::string node)
 {
     // 求出当前字符串s的每个元素在s中的下标i与s[i]在node中的下标之差
     int sum = 0;
@@ -114,48 +101,48 @@ int Game::SetWValue(std::string node)
     {
         if (i != int(node.find('0')))
         {
-            sum += abs(i - int(mEndConfiguration.find(node[i])));
+            sum += abs(i - int(m_end_config.find(node[i])));
         }
     }
     return sum;
 }
 
-void Game::FindPath()
+void Game::find_path()
 {
-    if (!IsOdevity(mStartConfiguration, mEndConfiguration))
+    if (!is_odevity(m_start_config, m_end_config))
     {
         return;
     }
 
-    mOpenState.emplace_back(mStartConfiguration, " ", 0, 0);
+    m_open_state.emplace_back(m_start_config, " ", 0, 0);
 
-    UpdateState(mOpenState[0]);
+    update_state(m_open_state[0]);
 
-    mIsFinished = false;
+    m_is_finished = false;
 
-    while (!mOpenState.empty())
+    while (!m_open_state.empty())
     {
-        if (mIsFinished)
+        if (m_is_finished)
         {
             break;
         }
-        std::sort(mOpenState.begin(), mOpenState.end());
+        std::sort(m_open_state.begin(), m_open_state.end());
 
-        UpdateState(mOpenState[mOpenState.size() - 1]);
+        update_state(m_open_state[m_open_state.size() - 1]);
     }
 
     std::vector<State> path;
 
-    path.insert(path.end(), mOpenState.begin(), mOpenState.end());
-    path.insert(path.end(), mCloseState.begin(), mCloseState.end());
+    path.insert(path.end(), m_open_state.begin(), m_open_state.end());
+    path.insert(path.end(), m_close_state.begin(), m_close_state.end());
 
-    int endNodePos = GetNodePos(mEndConfiguration, path);
+    int end_p = get_node_position(m_end_config, path);
 
-    while (path[endNodePos].GetFatherNode() != " ")
+    while (path[end_p].get_f_node() != " ")
     {
-        mPath.push_back(path[endNodePos].GetNowNode());
-        endNodePos = GetNodePos(path[endNodePos].GetFatherNode(), path);
+        m_path.push_back(path[end_p].get_now_node());
+        end_p = get_node_position(path[end_p].get_f_node(), path);
     }
-    mPath.push_back(mStartConfiguration);
-    reverse(mPath.begin(), mPath.end());
+    m_path.push_back(m_start_config);
+    reverse(m_path.begin(), m_path.end());
 }

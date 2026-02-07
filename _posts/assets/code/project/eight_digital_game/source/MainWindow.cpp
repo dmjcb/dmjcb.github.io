@@ -12,25 +12,25 @@ MainWindow::MainWindow(QWidget *parent)
     //  设置拖动窗口大小,这样的操作会使页面无法最大化;x,y 宽,长
     setFixedSize(960, 825);
 
-    mStartLine[0] = ui->originLineEdit0;
-    mStartLine[1] = ui->originLineEdit1;
-    mStartLine[2] = ui->originLineEdit2;
-    mStartLine[3] = ui->originLineEdit3;
-    mStartLine[4] = ui->originLineEdit4;
-    mStartLine[5] = ui->originLineEdit5;
-    mStartLine[6] = ui->originLineEdit6;
-    mStartLine[7] = ui->originLineEdit7;
-    mStartLine[8] = ui->originLineEdit8;
+    m_s_line[0] = ui->originLineEdit0;
+    m_s_line[1] = ui->originLineEdit1;
+    m_s_line[2] = ui->originLineEdit2;
+    m_s_line[3] = ui->originLineEdit3;
+    m_s_line[4] = ui->originLineEdit4;
+    m_s_line[5] = ui->originLineEdit5;
+    m_s_line[6] = ui->originLineEdit6;
+    m_s_line[7] = ui->originLineEdit7;
+    m_s_line[8] = ui->originLineEdit8;
 
-    mEndLine[0] = ui->endLineEdit0;
-    mEndLine[1] = ui->endLineEdit1;
-    mEndLine[2] = ui->endLineEdit2;
-    mEndLine[3] = ui->endLineEdit3;
-    mEndLine[4] = ui->endLineEdit4;
-    mEndLine[5] = ui->endLineEdit5;
-    mEndLine[6] = ui->endLineEdit6;
-    mEndLine[7] = ui->endLineEdit7;
-    mEndLine[8] = ui->endLineEdit8;
+    m_end_line[0] = ui->endLineEdit0;
+    m_end_line[1] = ui->endLineEdit1;
+    m_end_line[2] = ui->endLineEdit2;
+    m_end_line[3] = ui->endLineEdit3;
+    m_end_line[4] = ui->endLineEdit4;
+    m_end_line[5] = ui->endLineEdit5;
+    m_end_line[6] = ui->endLineEdit6;
+    m_end_line[7] = ui->endLineEdit7;
+    m_end_line[8] = ui->endLineEdit8;
 
     ui->label_7->setText(QString::number(ui->horizontalSlider->value()));
 
@@ -41,8 +41,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->displayAfterPathButton->setDisabled(true);
     ui->displayNextPathButton->setDisabled(true);
 
-    SetInputLineStatus(mStartLine, true);
-    SetInputLineStatus(mEndLine, true);
+    set_line_status(m_s_line, true);
+    set_line_status(m_end_line, true);
 
     ui->pathLabel->setText("");
 
@@ -61,7 +61,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-bool MainWindow::JudgeInputValidity(QString s)
+bool MainWindow::judge(QString s)
 {
     if (s.size() < 9)
     {
@@ -92,7 +92,7 @@ bool MainWindow::JudgeInputValidity(QString s)
     return true;
 }
 
-void MainWindow::SetInputLineStatus(QLineEdit *line[9], bool flag)
+void MainWindow::set_line_status(QLineEdit *line[9], bool flag)
 {
     for (int i = 0; i < 9; i++)
     {
@@ -101,7 +101,7 @@ void MainWindow::SetInputLineStatus(QLineEdit *line[9], bool flag)
     }
 }
 
-void MainWindow::SetDefaultInput(QString s, QLineEdit *line[9])
+void MainWindow::set_default_input(QString s, QLineEdit *line[9])
 {
     for (int i = 0; i < 9; i++)
     {
@@ -116,7 +116,7 @@ void MainWindow::SetDefaultInput(QString s, QLineEdit *line[9])
     }
 }
 
-std::string MainWindow::CreateRandomStr()
+std::string MainWindow::get_random()
 {
     std::string targetStr = "";
     bool isExist = false;
@@ -142,17 +142,14 @@ std::string MainWindow::CreateRandomStr()
     return targetStr;
 }
 
-void MainWindow::WaitTime(int times)
+void MainWindow::wait_time(int ms)
 {
-    QElapsedTimer t;
-    t.start();
-    while (t.elapsed() < times)
-    {
-        QCoreApplication::processEvents();
-    }
+    QEventLoop loop;
+    QTimer::singleShot(ms, &loop, &QEventLoop::quit);
+    loop.exec();
 }
 
-QString MainWindow::SpliceInputStr(QLineEdit *line[9])
+QString MainWindow::splice_str(QLineEdit *line[9])
 {
     QString s = "";
     for (int i = 0; i < 9; i++)
@@ -169,34 +166,34 @@ QString MainWindow::SpliceInputStr(QLineEdit *line[9])
     return s;
 }
 
-void MainWindow::OutputPath(int num)
+void MainWindow::output_path(int num)
 {
     if (num < 0)
     {
-        mRunningStep = mGame.mPath.size();
+        m_step = m_game.m_path.size();
         return;
     }
 
-    if (num >= mGame.mPath.size())
+    if (num >= m_game.m_path.size())
     {
-        mRunningStep = 0;
+        m_step = 0;
 
         ui->autoOutputPathButton->setDisabled(false);
         return;
     }
 
-    ClearLine(mStartLine);
+    ClearLine(m_s_line);
 
-    QString nowPath = QString::fromStdString(mGame.mPath[num]);
+    QString now_path = QString::fromStdString(m_game.m_path[num]);
 
-    SetDefaultInput(nowPath, mStartLine);
+    set_default_input(now_path, m_s_line);
 
     std::stringstream ss;
-    ss << "第" << num + 1 << "步, 共" << mGame.mPath.size() << "步";
+    ss << "第" << num + 1 << "步, 共" << m_game.m_path.size() << "步";
 
     ui->pathLabel->setText(QString::fromStdString(ss.str()));
 
-    ss << ": " << mGame.mPath[num] << std::endl;
+    ss << ": " << m_game.m_path[num] << std::endl;
     ui->pathTextBrowser->insertPlainText(QString::fromStdString(ss.str()));
 
     ss.str("");
@@ -214,7 +211,7 @@ void MainWindow::ClearLine(QLineEdit *line[9])
 // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void MainWindow::DoClickedAutoOutputButton()
 {
-    if (mGame.mPath.size() == 0)
+    if (m_game.m_path.size() == 0)
     {
         QMessageBox::warning(NULL, "警告", "请先生成路径");
         return;
@@ -228,13 +225,13 @@ void MainWindow::DoClickedAutoOutputButton()
     ui->displayAfterPathButton->setDisabled(true);
     ui->displayNextPathButton->setDisabled(true);
 
-    for (uint32_t i = 0; i < mGame.mPath.size(); i++)
+    for (uint32_t i = 0; i < m_game.m_path.size(); i++)
     {
-        OutputPath(i);
-        WaitTime(10 * (100 - ui->horizontalSlider->value()));
+        output_path(i);
+        wait_time(10 * (100 - ui->horizontalSlider->value()));
     }
 
-    QMessageBox::warning(NULL, "警告", "已到达,共" + QString::number(mGame.mPath.size()) + "步");
+    QMessageBox::warning(NULL, "警告", "已到达,共" + QString::number(m_game.m_path.size()) + "步");
 
     ui->clearDisplayButton->setDisabled(false);
     ui->displayAfterPathButton->setDisabled(false);
@@ -243,8 +240,8 @@ void MainWindow::DoClickedAutoOutputButton()
 
 void MainWindow::DoClickedCreateOriginStatusButton()
 {
-    SetInputLineStatus(mStartLine, true);
-    SetInputLineStatus(mEndLine, true);
+    set_line_status(m_s_line, true);
+    set_line_status(m_end_line, true);
 
     ui->manualInputButton->setDisabled(true);
     ui->autoOutputPathButton->setDisabled(true);
@@ -253,32 +250,32 @@ void MainWindow::DoClickedCreateOriginStatusButton()
 
     srand((int)time(0));
 
-    std::string startStr = CreateRandomStr();
-    std::string endStr = CreateRandomStr();
+    std::string startStr = get_random();
+    std::string endStr = get_random();
 
     while (1)
     {
-        if (mGame.IsOdevity(startStr, endStr))
+        if (m_game.is_odevity(startStr, endStr))
         {
             break;
         }
-        startStr = CreateRandomStr();
-        endStr = CreateRandomStr();
+        startStr = get_random();
+        endStr = get_random();
     }
 
-    ClearLine(mStartLine);
-    ClearLine(mEndLine);
+    ClearLine(m_s_line);
+    ClearLine(m_end_line);
 
-    SetDefaultInput(QString::fromStdString(startStr), mStartLine);
-    SetDefaultInput(QString::fromStdString(endStr), mEndLine);
+    set_default_input(QString::fromStdString(startStr), m_s_line);
+    set_default_input(QString::fromStdString(endStr), m_end_line);
 }
 
 void MainWindow::DoClickedManualInputButton()
 {
     QMessageBox::warning(NULL, "警告", "请手动输入初始与结束状态");
 
-    SetInputLineStatus(mStartLine, false);
-    SetInputLineStatus(mEndLine, false);
+    set_line_status(m_s_line, false);
+    set_line_status(m_end_line, false);
 
     ui->calculatePathButton->setDisabled(false);
     ui->autoOutputPathButton->setDisabled(true);
@@ -286,16 +283,16 @@ void MainWindow::DoClickedManualInputButton()
 
 void MainWindow::DoClickedCalculatePathButton()
 {
-    mStartInputStr = SpliceInputStr(mStartLine);
-    mEndInputStr = SpliceInputStr(mEndLine);
+    m_start_s = splice_str(m_s_line);
+    m_end_s = splice_str(m_end_line);
 
-    if (!JudgeInputValidity(mStartInputStr) || !JudgeInputValidity(mEndInputStr))
+    if (!judge(m_start_s) || !judge(m_end_s))
     {
         QMessageBox::warning(NULL, "警告", "请检查输入的合法性");
         return;
     }
 
-    if (!mGame.IsOdevity(mStartInputStr.toStdString(), mEndInputStr.toStdString()))
+    if (!m_game.is_odevity(m_start_s.toStdString(), m_end_s.toStdString()))
     {
         QMessageBox::warning(NULL, "警告", "不可达请重新输入");
 
@@ -307,15 +304,15 @@ void MainWindow::DoClickedCalculatePathButton()
     ui->autoOutputPathButton->setDisabled(true);
     ui->manualInputButton->setDisabled(true);
 
-    SetInputLineStatus(mStartLine, true);
-    SetInputLineStatus(mEndLine, true);
+    set_line_status(m_s_line, true);
+    set_line_status(m_end_line, true);
 
-    mGame.mStartConfiguration = mStartInputStr.toStdString();
-    mGame.mEndConfiguration = mEndInputStr.toStdString();
+    m_game.m_start_config = m_start_s.toStdString();
+    m_game.m_end_config = m_end_s.toStdString();
 
-    mGame.FindPath();
+    m_game.find_path();
 
-    QMessageBox::warning(NULL, "警告", "路径已经生成,共" + QString::number(mGame.mPath.size()) + "步");
+    QMessageBox::warning(NULL, "警告", "路径已经生成,共" + QString::number(m_game.m_path.size()) + "步");
 
     ui->autoOutputPathButton->setDisabled(false);
     ui->clearDisplayButton->setDisabled(false);
@@ -324,14 +321,14 @@ void MainWindow::DoClickedCalculatePathButton()
     ui->horizontalSlider->setDisabled(false);
 
 
-    for (int i = 0, size = this->mGame.mOpenTable.size(); i < size; i++)
+    for (int i = 0, size = this->m_game.m_open_table.size(); i < size; i++)
     {
-        ui->open_textBrowser->insertPlainText(this->mGame.mOpenTable[i] + "\n\n");
+        ui->open_textBrowser->insertPlainText(this->m_game.m_open_table[i] + "\n\n");
     }
 
-    for (int i = 0, size = this->mGame.mCloseTable.size(); i < size; i++)
+    for (int i = 0, size = this->m_game.m_close_table.size(); i < size; i++)
     {
-        ui->close_textBrowser->insertPlainText(this->mGame.mCloseTable[i] + "\n\n");
+        ui->close_textBrowser->insertPlainText(this->m_game.m_close_table[i] + "\n\n");
     }
 }
 
@@ -349,19 +346,19 @@ void MainWindow::DoClickedClearDisplayButton()
 
     ui->horizontalSlider->setValue(50);
 
-    ClearLine(mStartLine);
-    ClearLine(mEndLine);
+    ClearLine(m_s_line);
+    ClearLine(m_end_line);
 
-    SetInputLineStatus(mStartLine, true);
-    SetInputLineStatus(mEndLine, true);
+    set_line_status(m_s_line, true);
+    set_line_status(m_end_line, true);
 
     ui->pathTextBrowser->clear();
     ui->open_textBrowser->clear();
     ui->close_textBrowser->clear();
 
-    std::vector<State>().swap(mGame.mOpenState);
-    std::vector<State>().swap(mGame.mCloseState);
-    std::vector<std::string>().swap(mGame.mPath);
+    std::vector<State>().swap(m_game.m_open_state);
+    std::vector<State>().swap(m_game.m_close_state);
+    std::vector<std::string>().swap(m_game.m_path);
 
     ui->pathLabel->setText("");
 }
@@ -369,22 +366,22 @@ void MainWindow::DoClickedClearDisplayButton()
 
 void MainWindow::DoClickedDisplayAfterPathButton()
 {
-    mRunningStep--;
-    OutputPath(mRunningStep);
+    m_step--;
+    output_path(m_step);
 }
 
 void MainWindow::DoClickedDisplayNextPathButton()
 {
     ui->displayAfterPathButton->setDisabled(false);
 
-    if (mRunningStep == 0)
+    if (m_step == 0)
     {
-        OutputPath(0);
+        output_path(0);
     }
 
-    mRunningStep++;
+    m_step++;
 
-    OutputPath(mRunningStep);
+    output_path(m_step);
 }
 
 void MainWindow::DoClickedCloseAppButton()
