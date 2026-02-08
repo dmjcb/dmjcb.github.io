@@ -12,9 +12,9 @@ excerpt: "动态库"
 
 在不同系统中, 动态库的实现方式不同:
 
-- Windows：Dynamic Link Library(DLL), 扩展名 `.dll`
+- windows：Dynamic Link Library(DLL), 扩展名 `.dll`
 
-- 类 Unix 系统(Linux/macOS)：Shared Object File(SO), 扩展名 `.so`
+- 类 unix 系统(linux/macOS)：Shared Object File(SO), 扩展名 `.so`
 
 动态库的特点：
 
@@ -122,10 +122,6 @@ target("test_api")
 ##### VS生成
 
 创建项目`test_project`、动态库项目`test_dll`, 在test_project中调用test_dll所生成动态库
-
-![](/assets/image/20241225_232037.jpg)
-
-- 创建
 
 ```c++
 // test_dll/test_dll.h
