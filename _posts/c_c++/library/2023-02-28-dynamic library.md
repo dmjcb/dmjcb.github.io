@@ -125,7 +125,7 @@ target("test_api")
 
 ![](/assets/image/20241225_232037.jpg)
 
-##### 创建
+- 创建
 
 ```c++
 // test_dll/test_dll.h
@@ -162,16 +162,14 @@ int app_api(int x, int y) {
 }
 ```
 
-- 修改dllmain.cpp
+修改dllmain.cpp
 
 ![](/assets/image/20241225_232757.jpg)
 
-- 修改属性
+修改属性
 
 ![](/assets/image/20241225_233145.jpg)
 ![](/assets/image/20241225_233249.jpg)
-
-- 生成
 
 生成动态库`test_dll.dll`与动态库导入库`test_dll.lib`
 
@@ -182,7 +180,7 @@ int app_api(int x, int y) {
 
 编译器将DLL导出函数信息提取生成导入库
 
-##### 手动调用
+- 手动调用
 
 可手动将动态库、导入库、头文件复制到所使用项目中
 
@@ -211,7 +209,7 @@ int main() {
 
 导入后即可执行
 
-##### 自动调用
+- 自动调用
 
 设置库路径
 
@@ -246,7 +244,7 @@ graph LR;
     B-->C(可执行文件)
 ```
 
-### Implicit Linking(隐式调用)
+### implicit linking(隐式调用)
 
 编译阶段, 编译器将动态库符号和导入函数信息写入所生成中可执行文件特定区段
 
@@ -291,17 +289,35 @@ clang++ 源文件 库文件 -o 可执行文件
 
 - 路径错误
 
-linux下调用.so文件时, 可能会出现`cannot open shared object file: No such file or directory`问题
+调用main时, 发现报错
 
-例如调用上面libtest_api.so时, 发现报错, 使用`ldd `查看可执行文件依赖, 发现libtest_api.so库未找到, 可通过三种方法解决
+```sh
+error while loading shared libraries: libtest_api.so: cannot open shared object file: No such file or directory
+```
 
-![](/assets/image/20241227_221126.jpg)
+使用`ldd main`查看, 示例输出
 
-(1) 临时使用`export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:路径`, 增加动态库路径, 例如⑤
+```sh
+......
+libtest_api.so => not found
+......
+```
 
-(2) 也可将`LD_LIBRARY_PATH=$LD_LIBRARY_PATH:路径` 添加到`~/.bashrc`
+可通过三种方法解决
 
-(3) 也可将动态库文件移动到`/usr/lib`下
+a. 临时使用`export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:路径`, 增加动态库路径
+
+b. 将`LD_LIBRARY_PATH=$LD_LIBRARY_PATH:路径` 添加到`~/.bashrc`
+
+c. 也可将库文件移动到`/usr/lib`
+
+执行后再次查看, 示例输出
+
+```sh
+......
+libtest_api.so => (0x00007f35d9678000)
+......
+```
 
 ##### cmake
 
@@ -316,18 +332,18 @@ target_sources(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/main.cpp)
 target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/libtest_api.so)
 ```
 
-### Explicit Linking(显式调用)
+### explicit linking(显式调用)
 
 程序在运行时通过 API 动态加载库
 
 ```mermaid
 graph LR;
-    X(windows)-->A2(加载 LoadLibrary)-->B2(获取函数地址 GetProcAddress)-->C2(关闭 FreeLibrary)
+    X(windows)-->A2(LoadLibrary 加载)-->B2(GetProcAddress 获取函数地址)-->C2(FreeLibrary 关闭)
 ```
 
 ```mermaid
 graph LR;
-    X(linux)-->A1(加载 dlopen)-->B1(获取函数地址 dlsym)-->C1(关闭 dlclose)
+    X(linux)-->A1(dlopen 加载)-->B1(dlsym 获取函数地址)-->C1(dlclose 关闭)
 ```
 
 ```c++
@@ -476,7 +492,7 @@ void swap_value(int *x, int *y) {
 }
 ```
 
-生成动态库
+生成
 
 ```sh
 clang++ py_api.cpp -fPIC -shared -o libpy_api.so
@@ -528,9 +544,9 @@ print(y.contents)
 
 #### 含全局变量
 
-动态库中含有全局变量时, 需在头文件中使用`extern`声明全局变量(注意不要和c++`extern "C"`混淆)表示变量或函数是在另一个文件或另一个编译单元中定义, 并在源文件中定义
+当动态库中包含全局变量时, 需要在头文件中使用 extern 声明, 表示该变量或函数在另一个文件或编译单元中定义
 
-对于全局变量, `extern`声明通常出现在头文件中, 以便在多个源文件中共享同一个全局变量
+对于全局变量, extern 声明通常放在头文件中, 以便在多个源文件之间共享同个变量
 
 - 示例, 使用动态库中全局变量
 
@@ -601,9 +617,9 @@ abcd
 
 #### 被c语言调用
 
-c语言生成动态库可供c/c++调用, 因c语言对函数名没有特殊处理, 可直接调用c语言所生成动态库
+一般可直接调用
 
-- 示例, 生成libc_api.so
+- 示例
 
 ```c
 // c_api.h
@@ -621,13 +637,13 @@ int add_num(int x, int y) {
 }
 ```
 
-编译为libc_api.so
+编译
 
 ```sh
 clang c_api.c -fPIC -shared -o libc_api.so
 ```
 
-生成库时, 因C编译器没有`name mangling`机制, 所生成函数符号名仍然为`add_num`
+生成库时, 因C没有`name mangling`机制, 所生成函数符号名仍然为`add_num`
 
 ```sh
 0000000000001100 T add_num
@@ -642,9 +658,7 @@ c++调用c语言动态库时, 需注意:
 
 2. `struct` 和 `enum` 可直接使用, 但 c++ `bool` 类型和 c `int` 可能有差异
 
-- 示例, c++调用libc_api.so
-
-(1) 未使用`extern "C" {}`
+- 示例
 
 ```c
 // c_api.h
@@ -670,13 +684,13 @@ int main() {
 clang++ main.cpp -c -o main.o
 ```
 
-将中间文件与库文件链接
+链接
 
 ```sh
 clang++ main.o libc_api.so -o main
 ```
 
-链接时报错
+报错
 
 ```sh
 /usr/bin/ld: /tmp/main-6d76e7.o: in function `main':
@@ -684,7 +698,7 @@ main.cpp:(.text+0x1a): undefined reference to `add_num(int, int)'
 clang++: error: linker command failed with exit code 1 (use -v to see invocation)
 ```
 
-因为预处理时, main.cpp展开如下
+因预处理时, main.cpp展开
 
 ```diff
 + #include <stdio.h>
@@ -711,9 +725,7 @@ int main() {
 ......
 ```
 
-符号表显示因c++编译器存在`name mangling`机制, 导致函数符号`add_num`会修改为`_Z7add_numii`, 链接时会出现同函数名符号不同问题, 导致链接失败
-
-(2) 修正
+因c++编译器存在`name mangling`机制, 函数符号`add_num`修改为`_Z7add_numii`, 链接时会出现同函数名符号不同问题, 导致链接失败
 
 修改main.cpp, 增加`extern "C" {}`
 
@@ -744,9 +756,9 @@ int main() {
 }
 ```
 
-`extern "C"`会屏蔽`name mangling`机制, 使C++编译器处理后函数名不变, 与libc_api.so中符号一致, 避免链接问题
+`extern "C"`屏蔽`name mangling`机制, 使c++编译器处理后函数名不变, 与libc_api.so中符号一致, 避免链接问题
 
-修改后查看main.o符号表
+查看main.o符号表
 
 ```sh
                  U add_num
@@ -754,7 +766,7 @@ int main() {
 ......
 ```
 
-此时同名函数符号一致, 即可正确链接
+同名函数符号一致, 即可正确链接
 
 ### c++动态库
 
@@ -764,7 +776,7 @@ c++调用c++动态库时, 需注意:
 
 1. 只要在同一编译器下, 一般不会有 name mangling 的问题
 
-2. ABI兼容性, 不同编译器可能有不同的 c++ ABI(如 GCC vs Clang vs MSVC),导致同c++ 动态库在不同编译器下可能无法直接使用
+2. ABI兼容性, 不同编译器可能有不同c++ ABI(如 GCC vs Clang vs MSVC), 导致同c++ 动态库在不同编译器下可能无法直接使用
 
 3. 类和模板, 导出类到动态库时, 虚函数表、构造析构函数需要小心, 尽量用纯 C 风格接口, 或者提供工厂函数返回指针
 
@@ -815,7 +827,7 @@ namespace cpp_api {
 
 以类进行调用时需在类名前增加`export symbol`, 同时所生成库仅支持c++调用
 
-- 示例, 通过类调用动态库libtest_class.so
+- 示例, 类调用动态库libtest_class.so
 
 修改 test_class.hpp, 增加导出符号
 
@@ -1025,15 +1037,7 @@ int main() {
 
 #### 被c语言调用
 
-存在问题
-
-1. c++支持函数重载, 会对函数名进行name mangling, 如果c直接调用c++函数, 会找不到符号, 需c++库中用 extern "C" 导出函数
-
-2. C语言没有异常机制, 如果 c++ 函数抛出异常, c 端无法捕获, 会导致程序崩溃, 在c++导出的函数里捕获异常, 并返回错误码
-
-3. c++特性限制, c语言无法直接使用类、模板、引用、STL等 c++ 特性
-
-总之, c语言若想调用c++动态库, 则库文件需要在导出函数名前添加`extern "C"` 或用 `extern "C" {}`包裹, 且函数声明中不能出现任何C++特性
+c语言若想调用c++动态库, 则库文件需要在导出函数名前添加`extern "C"` 或用 `extern "C" {}`包裹, 且函数声明中不能出现任何C++特性
 
 ### 版本管理
 
