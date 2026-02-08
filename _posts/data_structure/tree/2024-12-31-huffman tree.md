@@ -34,7 +34,7 @@ huffman树中只有度为0(叶子节点)和度为2节点, 不存在度为1节点
 
 huffman树在数据压缩、编码等领域有广泛应用
 
-例如, huffman编码利用哈夫曼树性质为不同频率字符分配不同长度编码, 从而实现高效数据压缩
+huffman编码利用哈夫曼树性质为不同频率字符分配不同长度编码, 从而实现高效数据压缩
 
 ### 构建
 
@@ -227,7 +227,6 @@ public:
             std::cout << it->first << ": " << it->second << std::endl;
         }
     }
-
 private:
     std::map<NodeType, std::string> m_code_table;
 };
