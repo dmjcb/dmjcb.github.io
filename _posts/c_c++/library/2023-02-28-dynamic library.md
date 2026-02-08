@@ -162,19 +162,7 @@ int app_api(int x, int y) {
 }
 ```
 
-修改dllmain.cpp
-
-![](/assets/image/20241225_232757.jpg)
-
-修改属性
-
-![](/assets/image/20241225_233145.jpg)
-![](/assets/image/20241225_233249.jpg)
-
 生成动态库`test_dll.dll`与动态库导入库`test_dll.lib`
-
-![](/assets/image/20241225_232857.jpg)
-![](/assets/image/20241225_233523.jpg)
 
 `import library`(导入库)文件包含了DLL中导出函数符号信息, 用于链接时解析可执行文件与动态链接库(DLL)之间的函数调用关系
 
@@ -183,8 +171,6 @@ int app_api(int x, int y) {
 - 手动调用
 
 可手动将动态库、导入库、头文件复制到所使用项目中
-
-![](/assets/image/20241225_234024.jpg)
 
 将test_dll.h 与`test_dll.dll`、`test_dll.lib`拷贝到test_project项目中
 
@@ -202,32 +188,17 @@ int main() {
 }
 ```
 
-添加`test_dll.lib`路径, 导入动态库
-
-![](/assets/image/20241225_234111.jpg)
-![](/assets/image/20241225_234248.jpg)
-
-导入后即可执行
+右键项目->属性->链接器->输入->附加依赖项, 添加`test_dll.lib`路径, 导入动态库
 
 - 自动调用
 
-设置库路径
+设置库路径, 右键项目->属性->VC++目录->库目录->添加库文件目录路径
 
-![](/assets/image/20241226_000516.jpg)
+设置头文件路径, 右键项目->属性->VC++目录->包含目录->添加头文件目录路径
 
-设置头文件路径
+配置链接器, 右键项目->属性->链接器->输入->附加依赖项->选择lib文件
 
-![](/assets/image/20241226_001356.jpg)
-
-配置链接器
-
-![](/assets/image/20241226_000641.jpg)
-
-设置运行时依赖
-
-![](/assets/image/20241226_001158.jpg)
-
-之后即可运行
+设置运行时依赖, 之后即可运行
 
 ## 调用动态库
 
