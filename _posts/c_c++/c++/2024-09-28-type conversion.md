@@ -50,9 +50,9 @@ int main() {
     Base* base = new Base();
     // 向下转换
     Derived* derived = static_cast<Derived*>(base);
-
     derived->show();
     delete derived;
+
     return 0;
 }
 ```
@@ -88,6 +88,7 @@ int main() {
     } else {
         // 转换失败
     }
+
     return 0;
 }
 ```
@@ -105,6 +106,7 @@ int main() {
     int* y = const_cast<int*>(&x);
     // 若x原本是常量, 修改它会导致未定义行为
     *y = 10;
+
     return 0;
 }
 ```

@@ -247,7 +247,7 @@ int main() {
 }
 ```
 
-#### 未定义错误
+- 未定义错误
 
 (1) 用C语言编译器将math_module.c生成 `math_module.o`
 
@@ -257,9 +257,9 @@ int main() {
 
 (4) 分别查看符号表, 发现同函数在两个目标文件中符号各不相同
 
-##### 原因分析
+- 原因分析
 
-(1) main.cpp 预处理时, 内容展开
+main.cpp 预处理时, 内容展开
 
 ```diff
 + #include <stdio.h>
@@ -277,19 +277,19 @@ int main() {
 }
 ```
 
-生成main.o时, c++编译器对main.cpp中两个原本C语言函数名`Add`、`get_square_area`进行`name mangling`, 生成新名`_Z3addii`、`_Z13get_square_aread`
+生成main.o时, c++编译器对main.cpp中两个原本C语言函数名`add`、`get_square_area`进行`name mangling`, 生成新名`_Z3addii`、`_Z13get_square_aread`
 
-(2) `math_module.o` 由C编译器编译生成, 没有`name mangling`机制, 函数名未改变
+`math_module.o` 由c编译器编译生成, 没有`name mangling`机制, 函数名未改变
 
-(3) 链接时`main.o`按`_Z3Addii` 符号名到各模块查找函数引用, 结果`math_module.o`里符号名是`Add`、`get_square_area`, 无法匹配, 自然出现函数未定义错误
+链接时`main.o`按`_Z3Addii` 符号名到各模块查找函数引用, 结果`math_module.o`里符号名是`add`、`get_square_area`, 无法匹配, 自然出现函数未定义错误
 
 这种情况需通过`extern "C"`处理
 
 ## extern "C"
 
-c++编译器中提供 `extern "C"`/ `extern "C" {}` 机制, 表示其后续或作用域内函数屏蔽`name mangling`机制, 按C语言风格处理, 保持原本名称
+c++编译器中提供 `extern "C"`/ `extern "C" {}` 机制, 表示其后续或作用域内函数屏蔽`name mangling`机制, 按c语言风格处理, 保持原本名称
 
-通常用于C++代码中调用C语言动态库, 以及C语言调用C++动态库时处理
+通常用于c++代码中调用c语言动态库, 以及c语言调用c++动态库时处理
 
 ### 语法
 
@@ -315,9 +315,9 @@ extern "C" {
 
 #### 仅c++编译时使用
 
-预处理宏`__cplusplus`仅在c++编译器中定义, 可通过该宏判断代码是否被C++编译器编译
+预处理宏`__cplusplus`仅在c++编译器中定义, 可通过该宏判断代码是否被c++编译器编译
 
-- 示例, 仅在代码被C++编译器编译时, 对函数添加`extern "C"`
+- 示例, 仅在代码被c++编译器编译时, 对函数添加`extern "C"`
 
 ```c++
 #if __cplusplus
