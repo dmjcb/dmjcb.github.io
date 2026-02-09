@@ -161,7 +161,7 @@ clang++ cpp_module.cpp -c -o cpp_module.o
 
 #### 同步编译
 
-- 示例, 使用C++编译器同步编译.c、.cpp
+- 示例, 使用c++编译器同步编译.c、.cpp
 
 ```c
 // c_module.h
@@ -251,7 +251,7 @@ int main() {
 
 (1) 用C语言编译器将math_module.c生成 `math_module.o`
 
-(2) 使用C++编译器将main.cpp生成目标文件 `main.o`
+(2) 使用c++编译器将main.cpp生成目标文件 `main.o`
 
 (3) 链接 `math_module.o`、`main.o` 为可执行文件, 出现符号未定义错误
 
@@ -295,7 +295,7 @@ c++编译器中提供 `extern "C"`/ `extern "C" {}` 机制, 表示其后续或�
 
 #### 作用函数
 
-函数名前添加`extern "C"`, 表示使用C++编译器时该函数均按C语言规则编译, 不进行`name mangling`
+函数名前添加`extern "C"`, 表示使用c++编译器时该函数均按C语言规则编译, 不进行`name mangling`
 
 ```c
 extern "C" 函数声明
@@ -338,7 +338,7 @@ extern "C" {
 
 #### 特性
 
-`extern "C"` 修饰函数内不能出现C++所有特性
+`extern "C"` 修饰函数内不能出现c++所有特性
 
 ### 应用
 

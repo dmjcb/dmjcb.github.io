@@ -381,14 +381,14 @@ stat .bashrc
 ```
 
 ```sh
-    File：.bashrc
-    Size：3872      	Blocks：8          IO Block：4096   regular file
-Device：259,2	Inode: 56229892    Links：1
-Access：(0644/-rw-r--r--)  Uid: ( 1000/   dmjcb)   Gid: ( 1000/   dmjcb)
-Access：2026-02-03 16:38:09.136485970 +0800
-Modify：2026-01-27 23:40:30.118701235 +0800
-Change：2026-01-27 23:40:30.118701235 +0800
- Birth：2026-01-27 23:07:45.689791725 +0800
+    File: .bashrc
+    Size: 3872      	Blocks: 8          IO Block: 4096   regular file
+Device: 259,2	Inode: 56229892    Links: 1
+Access: (0644/-rw-r--r--)  Uid: ( 1000/   dmjcb)   Gid: ( 1000/   dmjcb)
+Access: 2026-02-03 16:38:09.136485970 +0800
+Modify: 2026-01-27 23:40:30.118701235 +0800
+Change: 2026-01-27 23:40:30.118701235 +0800
+ Birth: 2026-01-27 23:07:45.689791725 +0800
 ```
 
 Access后9个字符每3个为一组, 每组依次代表文件所有者(属主)权限、同组所有者(属组)权限、其他用户权限
