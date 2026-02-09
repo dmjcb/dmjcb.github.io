@@ -16,7 +16,7 @@ excerpt: "动态库"
 
 - 类 unix 系统(linux/macOS): Shared Object File(SO), 扩展名 `.so`
 
-动态库的特点:
+动态库特点:
 
 - 运行时加载: 程序在编译阶段只包含对库函数的引用, 函数实现到程序运行时才加载
 
