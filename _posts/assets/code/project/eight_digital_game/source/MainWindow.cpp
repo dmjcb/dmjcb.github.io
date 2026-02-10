@@ -200,13 +200,7 @@ void MainWindow::output_path(int num)
     ss.clear();
 }
 
-void MainWindow::ClearLine(QLineEdit *line[9])
-{
-    for (int i = 0; i < 9; i++)
-    {
-        line[i]->clear();
-    }
-}
+
 
 // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void MainWindow::DoClickedAutoOutputButton()
