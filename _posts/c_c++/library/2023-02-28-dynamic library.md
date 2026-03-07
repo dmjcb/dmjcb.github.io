@@ -34,9 +34,9 @@ excerpt: "动态库"
 
 #### name mangling
 
-c++存在`name mangling`机制, 编译时会对所有原函数名进行修改生成唯一符号;c无此机制
+c++存在`name mangling`机制, 编译时会对所有原函数名进行修改生成唯一符号;而c语言无此机制
 
-跨语言调用时, 需要用 `extern "C"` 进行屏蔽
+跨语言调用时, 需要用 `extern "C"` 进行屏蔽`name mangling`机制
 
 ```c++
 extern "C" {
@@ -754,17 +754,17 @@ c++调用c++动态库时, 需注意:
 若动态库含类, 生成动态库时需额外处理
 
 ```c++
-// test_class.hpp
-#ifndef __INCLUDE_TEST_CLASS_HPP__
-#define __INCLUDE_TEST_CLASS_HPP__
+// demo.hpp
+#ifndef __INCLUDE_DEMO_HPP__
+#define __INCLUDE_DEMO_HPP__
 
 #include <iostream>
 
 namespace cpp_api {
-    class TestClass {
+    class Demo {
         public:
-            TestClass() = default;
-            ~TestClass() = default;
+            Demo() = default;
+            ~Demo() = default;
 
             void set_value(const int val);
             void print() const;
@@ -776,15 +776,15 @@ namespace cpp_api {
 ```
 
 ```c++
-// test_class.cpp
-#include "test_class.hpp"
+// demo.cpp
+#include "demo.hpp"
 
 namespace cpp_api {
-    void TestClass::set_value(const int value) {
+    void Demo::set_value(const int value) {
         this->m_value = value;
     }
 
-    void TestClass::print() const {
+    void Demo::print() const {
         std::cout << "m_value = " << m_value << std::endl;
     }
 }
@@ -794,13 +794,13 @@ namespace cpp_api {
 
 以类进行调用时需在类名前增加`export symbol`, 同时所生成库仅支持c++调用
 
-- 示例, 类调用动态库libtest_class.so
+- 示例, 类调用libdemo.so
 
-修改 test_class.hpp, 增加导出符号
+修改 demo.hpp, 增加导出符号
 
 ```c++
-#ifndef __INCLUDE_TEST_CLASS_HPP__
-#define __INCLUDE_TEST_CLASS_HPP__
+#ifndef __INCLUDE_DEMO_HPP__
+#define __INCLUDE_DEMO_HPP__
 
 #include <iostream>
 
@@ -811,34 +811,34 @@ namespace cpp_api {
 #endif
 
 namespace cpp_api {
-    class __EXPORT TestClass {
+    class __EXPORT Demo {
     public:
-        TestClass() = default;
-        ~TestClass() = default;
+        Demo() = default;
+        ~Demo() = default;
 
         void set_value(const int val);
         void print() const;
     private:
-        int mValue;
+        int m_value;
     };
 }      // namespace cpp_api
-#endif // __INCLUDE_CLASS_API_HPP__
+#endif // __INCLUDE_DEMO_HPP__
 ```
 
 生成动态库
 
 ```sh
-clang++ test_class.cpp -fPIC -shared -o libtest_class.so
+clang++ demo.cpp -fPIC -shared -o libdemo.so
 ```
 
 调用
 
 ```c++
 // main.cpp
-#include "test_class.hpp"
+#include "demo.hpp"
 
 int main() {
-    cpp_api::TestClass obj;
+    cpp_api::Demo obj;
     obj.set_value(0xFFFF);
     obj.print();
     return 0;
@@ -858,7 +858,7 @@ int main() {
 #ifndef __INCLUDE_CPP_API_H__
 #define __INCLUDE_CPP_API_H__
 
-#include "test_class.hpp"
+#include "demo.hpp"
 
 #include <iostream>
 
@@ -869,10 +869,10 @@ int main() {
 #endif
 
 extern "C" {
-    __EXPORT void* test_class_create();
-    __EXPORT void  test_class_destroy(void* handle);
-    __EXPORT void  test_class_set_value(void* handle, int val);
-    __EXPORT void  test_class_print(void* handle);
+    __EXPORT void* demo_create();
+    __EXPORT void demo_destroy(void* handle);
+    __EXPORT void demo_set_value(void* handle, int val);
+    __EXPORT void demo_print(void* handle);
 }
 #endif // __INCLUDE_CPP_API_H__
 ```
@@ -881,23 +881,23 @@ extern "C" {
 // cpp_api.cpp
 #include "cpp_api.hpp"
 
-__EXPORT void* test_class_create() {
-    std::cout << "create TestClass" << std::endl;
-    return new cpp_api::TestClass();
+__EXPORT void* demo_create() {
+    std::cout << "create Demo" << std::endl;
+    return new cpp_api::Demo();
 }
 
-__EXPORT void test_class_destroy(void* handle) {
-    std::cout << "destroy TestClass" << std::endl;
-    delete static_cast<cpp_api::TestClass*>(handle);
+__EXPORT void demo_destroy(void* handle) {
+    std::cout << "destroy Demo" << std::endl;
+    delete static_cast<cpp_api::Demo*>(handle);
 }
 
-__EXPORT void test_class_set_value(void* handle, int val) {
-    cpp_api::TestClass* obj = static_cast<cpp_api::TestClass*>(handle);
+__EXPORT void demo_set_value(void* handle, int val) {
+    cpp_api::Demo* obj = static_cast<cpp_api::Demo*>(handle);
     obj->set_value(val);
 }
 
-__EXPORT void test_class_print(void* handle) {
-    cpp_api::TestClass* obj = static_cast<cpp_api::TestClass*>(handle);
+__EXPORT void demo_print(void* handle) {
+    cpp_api::Demo* obj = static_cast<cpp_api::Demo*>(handle);
     obj->print();
 }
 ```
@@ -905,7 +905,7 @@ __EXPORT void test_class_print(void* handle) {
 生成动态库
 
 ```sh
-clang++ test_class.cpp c_api.cpp -fPIC -shared -o libc_api.so
+clang++ demo.cpp c_api.cpp -fPIC -shared -o libc_api.so
 ```
 
 调用
@@ -916,12 +916,11 @@ clang++ test_class.cpp c_api.cpp -fPIC -shared -o libc_api.so
 #include "cpp_api.hpp"
 
 int main() {
-    void* handle = test_class_create();
+    void* handle = demo_create();
 
-    test_class_set_value(handle, 0xFFFF);
-    test_class_print(handle);
-    test_class_destroy(handle);
-
+    demo_set_value(handle, 0xFFFF);
+    demo_print(handle);
+    demo_destroy(handle);
     return 0;
 }
 ```
@@ -933,9 +932,9 @@ int main() {
 - 示例, 生成含模板动态库
 
 ```c++
-// test_template.hpp
-#ifndef __INCLUDE_TEST_TEMPLATE_HPP__
-#define __INCLUDE_TEST_TEMPLATE_HPP__
+// template_demo.hpp
+#ifndef __INCLUDE_TEMPLATE_DEMO_HPP__
+#define __INCLUDE_TEMPLATE_DEMO_HPP__
 
 #include <iostream>
 
@@ -950,18 +949,18 @@ T sub(T x, T y);
 
 
 template<typename T>
-class TestTemplate {
+class TemplateDemo {
 public:
-    TestTemplate() = default;
-    ~TestTemplate() = default;
+    TemplateDemo() = default;
+    ~TemplateDemo() = default;
     static T add(T x, T y);
 };
-#endif // __INCLUDE_TEST_TEMPLATE_HPP__
+#endif // __INCLUDE_TEMPLATE_DEMO_HPP__
 ```
 
 ```c++
-// test_template.cpp
-#include "test_template.hpp"
+// template_demo.cpp
+#include "template_demo.hpp"
 
 template<typename T>
 T sub(T x, T y) {
@@ -969,34 +968,34 @@ T sub(T x, T y) {
 }
 
 template<typename T>
-T TestTemplate<T>::add(T x, T y) {
+T TemplateDemo<T>::add(T x, T y) {
     return T(x + y);
 }
 
-// 1. 实例化模板函数, 添加导出符号
+// 1.实例化模板函数, 添加导出符号
 template __EXPORT int sub<int>(int, int);
 template __EXPORT double sub<double>(double, double);
 
-// 2. 实例化类模板, 添加导出符号
-template class __EXPORT TestTemplate<int>;
-template class __EXPORT TestTemplate<double>;
-template class __EXPORT TestTemplate<std::string>;
+// 2.实例化类模板, 添加导出符号
+template class __EXPORT TemplateDemo<int>;
+template class __EXPORT TemplateDemo<double>;
+template class __EXPORT TemplateDemo<std::string>;
 ```
 
 调用
 
 ```c++
 // main.cpp
-#include "test_template.hpp"
+#include "template_demo.hpp"
 #include <iostream>
 
 int main() {
     std::cout << sub<int>(0xA, 0xB) << std::endl;
     std::cout << sub<double>(1.234, 9.876) << std::endl;
 
-    std::cout << TestTemplate<int>::add(0xA, 0xB) << std::endl;
-    std::cout << TestTemplate<double>::add(1.234, 9.876) << std::endl;
-    std::cout << TestTemplate<std::string>::add("Hello", "World") << std::endl;
+    std::cout << TemplateDemo<int>::add(0xA, 0xB) << std::endl;
+    std::cout << TemplateDemo<double>::add(1.234, 9.876) << std::endl;
+    std::cout << TemplateDemo<std::string>::add("Hello", "World") << std::endl;
 
     return 0;
 }
