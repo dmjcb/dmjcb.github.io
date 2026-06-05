@@ -37,34 +37,27 @@ class GitHelper:
 
 
 class AutoUploadBlog:
-    IMG_RE = re.compile(r"!\[.*?\]\(/assets/image/(.*?)\)")
-
     def __init__(self):
-        root = Path.home() / "Documents" / "code"
+        root = Path.home() / "Documents"
+
         self.git = GitHelper()
         self.blog = root / "self_blog"
         self.jekyll = root / "dmjcb.github.io"
-        self.assets = root / "self_assets"
         self.img = self.blog / "assets" / "image"
 
     def clean_unused_img(self) -> int:
+        IMG_RE = re.compile(r"!\[.*?\]\(/assets/image/(.*?)\)")
+
         used = {self.img / n for n in {"head.jpg", "workbench.jpg"}}
         for md in self.blog.rglob("*.md"):
-            used |= {self.img / m for m in self.IMG_RE.findall(md.read_text(errors="ignore"))}
+            used |= {self.img / m for m in IMG_RE.findall(md.read_text(errors="ignore"))}
+
         removed = 0
         for f in self.img.iterdir():
             if f.is_file() and not f.name.startswith("_") and f not in used:
                 f.unlink()
                 removed += 1
         return removed
-
-    def upload_assets(self, msg: str) -> bool:
-        for p in self.assets.iterdir():
-            if p.name != ".git":
-                shutil.rmtree(p) if p.is_dir() else p.unlink()
-
-        shutil.copytree(self.blog / "assets", self.assets, dirs_exist_ok=True)
-        return self.git.is_clean(self.assets) or self.git.push(self.assets, msg, False)
 
     def upload_blog(self, msg: str) -> bool:
         removed = self.clean_unused_img()
