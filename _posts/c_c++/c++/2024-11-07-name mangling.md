@@ -144,14 +144,14 @@ clang++ cpp_module.cpp -c -o cpp_module.o
 使用`nm` 查看符号表, 发现函数符号名称与源代码中一致
 
 ```sh
-0000000000000000 r .L.str
-000000000000000a r .L.str.1
-                 U printf
-0000000000000070 T _Z13display_valued
-0000000000000040 T _Z13display_valuei
-0000000000000020 T _Z7add_numdd
-0000000000000000 T _Z7add_numii
-                 U _ZSt21ios_base_library_initv
+0000000000000000    r .L.str
+000000000000000a    r .L.str.1
+                    U printf
+0000000000000070    T _Z13display_valued
+0000000000000040    T _Z13display_valuei
+0000000000000020    T _Z7add_numdd
+0000000000000000    T _Z7add_numii
+                    U _ZSt21ios_base_library_initv
 
 ```
 
@@ -199,11 +199,11 @@ int main() {
 只要使用c++编译器, 源文件内函数名都会被执行`name mangling`
 
 ```sh
-0000000000000000 r .LCPI0_0
-0000000000000000 T main
-                 U _Z13display_valued
-                 U _Z7add_numii
-                 U _ZSt21ios_base_library_initv
+0000000000000000    r .LCPI0_0
+0000000000000000    T main
+                    U _Z13display_valued
+                    U _Z7add_numii
+                    U _ZSt21ios_base_library_initv
 ```
 
 #### 模块链接
@@ -358,8 +358,9 @@ extern "C" {
 int main() {
     int res = add(1, 2);
     double area = get_square_area(3.74);
-    std::cout << "Add = " << res << std::endl;
-    std::cout << "SquareArea = " << area << std::endl;
+    std::cout << "add = " << res << std::endl;
+    std::cout << "squareArea = " << area << std::endl;
+
     return 0;
 }
 ```
@@ -381,6 +382,7 @@ int main() {
     double area = get_square_area(3.74);
     std::cout << "add = " << res << std::endl;
     std::cout << "square_area = " << area << std::endl;
+
     return 0;
 }
 ```

@@ -12,9 +12,9 @@ excerpt: "动态库"
 
 在不同系统中, 动态库的实现方式不同:
 
-- windows: Dynamic Link Library(DLL), 扩展名 `.dll`
+- `windows`: `Dynamic Link Library(DLL)`, 扩展名 `.dll`
 
-- 类 unix 系统(linux/macOS): Shared Object File(SO), 扩展名 `.so`
+- 类 `unix` 系统(`linux/macOS`): `Shared Object File(SO)`, 扩展名 `.so`
 
 动态库特点:
 
@@ -270,7 +270,7 @@ libtest_api.so => not found
 ......
 ```
 
-可通过三种方法解决
+可通过三种方法解决: 
 
 a. 临时使用`export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:路径`, 增加动态库路径
 
