@@ -36,7 +36,7 @@ class GitHelper:
         return True
 
 
-class AutoUploadBlog:
+class AutoUpload:
     def __init__(self):
         root = Path.home() / "Documents"
 
@@ -63,7 +63,9 @@ class AutoUploadBlog:
         removed = self.clean_unused_img()
         if removed:
             print(f"🧹 清理未使用图片: {removed}")
-        return self.git.push(self.blog, msg)
+
+        result = self.git.push(self.blog, msg)
+        return result
 
     def upload_jekyll(self, msg: str) -> None:
         shutil.rmtree(self.jekyll / "_posts", ignore_errors=True)
@@ -75,11 +77,11 @@ class AutoUploadBlog:
         shutil.rmtree(self.jekyll / "assets/image", ignore_errors=True)
         shutil.copytree(self.img, self.jekyll / "assets/image")
 
-        self.git.push(self.jekyll, msg)
+        result = self.git.push(self.jekyll, msg)
 
 
 if __name__ == "__main__":
-    auto = AutoUploadBlog()
+    auto = AutoUpload()
 
     print("1. 删除无用图片\n2. 上传 blog\n3. 上传 jekyll\n4. 都上传")
     c = int(input("选择: ").strip())

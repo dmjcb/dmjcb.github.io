@@ -1,8 +1,6 @@
-# 监听粘贴板, 发现内容为截取图片地址后修改为图床地址
 import pyperclip
 import time
 import re
-
 
 def listen_clipboard():
     def match_datetime_format(date_str):
@@ -14,7 +12,7 @@ def listen_clipboard():
         e = content.splitlines()
         if e:
             v = e[0]
-            # 匹配图片格式 20241110_235952.jpg
+            # example 20241110_235952.jpg
             if '.jpg' in v and match_datetime_format(v.split('.')[0]):
                 v = "![](/assets/image/{0})".format(v)
                 pyperclip.copy(v)
