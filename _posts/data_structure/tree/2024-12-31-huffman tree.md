@@ -8,11 +8,11 @@ excerpt: "huffman tree"
 
 ## huffman树
 
-哈夫曼树(huffman tree), 又称霍夫曼树或最优二叉树, 是一种特殊二叉树结构, 广泛应用于数据压缩和编码领域
+哈夫曼树($huffman tree$), 又称霍夫曼树或最优二叉树, 是一种特殊二叉树结构, 广泛应用于数据压缩和编码领域
 
 ### 定义
 
-给定N个权值作为N个叶子结点, 构造一棵二叉树, 若该树带权路径长度(weighted path length, WPL)达到最小, 且权值较大结点离根较近, 则称这样二叉树为最优二叉树, 也称为huffman树
+给定N个权值作为N个叶子结点, 构造一棵二叉树, 若该树带权路径长度(weighted path length, WPL)达到最小, 且权值较大结点离根较近, 则称这样二叉树为最优二叉树, 也称为$huffman$树
 
 #### 性质
 
@@ -22,9 +22,9 @@ excerpt: "huffman tree"
 
 ##### 结构性质
 
-huffman树中, 权值越大叶子节点越靠近根节点, 而权值较小结点则离根结点较远
+$huffman$树中, 权值越大叶子节点越靠近根节点, 而权值较小结点则离根结点较远
 
-huffman树中只有度为0(叶子节点)和度为2节点, 不存在度为1节点
+$huffman$树中只有度为0(叶子节点)和度为2节点, 不存在度为1节点
 
 ##### 构造性质
 
@@ -32,9 +32,9 @@ huffman树中只有度为0(叶子节点)和度为2节点, 不存在度为1节点
 
 #### 应用性质
 
-huffman树在数据压缩、编码等领域有广泛应用
+$huffman$树在数据压缩、编码等领域有广泛应用
 
-huffman编码利用哈夫曼树性质为不同频率字符分配不同长度编码, 从而实现高效数据压缩
+$huffman$编码利用哈夫曼树性质为不同频率字符分配不同长度编码, 从而实现高效数据压缩
 
 ### 构建
 
@@ -182,7 +182,6 @@ struct Node {
         m_name(name), m_frequency(freq), m_left_child(std::move(left)), m_right_child(std::move(right)) {}
 };
 
-
 template<typename NodeType, typename WeightType>
 class HuffmanTree {
 public:
@@ -201,6 +200,7 @@ public:
         while (min_heap.size() > 1) {
             NodePtr left = min_heap.top();
             min_heap.pop();
+
             NodePtr right = min_heap.top();
             min_heap.pop();
             min_heap.push(std::make_shared<Node<NodeType, WeightType>>('\0', left->m_frequency + right->m_frequency, left, right));
