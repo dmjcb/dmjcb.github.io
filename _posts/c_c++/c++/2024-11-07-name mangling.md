@@ -6,21 +6,22 @@ tags: [c_c++]
 excerpt: "name mangling"
 ---
 
-## 概念
+`c++`为支持函数重载、命名空间、类、模板等特性, 存在`name mangling`机制; c语言则无此机制
 
-c++为支持函数重载、命名空间、类、模板等特性, 存在`name mangling`机制
+例如, 对于函数重载, `c++`编译器会在编译阶段通过添加参数类型、参数个数等额外信息对函数重命名, 生成唯一符号, 以区分同名函数
 
-例如对于函数重载, c++编译器会在编译阶段通过添加参数类型、参数个数等额外信息对函数重命名, 生成唯一符号, 以区分同名函数
+- 示例, 定义两个同名函数通过`name mangling`生成唯一名称
 
-- 示例, c++中同名函数经过`name mangling`机制后生成唯一名称
+
 
 ```mermaid
 graph LR;
-    A[/"int Sum(int x, int y)"/]
-    A1[/"_Z6Sumii"/]
-    B[/"double Sum(double x, double y)"/]
-    B1[/"_Z6Sumdd"/]
-    C(name mangling)
+    A[/"int sum(int x, int y)"/]
+    A1[/"_Z6sumii"/]
+    B[/"double sum(double x, double y)"/]
+    B1[/"_Z6sumdd"/]
+    C(c++ name mangling)
+
     A-->C-->A1
     B-->C-->B1
 ```
@@ -31,11 +32,11 @@ graph LR;
 
 链接阶段, 链接器会按照符号名来解析不同目标文件和库文件中所引用符号, 以正确区分和链接函数
 
-### C语言
+### c
 
-C语言无`name mangling`机制, 每个函数名称必须唯一, 链接器可直接使用名称解析符号
+c语言无`name mangling`机制, 每个函数名称必须唯一, 链接器可直接使用名称解析符号
 
-- 示例, C语言生成目标文件
+- 示例, c生成目标文件
 
 ```c
 // c_module.h
@@ -67,15 +68,15 @@ clang c_module.c -c -o c_module.o
 使用`nm` 查看符号表, 发现函数符号名称与源代码中一致
 
 ```sh
-0000000000000000 T add_num
-0000000000000020 T display_value
-0000000000000000 r .L.str
-                 U printf
+0000000000000000    T add_num
+0000000000000020    T display_value
+0000000000000000    r .L.str
+                    U printf
 ```
 
 #### 错误情况
 
-- 示例, C语言源文件函数同名情况
+- 示例, c语言源文件函数同名
 
 ```c
 #include <stdio.h>
@@ -141,7 +142,7 @@ void display_value(double num) {
 clang++ cpp_module.cpp -c -o cpp_module.o
 ```
 
-使用`nm` 查看符号表, 发现函数符号名称与源代码中一致
+查看符号表, 发现同名函数符号名被重命名成唯一符号
 
 ```sh
 0000000000000000    r .L.str
@@ -152,16 +153,13 @@ clang++ cpp_module.cpp -c -o cpp_module.o
 0000000000000020    T _Z7add_numdd
 0000000000000000    T _Z7add_numii
                     U _ZSt21ios_base_library_initv
-
 ```
-
-查看符号表, 发现同名函数符号名被重命名成唯一符号
 
 ### c/c++ 混合
 
 #### 同步编译
 
-- 示例, 使用c++编译器同步编译.c、.cpp
+- 示例, 使用c++编译器同步编译`.c`、`.cpp`
 
 ```c
 // c_module.h
@@ -196,7 +194,7 @@ int main() {
 }
 ```
 
-只要使用c++编译器, 源文件内函数名都会被执行`name mangling`
+查看符号表, 发现只要使用c++编译器, 源文件内所有函数名都会被执行`name mangling`
 
 ```sh
 0000000000000000    r .LCPI0_0
@@ -208,7 +206,7 @@ int main() {
 
 #### 模块链接
 
-c模块与c++链接过程中可能会出现符号未定义错误
+c编译的中间文件与c++编译的中间文件在链接过程中可能会出现符号未定义错误
 
 - 示例
 
@@ -241,25 +239,39 @@ double get_square_area(double length) {
 int main() {
     int res = add(1, 2);
     double area = get_square_area(3.74);
+
     std::cout << "add = " << res << std::endl;
     std::cout << "square_area = " << area << std::endl;
+
     return 0;
 }
 ```
 
-- 未定义错误
+- 编译链接
 
-(1) 用C语言编译器将math_module.c生成 `math_module.o`
+(1) 用c语言编译器将math_module.c生成 `math_module.o`
+
+```sh
+clang math_module.c -c -o math_module.o
+```
 
 (2) 使用c++编译器将main.cpp生成目标文件 `main.o`
 
+```sh
+clang++ main.cpp.cpp -c -o main.o
+```
+
 (3) 链接 `math_module.o`、`main.o` 为可执行文件, 出现符号未定义错误
+
+```sh
+clang++ math_module.o main.o -o main
+```
 
 (4) 分别查看符号表, 发现同函数在两个目标文件中符号各不相同
 
 - 原因分析
 
-main.cpp 预处理时, 内容展开
+(1) main.cpp 预处理时, 内容展开
 
 ```diff
 + #include <stdio.h>
@@ -277,31 +289,37 @@ int main() {
 }
 ```
 
-生成main.o时, c++编译器对main.cpp中两个原本C语言函数名`add`、`get_square_area`进行`name mangling`, 生成新名`_Z3addii`、`_Z13get_square_aread`
+c++编译器生成main.o时, 对main.cpp中两个原本c语言函数名`add`、`get_square_area`进行`name mangling`, 生成新名`_Z3addii`、`_Z13get_square_aread`
 
-`math_module.o` 由c编译器编译生成, 没有`name mangling`机制, 函数名未改变
+(2) c编译器编译生成`math_module.o`, 没有`name mangling`机制, 函数名未改变
 
-链接时`main.o`按`_Z3Addii` 符号名到各模块查找函数引用, 结果`math_module.o`里符号名是`add`、`get_square_area`, 无法匹配, 自然出现函数未定义错误
+(3) 链接时`main.o`按`_Z3Addii` 符号名到各模块查找函数引用, 结果`math_module.o`里符号名是`add`、`get_square_area`, 无法匹配, 自然出现函数未定义错误
 
-这种情况需通过`extern "C"`处理
+此时可通过`extern "C"`处理
 
 ## extern "C"
 
 c++编译器中提供 `extern "C"`/ `extern "C" {}` 机制, 表示其后续或作用域内函数屏蔽`name mangling`机制, 按c语言风格处理, 保持原本名称
 
-通常用于c++代码中调用c语言动态库, 以及c语言调用c++动态库时处理
+通常用于c++中调用c语言动态库, 以及c语言调用c++动态库时处理
+
+- 特点
+
+`extern "C"` 只能用于函数和全局变量声明, 不能用于类成员或模板
+
+`extern "C"` 修饰函数内不能出现c++所有特性
 
 ### 语法
 
-#### 作用函数
-
-函数名前添加`extern "C"`, 表示使用c++编译器时该函数均按C语言规则编译, 不进行`name mangling`
+#### 作用于函数
 
 ```c
 extern "C" 函数声明
 ```
 
-#### 作用代码块
+函数名前添加`extern "C"`, 表示使用c++编译器时该函数均按c语言规则编译, 不进行`name mangling`
+
+#### 作用于代码块
 
 `extern "C" {}`表示代码块内所有函数均调用`extern "C"`
 
@@ -329,16 +347,6 @@ extern "C" {
 }
 #endif
 ```
-
-### 特点
-
-#### 作用对象
-
-`extern "C"` 只能用于函数和全局变量声明, 不能用于类成员或模板
-
-#### 特性
-
-`extern "C"` 修饰函数内不能出现c++所有特性
 
 ### 应用
 

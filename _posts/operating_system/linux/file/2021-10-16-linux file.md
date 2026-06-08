@@ -69,7 +69,7 @@ lrwxrwxrwx 1 root root 21 Dec 10  2  2024 /lib/x86_64-linux-gnu/libpcre2-16.so.0
 
 (1) `lrwxrwxrwx` 文件权限和类型
 
-第一个字符l表示这是一个符号链接(symbolic link), 而不是一个普通文件或目录
+第一个字符l表示这是一个符号链接(`symbolic link`), 而不是一个普通文件或目录
 
 接下来九个字符分为三组, 每组三个字符, 分别代表文件所有者的权限(rwx, 即读、写、执行)、所属组的权限(rwx, 同上)和其他用户的权限(rwx, 同上)
 

@@ -6,11 +6,9 @@ tags: [c_c++]
 excerpt: "动态库"
 ---
 
-## 概念
+`dynamic library`(动态库)是一类在程序运行时加载的文件, 包含代码和数据, 可被多个程序共享使用
 
-`dynamic library`(动态库)是一类在程序运行时加载的库文件, 包含可被多个程序共享使用的代码和数据
-
-在不同系统中, 动态库的实现方式不同:
+各系统中, 动态库实现方式不同:
 
 - `windows`: `Dynamic Link Library(DLL)`, 扩展名 `.dll`
 
@@ -65,14 +63,12 @@ __EXPORT void hello();
 
 #### 编译器生成
 
-源文件 .c/.cpp → 编译 → 动态库 .so/.dll
-
 ```mermaid
 graph LR;
-    A[/.c/.cpp/]-->B(编译器)-->C[/.so/.dll/]
+    A[/源文件.c/.cpp/]-->B(编译器)-->C[/库文件.so/.dll/]
 ```
 
-- 示例, linux上将生成动态库, 提供接口函数`add`、`print`
+- 示例, 生成动态库, 提供接口函数`add`、`print`
 
 ```sh
 clang -fPIC -shared test_api.c -o libtest_api.so
@@ -80,7 +76,7 @@ clang -fPIC -shared test_api.c -o libtest_api.so
 
 ```mermaid
 graph LR;
-    X(参数含义)
+    X(参数)
     X-->A("-fPIC")
         A-->A1(PIC位置无关代码position independent code)-->A2(生成代码可在内存中任意位置运行)
     X-->B("-shared")-->B1(指示编译器生成共享库)
@@ -208,7 +204,7 @@ graph LR;
     A[/其他目标文件/]
     X-->B(链接器)
     A-->B(链接器)
-    B-->C(可执行文件)
+    B-->C[/可执行文件/]
 ```
 
 ### implicit linking(隐式调用)
@@ -225,7 +221,7 @@ graph LR;
 
 链接器ld默认库搜索路径是`/lib`和`/usr/lib`, 若库位于其他路径, 需通过设置环境变量`LD_LIBRARY_PATH`或修改`/etc/ld.so.conf`指定库搜索路径
 
-(3) 运行程序前, 确保动态链接库可被找到, 使用`ldd`命令可以查看程序所依赖动态链接库
+(3) 运行程序前, 需确保动态链接库可被找到; 使用`ldd`命令可查看程序所依赖动态链接库
 
 (4) 应用程序启动时, 操作系统会自动加载并链接动态库, 然后可调用库中所导出函数
 
@@ -256,7 +252,7 @@ clang++ 源文件 库文件 -o 可执行文件
 
 - 路径错误
 
-调用main时, 发现报错
+调用main时, 报错: 
 
 ```sh
 error while loading shared libraries: libtest_api.so: cannot open shared object file: No such file or directory
@@ -465,7 +461,7 @@ void swap_value(int *x, int *y) {
 clang++ py_api.cpp -fPIC -shared -o libpy_api.so
 ```
 
-##### 加载
+- 加载库文件
 
 ```py
 from ctypes import *
@@ -511,9 +507,9 @@ print(y.contents)
 
 #### 含全局变量
 
-当动态库中包含全局变量时, 需要在头文件中使用 extern 声明, 表示该变量或函数在另一个文件或编译单元中定义
+当动态库中包含全局变量时, 需要在头文件中使用 `extern` 声明, 表示该变量或函数在另一个文件或编译单元中定义
 
-对于全局变量, extern 声明通常放在头文件中, 以便在多个源文件之间共享同个变量
+对于全局变量, `extern` 声明通常放在头文件中, 以便在多个源文件之间共享同个变量
 
 - 示例, 使用动态库中全局变量
 
@@ -610,7 +606,7 @@ int add_num(int x, int y) {
 clang c_api.c -fPIC -shared -o libc_api.so
 ```
 
-生成库时, 因C没有`name mangling`机制, 所生成函数符号名仍然为`add_num`
+生成库时, 因c没有`name mangling`机制, 所以生成函数符号名仍然为`add_num`
 
 ```sh
 0000000000001100 T add_num
@@ -728,8 +724,8 @@ int main() {
 查看main.o符号表
 
 ```sh
-                 U add_num
-0000000000000000 T main
+                    U add_num
+0000000000000000    T main
 ......
 ```
 
@@ -741,13 +737,13 @@ int main() {
 
 c++调用c++动态库时, 需注意:
 
-1. 只要在同一编译器下, 一般不会有 name mangling 的问题
+1. 只要在同一编译器下, 一般不会有 `name mangling` 的问题
 
-2. ABI兼容性, 不同编译器可能有不同c++ ABI(如 GCC vs Clang vs MSVC), 导致同c++ 动态库在不同编译器下可能无法直接使用
+2. `ABI`兼容性, 不同编译器可能有不同c++ `ABI`(如 `GCC` vs `Clang` vs `MSVC`), 导致同c++ 动态库在不同编译器下可能无法直接使用
 
-3. 类和模板, 导出类到动态库时, 虚函数表、构造析构函数需要小心, 尽量用纯 C 风格接口, 或者提供工厂函数返回指针
+3. 类和模板, 导出类到动态库时, 虚函数表、构造析构函数需要小心, 尽量用纯 c 风格接口, 或者提供工厂函数返回指针
 
-4. c++异常可以在同编译器下传递, 但跨DLL边界要小心, 尤其在windows下
+4. c++异常可以在同编译器下传递, 但跨DLL边界需谨慎, 尤其在windows下
 
 ##### 含类动态库
 
@@ -841,6 +837,7 @@ int main() {
     cpp_api::Demo obj;
     obj.set_value(0xFFFF);
     obj.print();
+
     return 0;
 }
 ```
