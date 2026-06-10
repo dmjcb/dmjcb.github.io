@@ -6,13 +6,15 @@ tags: [c_c++]
 excerpt: "name mangling"
 ---
 
+函数和变量在本质上都是地址助记符, 在链接过程中称为`symbol`(符号)
+
+链接阶段, 链接器会按照符号名来解析不同目标文件和库文件中所引用符号, 以正确区分和链接函数
+
 `c++`为支持函数重载、命名空间、类、模板等特性, 存在`name mangling`机制; c语言则无此机制
 
 例如, 对于函数重载, `c++`编译器会在编译阶段通过添加参数类型、参数个数等额外信息对函数重命名, 生成唯一符号, 以区分同名函数
 
-- 示例, 定义两个同名函数通过`name mangling`生成唯一名称
-
-
+- 示例, c++定义两个同名函数后, 因`name mangling`生成唯一名称
 
 ```mermaid
 graph LR;
@@ -20,17 +22,13 @@ graph LR;
     A1[/"_Z6sumii"/]
     B[/"double sum(double x, double y)"/]
     B1[/"_Z6sumdd"/]
-    C(c++ name mangling)
+    C(name mangling)
 
     A-->C-->A1
     B-->C-->B1
 ```
 
-## 符号处理
-
-函数和变量在本质上都是地址助记符, 在链接过程中称为`symbol`(符号)
-
-链接阶段, 链接器会按照符号名来解析不同目标文件和库文件中所引用符号, 以正确区分和链接函数
+## 对比
 
 ### c
 
@@ -65,7 +63,7 @@ void display_value(double num) {
 clang c_module.c -c -o c_module.o
 ```
 
-使用`nm` 查看符号表, 发现函数符号名称与源代码中一致
+使用`nm` 查看符号表, 发现函数的符号名与源代码中名称一致
 
 ```sh
 0000000000000000    T add_num
@@ -142,7 +140,7 @@ void display_value(double num) {
 clang++ cpp_module.cpp -c -o cpp_module.o
 ```
 
-查看符号表, 发现同名函数符号名被重命名成唯一符号
+查看符号表, 发现同名函数的符号名被重命名成唯一符号名
 
 ```sh
 0000000000000000    r .L.str
@@ -194,7 +192,7 @@ int main() {
 }
 ```
 
-查看符号表, 发现只要使用c++编译器, 源文件内所有函数名都会被执行`name mangling`
+查看符号表发现, 只要使用c++编译器, 源文件内所有函数名都会被执行`name mangling`
 
 ```sh
 0000000000000000    r .LCPI0_0
