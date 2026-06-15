@@ -10,29 +10,41 @@ excerpt: "动态库"
 
 各系统中, 动态库实现方式不同:
 
-- `windows`: `Dynamic Link Library(DLL)`, 扩展名 `.dll`
+- `windows`
 
-- 类 `unix` 系统(`linux/macOS`): `Shared Object File(SO)`, 扩展名 `.so`
+`Dynamic Link Library(DLL)`, 扩展名 `.dll`
+
+- 类 `unix` 系统(`linux/macOS`)
+
+`Shared Object File(SO)`, 扩展名 `.so`
 
 动态库特点:
 
-- 运行时加载: 程序在编译阶段只包含对库函数的引用, 函数实现到程序运行时才加载
+- 运行时加载
 
-- 共享性: 多个程序可共享同一动态库, 减少内存和磁盘占用
+程序在编译阶段只包含对库函数的引用, 函数实现到程序运行时才加载
 
-- 可独立更新: 更新动态库无需重新编译所有依赖程序
+- 共享性
 
-- 多语言支持: 可被多种语言调用(需注意语言间类型兼容)
+多个程序可共享同一动态库, 减少内存和磁盘占用
+
+- 可独立更新
+
+更新动态库无需重新编译所有依赖程序
+
+- 多语言支持
+
+可被多种语言调用(需注意语言间类型兼容)
 
 ## 开发动态库
 
 ### 关键特性
 
-在创建c和c++动态库时有一些关键特性
+在创建`c`和`c++`动态库时有一些关键特性
 
 #### name mangling
 
-c++存在`name mangling`机制, 编译时会对所有原函数名进行修改生成唯一符号;而c语言无此机制
+`c++`存在`name mangling`机制, 编译时会对所有原函数名进行修改生成唯一符号;而`c`语言无此机制
 
 跨语言调用时, 需要用 `extern "C"` 进行屏蔽`name mangling`机制
 
@@ -48,6 +60,10 @@ extern "C" {
 
 为了让库函数被外部程序调用, 需要将函数标记为导出
 
+- `windows`: `__declspec(dllexport)`
+
+- `linux`: `__attribute__((visibility("default")))`
+
 ```c++
 #if defined(_WIN32)
     #define __EXPORT __declspec(dllexport)
@@ -55,7 +71,6 @@ extern "C" {
     #define __EXPORT __attribute__((visibility("default")))
 #endif
 
-// 添加导出符号
 __EXPORT void hello();
 ```
 
@@ -82,11 +97,7 @@ graph LR;
     X-->B("-shared")-->B1(指示编译器生成共享库)
 ```
 
-查看符号表
-
-```sh
-nm libtest_api.so
-```
+`nm`查看符号表
 
 ```sh
 0000000000001110 T add
@@ -211,7 +222,7 @@ graph LR;
 
 编译阶段, 编译器将动态库符号和导入函数信息写入所生成中可执行文件特定区段
 
-加载时, 操作系统会自动查找并加载所需动态库, 并根据动态库导出表与程序中导入表相配对以确定程序使用动态库中代码位置
+加载时, 系统会自动查找加载所需动态库, 并根据动态库导出表与程序中导入表相配对以确定程序使用动态库中代码位置
 
 #### 过程
 
@@ -301,12 +312,8 @@ target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/libtest_api.so)
 
 ```mermaid
 graph LR;
-    X(windows)-->A2(LoadLibrary 加载)-->B2(GetProcAddress 获取函数地址)-->C2(FreeLibrary 关闭)
-```
-
-```mermaid
-graph LR;
-    X(linux)-->A1(dlopen 加载)-->B1(dlsym 获取函数地址)-->C1(dlclose 关闭)
+    A(linux)--加载-->A1(dlopen)--获取函数地址-->B1(dlsym)--关闭-->C1(dlclose)
+    B(windows)--加载-->A2(LoadLibrary)--获取函数地址-->B2(GetProcAddress)--关闭-->C2(FreeLibrary)
 ```
 
 ```c++
@@ -361,7 +368,7 @@ int main() {
 
 ##### 编译器
 
-linux下需额外链接加载器库`libdl`
+`linux`下需额外链接加载器库`libdl`
 
 ```sh
 clang++ main.cpp -ldl -o main
@@ -402,7 +409,7 @@ target("main")
 
 > [python ctypes(数据类型详细踩坑指南)](https://zhuanlan.zhihu.com/p/145165873)
 
-python通过`ctypes`库可调用c/c++动态库, 但动态库函数声明中不能出现c++语言特性
+`python`通过`ctypes`库可调用`c/c++`动态库, 但动态库函数声明中不能出现`c++`语言特性
 
 - 示例, 生成动态库py_api并通过python调用
 
@@ -561,6 +568,7 @@ clang var_api.c -fPIC -shared -o libvar_api.so
 int main() {
     std::cout << g_version << std::endl;
     std::cout << g_name << std::endl;
+
     return 0;
 }
 ```
@@ -615,11 +623,11 @@ clang c_api.c -fPIC -shared -o libc_api.so
 
 #### 被c++调用
 
-c++调用c语言动态库时, 需注意:
+`c++`调用`c`语言动态库时, 需注意:
 
 1. 用`extern "C" {}` 包裹动态库头文件, 防止`name mangling`机制修改函数名
 
-2. `struct` 和 `enum` 可直接使用, 但 c++ `bool` 类型和 c `int` 可能有差异
+2. `struct` 和 `enum` 可直接使用, 但 `c++`的 `bool` 类型和 c `int` 可能有差异
 
 - 示例
 
@@ -677,18 +685,18 @@ int main() {
 
 ```sh
 # nm libc_api.so
-0000000000001100 T add_num
+0000000000001100    T add_num
 ......
 ```
 
 ```sh
 # nm main.o
-0000000000000000 T main
-                 U _Z7add_numii
+0000000000000000    T main
+                    U _Z7add_numii
 ......
 ```
 
-因c++编译器存在`name mangling`机制, 函数符号`add_num`修改为`_Z7add_numii`, 链接时会出现同函数名符号不同问题, 导致链接失败
+因`c++`编译器存在`name mangling`机制, 函数符号`add_num`修改为`_Z7add_numii`, 链接时会出现同函数名符号不同问题, 导致链接失败
 
 修改main.cpp, 增加`extern "C" {}`
 
@@ -719,7 +727,7 @@ int main() {
 }
 ```
 
-`extern "C"`屏蔽`name mangling`机制, 使c++编译器处理后函数名不变, 与libc_api.so中符号一致, 避免链接问题
+`extern "C"`屏蔽`name mangling`机制, 使`c++`编译器处理后函数名不变, 与libc_api.so中符号一致, 避免链接问题
 
 查看main.o符号表
 
@@ -735,7 +743,7 @@ int main() {
 
 #### 被c++调用
 
-c++调用c++动态库时, 需注意:
+`c++`调用`c++`动态库时, 需注意:
 
 1. 只要在同一编译器下, 一般不会有 `name mangling` 的问题
 
@@ -743,7 +751,7 @@ c++调用c++动态库时, 需注意:
 
 3. 类和模板, 导出类到动态库时, 虚函数表、构造析构函数需要小心, 尽量用纯 c 风格接口, 或者提供工厂函数返回指针
 
-4. c++异常可以在同编译器下传递, 但跨DLL边界需谨慎, 尤其在windows下
+4. `c++`异常可以在同编译器下传递, 但跨DLL边界需谨慎, 尤其在windows下
 
 ##### 含类动态库
 
@@ -1026,11 +1034,11 @@ c语言若想调用c++动态库, 则库文件需要在导出函数名前添加`e
 
 `so`是库约定后缀(windows下为dll),
 
-`x`是主版本号(major version number)
+`x`是主版本号(`major version number`)
 
-`y`是小版本号(minor build version)
+`y`是小版本号(`minor build version`)
 
-`z`是编译版本号(build version)
+`z`是编译版本号(`build version`)
 
 ##### so name
 
