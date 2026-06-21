@@ -42,19 +42,19 @@ excerpt: "binary tree"
 
 #### 遍历
 
-##### 层次遍历(level order traversal)
+- 层次遍历(level order traversal)
 
 按层次从上到下、从左到右遍历树中节点
 
-##### 前序遍历(preorder traversal)
+- 前序遍历(preorder traversal)
 
 访问顺序为: 根节点 -> 左子树 -> 右子树
 
-##### 中序遍历(inorder traversal)
+- 中序遍历(inorder traversal)
 
 访问顺序为: 左子树 -> 根节点 -> 右子树(在二叉搜索树中, 这种遍历会产生一个有序序列)
 
-##### 后序遍历(postorder traversal)
+- 后序遍历(postorder traversal)
 
 访问顺序为: 左子树 -> 右子树 -> 根节点
 
@@ -100,23 +100,21 @@ struct Node {
 
 #### 性质
 
-##### 节点
+- 节点
 
 每个节点都有一个左子节点和一个右子节点, 但也可以没有子节点(叶子节点)或只有一个子节点
 
-##### 左子树性质
+- 左子树性质
 
 左子树中所有节点值都小于其根节点值
 
-##### 右子树性质
+- 右子树性质
 
 右子树中所有节点值都大于其根节点值
 
-##### 递归性质
+- 递归性质
 
 左子树和右子树也分别是二叉排序树
-
-- 示例
 
 ```mermaid
 graph TB
@@ -134,7 +132,7 @@ graph TB
 
 #### 插入
 
-##### 规则
+- 规则
 
 从根节点开始,
 
@@ -144,7 +142,7 @@ graph TB
 
 最后找到合适位置后插入新节点, 新插入结点总是叶子结点
 
-- 示例, 插入 $15$
+示例, 插入 $15$
 
 因为 $15 < 45$, 选择左子树,
 
@@ -164,7 +162,7 @@ graph TB
             N68-->N76((76))
 ```
 
-##### 单值插入
+- 单值插入
 
 ```c++
 template<typename T>
@@ -185,7 +183,7 @@ Node<T> *insert(Node<T> *root, const T value) {
 }
 ```
 
-##### 构建
+- 构建
 
 根节点为空, 进行插入操作
 
@@ -199,8 +197,6 @@ void init(Node<T> *root, const vector<T> &v) {
 ```
 
 #### 查找
-
-##### 规则
 
 从根节点开始,
 
@@ -244,7 +240,7 @@ graph TB
             N68-->N76((76))
 ```
 
-##### 递归
+- 递归
 
 ```c++
 template<typename T>
@@ -267,7 +263,7 @@ Node<T> *search(Node<T> *root, const T value) {
 }
 ```
 
-##### 非递归
+- 非递归
 
 ```c++
 template<typename T>
@@ -290,8 +286,6 @@ Node<T> *search(Node<T> *root, const T value) {
 ```
 
 #### 删除
-
-##### 规则
 
 如果是叶子节点, 直接删除
 
