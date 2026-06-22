@@ -42,7 +42,7 @@ class Base {};
 class Derived : public Base {
 public:
     void show() {
-        std::cout << "Derived called" << std::endl;
+        std::cout << "derived called" << std::endl;
     }
 };
 
@@ -60,7 +60,7 @@ int main() {
 运行结果
 
 ```sh
-Derived called
+derived called
 ```
 
 ### dynamic_cast
@@ -95,7 +95,7 @@ int main() {
 
 ### const_cast
 
-用于修改对象常量性, 可添加或去除对象const或volatile属性
+用于修改对象常量性, 可添加或去除对象`const`或`volatile`属性
 
 ```c++
 #include <iostream>

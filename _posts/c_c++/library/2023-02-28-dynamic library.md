@@ -36,7 +36,7 @@ excerpt: "动态库"
 
 可被多种语言调用(需注意语言间类型兼容)
 
-## 开发动态库
+## 开发
 
 ### 关键特性
 
@@ -58,7 +58,7 @@ extern "C" {
 
 #### export symbol(导出符号)
 
-为了让库函数被外部程序调用, 需要将函数标记为导出
+为使库函数被外部程序调用, 需将函数标记为导出, 各平台标识如下
 
 - `windows`: `__declspec(dllexport)`
 
@@ -76,14 +76,14 @@ __EXPORT void hello();
 
 ### 编译流程
 
+生成动态库`libtest_api.so`, 提供接口函数`add`、`print`
+
 #### 编译器生成
 
 ```mermaid
 graph LR;
     A[/源文件.c/.cpp/]-->B(编译器)-->C[/库文件.so/.dll/]
 ```
-
-- 示例, 生成动态库, 提供接口函数`add`、`print`
 
 ```sh
 clang -fPIC -shared test_api.c -o libtest_api.so
@@ -124,7 +124,7 @@ target("test_api")
     add_files("test_api.c")
 ```
 
-执行`xmake`编译动态库
+执行`xmake`编译
 
 #### VS生成
 
@@ -167,7 +167,7 @@ int app_api(int x, int y) {
 
 生成动态库`test_dll.dll`与动态库导入库`test_dll.lib`
 
-`import library`(导入库)文件包含了DLL中导出函数符号信息, 用于链接时解析可执行文件与动态链接库(DLL)之间的函数调用关系
+`import library`(导入库)文件包含了DLL中导出函数符号信息, 用于链接时解析可执行文件与动态链接库之间的函数调用关系
 
 编译器将DLL导出函数信息提取生成导入库
 
@@ -175,7 +175,7 @@ int app_api(int x, int y) {
 
 可手动将动态库、导入库、头文件复制到所使用项目中
 
-将test_dll.h 与`test_dll.dll`、`test_dll.lib`拷贝到test_project项目中
+将`test_dll.h` 与`test_dll.dll`、`test_dll.lib`拷贝到`test_project`项目中
 
 修改test_project.cpp
 
@@ -203,7 +203,7 @@ int main() {
 
 设置运行时依赖, 之后即可运行
 
-## 调用库
+## 调用
 
 链接阶段, 链接器将动态库与目标文件链接生成可执行文件
 
@@ -236,7 +236,7 @@ graph LR;
 
 (4) 应用程序启动时, 操作系统会自动加载并链接动态库, 然后可调用库中所导出函数
 
-- 示例, 隐式调用动态库
+示例, 隐式调用动态库
 
 ```c++
 // main.cpp
@@ -259,9 +259,7 @@ int main(void) {
 clang++ 源文件 库文件 -o 可执行文件
 ```
 
-- 路径错误
-
-调用main时, 报错: 
+调用可执行文件时, 可能报错: 
 
 ```sh
 error while loading shared libraries: libtest_api.so: cannot open shared object file: No such file or directory
@@ -306,7 +304,7 @@ target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/libtest_api.so)
 
 ### explicit linking(显式调用)
 
-程序在运行时通过 API 动态加载库
+程序在运行时通过 `API` 动态加载库
 
 ```mermaid
 graph LR;
@@ -409,7 +407,7 @@ target("main")
 
 `python`通过`ctypes`库可调用`c/c++`动态库, 但动态库函数声明中不能出现`c++`语言特性
 
-- 示例, 生成动态库py_api并通过python调用
+- 示例, 生成动态库`py_api.so`并通过`python`调用
 
 ```c++
 // py_api.hpp
