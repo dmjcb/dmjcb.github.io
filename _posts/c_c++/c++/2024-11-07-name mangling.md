@@ -22,7 +22,7 @@ graph LR
         A1("int sum(int, int)")
         A2("double sum(double, double)")
     end
-    subgraph C++ 编译器
+    subgraph c++ 编译器
         B((name mangling))
     end
     subgraph 目标文件符号表
@@ -140,9 +140,9 @@ clang++ cpp_module.cpp -c -o cpp_module.o
 
 同名函数被重命名为唯一的符号
 
-以 _Z7add_numii 为例(遵循 Itanium C++ ABI 规则): 
+以 _Z7add_numii 为例(遵循 Itanium c++ ABI 规则): 
 
-- _Z：C++ 修饰符号的固定前缀
+- _Z：c++ 修饰符号的固定前缀
 
 - 7：函数名 add_num 的长度
 
@@ -190,7 +190,7 @@ clang++ c_module.c -c -o c_module.o
 
 #### 分别编译
 
-如果 C 代码用 C 编译器编译, C++ 代码用 C++ 编译器编译, 在链接阶段就会发生符号未定义错误
+如果 C 代码用 C 编译器编译, c++ 代码用 c++ 编译器编译, 在链接阶段就会发生符号未定义错误
 
 ```c
 // math_module.h
@@ -278,7 +278,7 @@ c++编译器编译`main.cpp` 时, 对原本c语言函数名`add`进行`name mang
 graph TD
     subgraph 失败场景
         A1(C 编译器) -->|编译 math_module.c| O1(math_module.o<br>符号: add)
-        A2(C++ 编译器) -->|编译 main.cpp| O2(main.o<br>引用符号: _Z3addii)
+        A2(c++ 编译器) -->|编译 main.cpp| O2(main.o<br>引用符号: _Z3addii)
         O1 --> L1{链接器}
         O2 --> L1
         L1 -->|符号不匹配| E1(❌ Undefined Reference 错误)
@@ -347,11 +347,11 @@ int add(int x, int y);
 
 - 只能修饰函数和全局变量
 
-不能用于类成员函数、模板或 C++ 特有语法
+不能用于类成员函数、模板或 c++ 特有语法
 
-- 内部不能包含 C++ 特性
+- 内部不能包含 c++ 特性
 
-被 `extern "C"` 包裹的代码块中, 不能使用函数重载、默认参数、引用等 C++ 特性, 必须严格符合 C 语言语法
+被 `extern "C"` 包裹的代码块中, 不能使用函数重载、默认参数、引用等 c++ 特性, 必须严格符合 C 语言语法
 
 ### 应用
 
