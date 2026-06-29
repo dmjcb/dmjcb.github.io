@@ -57,7 +57,7 @@ int main() {
 }
 ```
 
-运行结果
+结果
 
 ```sh
 derived called
@@ -67,7 +67,7 @@ derived called
 
 用于进行安全多态类型转换, 主要在有虚函数类之间使用, 其在运行时检查类型
 
-若转换不成功, 对于指针类型返回nullptr, 对于引用类型抛出异常
+若转换不成功, 对于指针类型返回 `nullptr`, 对于引用类型抛出异常
 
 ```c++
 #include <iostream>

@@ -142,13 +142,13 @@ clang++ cpp_module.cpp -c -o cpp_module.o
 
 以 _Z7add_numii 为例(遵循 Itanium c++ ABI 规则): 
 
-- _Z：c++ 修饰符号的固定前缀
+- _Z: c++ 修饰符号的固定前缀
 
-- 7：函数名 add_num 的长度
+- 7: 函数名 add_num 的长度
 
-- add_num：函数名
+- add_num: 函数名
 
-- ii：参数类型缩写(i 代表 int, 两个 i 代表两个 int 参数)
+- ii: 参数类型缩写(i 代表 int, 两个 i 代表两个 int 参数)
 
 > 如何反修饰 (Demangle)？ 由于 Mangling 后的名称难以阅读, 可以使用 c++filt 工具将其还原
 > 例如: c++filt _Z7add_numii
