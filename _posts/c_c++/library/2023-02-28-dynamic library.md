@@ -167,7 +167,7 @@ int app_api(int x, int y) {
 
 生成动态库`test_dll.dll`与动态库导入库`test_dll.lib`
 
-`import library`(导入库)文件包含了DLL中导出函数符号信息, 用于链接时解析可执行文件与动态链接库之间的函数调用关系
+`import library`(导入库)文件包含DLL中导出函数符号信息, 用于链接时解析可执行文件与动态链接库之间的函数调用关系
 
 编译器将DLL导出函数信息提取生成导入库
 

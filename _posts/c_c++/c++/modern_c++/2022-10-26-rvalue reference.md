@@ -12,11 +12,11 @@ excerpt: "rvalue reference"
 > - [理解 C_c++ 中的左值和右值](https://nettee.github.io/posts/2018/Understanding-lvalues-and-rvalues-in-C-and-C/)
 > - [c++中左值(引用)及右值(引用)详解](https://blog.csdn.net/weixin_43064827/article/details/120803409?spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-120803409-blog-78619152.pc_relevant_aa_2&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-120803409-blog-78619152.pc_relevant_aa_2&utm_relevant_index=1)
 
-`c++11` 引入了`rvalue reference`, 此特性允许程序员高效地移动资源而非拷贝资源, 可显著提高程序性能
+`c++11` 引入`rvalue reference`, 此特性允许程序员高效地移动资源而非拷贝资源, 可显著提高程序性能
 
 ## 值类别(value categories)
 
-`c++11` 对表达式的值类别进行了更细致的划分
+`c++11` 对表达式的值类别进行更细致的划分
 
 - `lvalue`
 
@@ -38,7 +38,7 @@ int y = 5 + 3;
 
 ### 细化分类
 
-`c++11` 为了支持移动语义, 将值类别进一步细化为三种基本类别: 左值(`lvalue`)、纯右值 (`prvalue`) 和 将亡值(`xvalue`)
+`c++11` 为支持移动语义, 将值类别进一步细化为三种基本类别: 左值(`lvalue`)、纯右值 (`prvalue`) 和 将亡值(`xvalue`)
 
 - 纯右值 (`prvalue` `pure rvalue`): 传统的右值
 
@@ -182,7 +182,7 @@ MyClass& operator=(MyClass&& other) {
 }
 ```
 
-通过移动赋值运算符, 避免了不必要的资源拷贝, 从而提高了性能
+通过移动赋值运算符, 避免不必要的资源拷贝, 从而提高性能
 
 ### std::move本质
 
@@ -287,4 +287,4 @@ int main() {
 
 自定义移动构造函数和移动赋值运算符时, 务必加上 noexcept
 
-如果移动操作可能抛出异常, STL 容器(如 std::vector)在重新分配内存时, 为了保证强异常安全(Strong Exception Guarantee), 会放弃使用移动构造, 退化为使用效率低下的拷贝构造
+如果移动操作可能抛出异常, STL 容器(如 std::vector)在重新分配内存时, 为保证强异常安全(Strong Exception Guarantee), 会放弃使用移动构造, 退化为使用效率低下的拷贝构造
