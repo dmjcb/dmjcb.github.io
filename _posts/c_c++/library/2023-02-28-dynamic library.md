@@ -281,7 +281,7 @@ b. 将`LD_LIBRARY_PATH=$LD_LIBRARY_PATH:路径` 添加到`~/.bashrc`
 
 c. 也可将库文件移动到`/usr/lib`
 
-执行后再次查看, 示例输出
+执行后再次查看
 
 ```sh
 ......
@@ -514,8 +514,6 @@ print(y.contents)
 
 对于全局变量, `extern` 声明通常放在头文件中, 以便在多个源文件之间共享同个变量
 
-- 示例, 使用动态库中全局变量
-
 ```c++
 // var_api.h
 #ifndef __VAR_API_H__
@@ -573,8 +571,6 @@ int main() {
 clang++ main.cpp libvar_api.so -o main
 ```
 
-运行结果
-
 ```sh
 0xABCD
 abcd
@@ -585,8 +581,6 @@ abcd
 #### 被c语言调用
 
 一般可直接调用
-
-- 示例
 
 ```c
 // c_api.h
@@ -621,11 +615,9 @@ clang c_api.c -fPIC -shared -o libc_api.so
 
 `c++`调用`c`语言动态库时, 需注意:
 
-1. 用`extern "C" {}` 包裹动态库头文件, 防止`name mangling`机制修改函数名
+(1) 用`extern "C" {}` 包裹动态库头文件, 防止`name mangling`机制修改函数名
 
-2. `struct` 和 `enum` 可直接使用, 但 `c++`的 `bool` 类型和 c `int` 可能有差异
-
-- 示例
+(2) `struct` 和 `enum` 可直接使用, 但 `c++`的 `bool` 类型和 c `int` 可能有差异
 
 ```c
 // c_api.h
@@ -794,8 +786,6 @@ namespace cpp_api {
 
 以类进行调用时需在类名前增加`export symbol`, 同时所生成库仅支持c++调用
 
-- 示例, 类调用libdemo.so
-
 修改 demo.hpp, 增加导出符号
 
 ```c++
@@ -849,8 +839,6 @@ int main() {
 ##### 函数式调用
 
 若要支持c/c++调用, 需再封装一层c适配层, 并使用`extern "C" {}`包裹函数声明
-
-- 示例, 通过接口调用含类动态库
 
 新增接口文件, 封装类所有操作
 
@@ -929,8 +917,6 @@ int main() {
 #### 含模板
 
 动态库含模板时, 需先模板实例化, 并添加`export symbol`
-
-- 示例, 生成含模板动态库
 
 ```c++
 // template_demo.hpp
