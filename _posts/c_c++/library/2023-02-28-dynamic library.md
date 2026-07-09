@@ -20,7 +20,7 @@ flowchart TB
     classDef linkLine stroke:#64748b,stroke-width:2px;
 
     %% 核心概念
-    Core["💻 <b>动态库 (Dynamic Library)</b><br>运行时加载的文件，包含代码与数据<br>可被多个程序共享使用"]:::coreBox
+    Core["💻 <b>动态库 (Dynamic Library)</b><br>运行时加载的文件, 包含代码与数据<br>可被多个程序共享使用"]:::coreBox
 
     %% Windows 平台实现
     subgraph WinEnv ["🪟 Windows 平台"]
@@ -65,7 +65,7 @@ flowchart TB
     %% 顶部标题
     Title["✨ <b>动态库四大核心特点</b>"]:::titleBox
 
-    %% 四个特点卡片 (使用纯节点而非 subgraph，确保 ~~~ 完美水平对齐)
+    %% 四个特点卡片 (使用纯节点而非 subgraph, 确保 ~~~ 完美水平对齐)
     F1["⏱️ <b>运行时加载</b><br>编译期仅保留函数引用<br>运行期动态加载代码实现"]:::feat1
     
     F2["🤝 <b>高度共享性</b><br>多进程共享同一物理文件<br>显著降低内存与磁盘开销"]:::feat2
