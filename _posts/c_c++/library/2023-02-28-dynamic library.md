@@ -11,81 +11,35 @@ excerpt: "动态库"
 各系统中, 动态库实现方式不同:
 
 ```mermaid
-flowchart TB
-    %% 样式定义
-    classDef coreBox fill:#1e3a8a,stroke:#1e40af,stroke-width:3px,color:#ffffff,font-weight:bold,font-size:16px;
-    classDef winBox fill:#dbeafe,stroke:#3b82f6,stroke-width:2px,color:#1e3a8a,font-weight:bold;
-    classDef unixBox fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#166534,font-weight:bold;
-    classDef detailNode fill:#ffffff,stroke:#cbd5e1,stroke-width:1.5px,color:#334155,font-family:monospace,font-size:14px;
-    classDef linkLine stroke:#64748b,stroke-width:2px;
-
-    %% 核心概念
-    Core["💻 <b>动态库 (Dynamic Library)</b><br>运行时加载的文件, 包含代码与数据<br>可被多个程序共享使用"]:::coreBox
-
-    %% Windows 平台实现
-    subgraph WinEnv ["🪟 Windows 平台"]
-        direction TB
-        W_Name["<b>Dynamic Link Library</b>"]:::detailNode
-        W_Ext["扩展名: <code>.dll</code>"]:::detailNode
-        W_Name ~~~ W_Ext
-    end
-
-    %% 类 Unix 平台实现
-    subgraph UnixEnv ["🐧 类 Unix 平台 (Linux / macOS)"]
-        direction TB
-        U_Name["<b>Shared Object File</b>"]:::detailNode
-        U_Ext["扩展名: <code>.so</code> (Linux)<br><code>.dylib</code> (macOS)"]:::detailNode
-        U_Name ~~~ U_Ext
-    end
-
-    %% 连线关系
-    Core ==>|"Windows 实现"| WinEnv
-    Core ==>|"类 Unix 实现"| UnixEnv
-
-    %% 应用子图样式
-    class WinEnv winBox;
-    class UnixEnv unixBox;
-
+graph LR
+    A[动态库] --> B(Windows)
+    A --> C(Linux)
+    A --> D(macOS)
+    
+    B --> B1[.dll 动态链接库]
+    B --> B2[.lib 导入库]
+    
+    C --> C1[.so 共享对象]
+    
+    D --> D1[.dylib 动态库]
+    D --> D2[.framework 框架]
 ```
-
-动态库特点:
 
 ```mermaid
 flowchart LR
-    %% 样式定义 (四色卡片体系)
-    classDef titleBox fill:#581c87,stroke:#7e22ce,stroke-width:3px,color:#ffffff,font-weight:bold,font-size:18px;
+    Title["动态库四大核心特点"]
+    F1["运行时加载<br>编译期仅保留函数引用<br>运行期动态加载代码实现"]
     
-    classDef feat1 fill:#fff7ed,stroke:#f97316,stroke-width:2px,color:#9a3412,font-size:14px;
-    classDef feat2 fill:#f0fdf4,stroke:#22c55e,stroke-width:2px,color:#166534,font-size:14px;
-    classDef feat3 fill:#eff6ff,stroke:#3b82f6,stroke-width:2px,color:#1e3a8a,font-size:14px;
-    classDef feat4 fill:#faf5ff,stroke:#a855f7,stroke-width:2px,color:#581c87,font-size:14px;
+    F2["高度共享性<br>多进程共享同一物理文件<br>显著降低内存与磁盘开销"]
     
-    classDef titleLink stroke:#a855f7,stroke-width:2.5px;
-
-    %% 顶部标题
-    Title["✨ <b>动态库四大核心特点</b>"]:::titleBox
-
-    %% 四个特点卡片 (使用纯节点而非 subgraph, 确保 ~~~ 完美水平对齐)
-    F1["⏱️ <b>运行时加载</b><br>编译期仅保留函数引用<br>运行期动态加载代码实现"]:::feat1
+    F3["独立可更新<br>升级库文件无需重新编译<br>依赖程序重启后自动生效"]
     
-    F2["🤝 <b>高度共享性</b><br>多进程共享同一物理文件<br>显著降低内存与磁盘开销"]:::feat2
-    
-    F3["🔄 <b>独立可更新</b><br>升级库文件无需重新编译<br>依赖程序重启后自动生效"]:::feat3
-    
-    F4["🌐 <b>多语言支持</b><br>支持跨编程语言边界调用<br>需关注 ABI 与类型兼容性"]:::feat4
+    F4["多语言支持<br>支持跨编程语言边界调用<br>需关注 ABI 与类型兼容性"]
 
-    %% 连线关系
-    Title ==> F1
-    Title ==> F2
-    Title ==> F3
-    Title ==> F4
-
-    %% 强制水平排列 (核心技巧)
-
-
-    %% 应用连线样式
-    %%class Title-->F1,F2,F3,F4 titleLink;
-
+    Title --> F1
+    Title --> F2
+    Title --> F3
+    Title --> F4
 ```
 
 ## 开发
@@ -134,23 +88,13 @@ __EXPORT void hello();
 
 ```mermaid
 flowchart LR
-    %% 样式定义
-    classDef srcNode fill:#dbeafe,stroke:#3b82f6,stroke-width:2px,color:#1e3a8a,font-weight:bold;
-    classDef compNode fill:#ffedd5,stroke:#f97316,stroke-width:3px,color:#9a3412,font-weight:bold;
-    classDef libNode fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#166534,font-weight:bold;
-
-    %% 节点定义
-    Src["📄 <b>源文件</b><br><code>test_api.c / .cpp</code>"]:::srcNode
-    Comp["⚙️ <b>编译器</b><br>Clang / GCC"]:::compNode
-    Lib["📦 <b>动态库</b><br><code>libtest_api.so</code>"]:::libNode
+    Src["源文件 .c / .cpp"]:::srcNode
+    Comp["编译器 clang / gcc"]:::compNode
+    Lib["动态库 .so</code>"]:::libNode
 
     %% 连线关系
-    Src ==>|"① 编译"| Comp
-    Comp ==>|"② 链接"| Lib
-
-    %% 连线样式统一
-    linkStyle 0,1 stroke:#64748b,stroke-width:2.5px;
-
+    Src -->|"① 编译"| Comp
+    Comp -->|"② 链接"| Lib
 ```
 
 ```sh
@@ -159,36 +103,18 @@ clang -fPIC -shared test_api.c -o libtest_api.so
 
 ```mermaid
 flowchart LR
-    %% 样式定义 (双色分支体系)
-    classDef cmdNode fill:#1e293b,stroke:#334155,stroke-width:3px,color:#f8fafc,font-weight:bold,font-size:16px;
-    
-    classDef picNode fill:#ecfeff,stroke:#06b6d4,stroke-width:2px,color:#155e75;
-    classDef picTitle fill:#cffafe,stroke:#06b6d4,stroke-width:2px,color:#155e75,font-weight:bold;
-    
-    classDef sharedNode fill:#fdf4ff,stroke:#d946ef,stroke-width:2px,color:#701a75;
-    classDef sharedTitle fill:#fae8ff,stroke:#d946ef,stroke-width:2px,color:#701a75,font-weight:bold;
+    Cmd["编译参数"]
 
-    %% 起点节点
-    Cmd["⚙️ <b>编译参数</b>"]:::cmdNode
+    P1["-fPIC"]
+    P2["位置无关代码<br>Position Independent Code"]
+    P3["代码可在内存中<br>任意位置加载运行"]
 
-    %% 分支 1：-fPIC (青色系)
-    P1["<b>-fPIC</b>"]:::picTitle
-    P2["<b>位置无关代码</b><br>Position Independent Code"]:::picNode
-    P3["代码可在内存中<br><b>任意位置</b>加载运行"]:::picNode
+    S1["-shared"]:::sharedTitle
+    S2["指示链接器<br>链接为共享库"]
+    S3["生成 .so/ .dll"]
 
-    %% 分支 2：-shared (紫粉色系)
-    S1["<b>-shared</b>"]:::sharedTitle
-    S2["<b>指示链接器</b><br>链接为共享库"]:::sharedNode
-    S3["生成 <code>.so</code> / <code>.dll</code><br><b>动态库文件</b>"]:::sharedNode
-
-    %% 连线关系
-    Cmd ==> P1 ==> P2 ==> P3
-    Cmd ==> S1 ==> S2 ==> S3
-
-    %% 强制垂直网格对齐 (核心技巧)
-
-    %% 连线样式统一
-    linkStyle 0,1,2,3,4,5 stroke:#94a3b8,stroke-width:2px;
+    Cmd --> P1 --> P2 --> P3
+    Cmd --> S1 --> S2 --> S3
 ```
 
 `nm`查看符号表
@@ -204,6 +130,10 @@ flowchart LR
 cmake_minimum_required(VERSION 3.16)
 project(test_api)
 
+# 推荐：默认隐藏所有符号，仅导出标记的符号
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+set(CMAKE_VISIBILITY_INLINES_HIDDEN ON)
+
 add_library(${PROJECT_NAME} SHARED "")
 target_sources(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/test_api.c)
 ```
@@ -216,9 +146,9 @@ add_rules("mode.debug", "mode.release")
 target("test_api")
     set_kind("shared")
     add_files("test_api.c")
+    -- 设置符号隐藏
+    add_cxflags("-fvisibility=hidden")
 ```
-
-执行`xmake`编译
 
 #### VS生成
 
@@ -305,33 +235,23 @@ int main() {
 
 ```mermaid
 flowchart LR
-    %% 样式定义
-    classDef libFile fill:#dbeafe,stroke:#3b82f6,stroke-width:2px,color:#1e3a8a,font-weight:bold;
-    classDef objFile fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#166534,font-weight:bold;
-    classDef linker fill:#ffedd5,stroke:#f97316,stroke-width:3px,color:#9a3412,font-weight:bold;
-    classDef exeFile fill:#f3e8ff,stroke:#a855f7,stroke-width:2px,color:#581c87,font-weight:bold;
-
-    %% 节点定义
-    Lib["动态库文件</b><br><code>libtest_api.so</code>"]:::libFile
-    Obj["其他目标文件</b><br><code>main.o</code>"]:::objFile
-    Linker["链接器"]:::linker
-    Exe["可执行文件</b><br><code>./main</code>"]:::exeFile
+    Lib["动态库文件<br>libtest_api.so"]
+    Obj["其他目标文件<br>main.o"]
+    Linker["链接器"]
+    Exe["可执行文件<br>./main"]
 
     %% 连线关系
-    Lib ==>|"① 解析符号"| Linker
-    Obj ==>|"② 解析符号"| Linker
-    Linker ==>|"③ 生成"| Exe
-
-    %% 连线样式统一
-    linkStyle 0,1,2 stroke:#64748b,stroke-width:2.5px;
+    Lib -->|"① 解析符号"| Linker
+    Obj -->|"② 解析符号"| Linker
+    Linker -->|"③ 生成"| Exe
 
 ```
 
 ### implicit linking(隐式调用)
 
-编译阶段, 编译器将动态库符号和导入函数信息写入所生成中可执行文件特定区段
+编译时链接器将动态库的符号信息写入可执行文件
 
-加载时, 系统会自动查找加载所需动态库, 并根据动态库导出表与程序中导入表相配对以确定程序使用动态库中代码位置
+程序启动时，操作系统加载器会自动寻找并加载动态库
 
 - 过程
 
@@ -344,23 +264,6 @@ flowchart LR
 (3) 运行程序前, 需确保动态链接库可被找到; 使用`ldd`命令可查看程序所依赖动态链接库
 
 (4) 应用程序启动时, 操作系统会自动加载并链接动态库, 然后可调用库中所导出函数
-
-示例, 隐式调用动态库
-
-```c++
-// main.cpp
-extern "C" {
-    #include "test_api.h"
-}
-
-#include <iostream>
-
-int main(void) {
-    std::cout << add(0xFF, 0xAB) << std::endl;
-    print();
-    return 0;
-}
-```
 
 #### 编译器
 
@@ -417,28 +320,21 @@ target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/libtest_api.so)
 
 ```mermaid
 flowchart LR
-    %% 样式定义 (双平台色彩体系)
-    classDef linuxTitle fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d,font-weight:bold,font-size:14px;
-    classDef linuxNode fill:#f0fdf4,stroke:#22c55e,stroke-width:2px,color:#166534,font-family:monospace,font-size:14px;
-    
-    classDef winTitle fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#1e3a8a,font-weight:bold,font-size:14px;
-    classDef winNode fill:#eff6ff,stroke:#3b82f6,stroke-width:2px,color:#1e3a8a,font-family:monospace,font-size:14px;
-
     %% ================= Linux 流程 =================
-    L_Start["🐧 <b>Linux</b>"]:::linuxTitle
-    L1["<b>加载</b><br><code>dlopen()</code>"]:::linuxNode
-    L2["<b>获取地址</b><br><code>dlsym()</code>"]:::linuxNode
-    L3["<b>关闭</b><br><code>dlclose()</code>"]:::linuxNode
+    L_Start["Linux"]
+    L1["加载<br>dlopen()"]
+    L2["获取地址<br>dlsym()"]
+    L3["关闭<br>dlclose()"]
 
     %% ================ Windows 流程 ================
-    W_Start["🪟 <b>Windows</b>"]:::winTitle
-    W1["<b>加载</b><br><code>LoadLibrary()</code>"]:::winNode
-    W2["<b>获取地址</b><br><code>GetProcAddress()</code>"]:::winNode
-    W3["<b>关闭</b><br><code>FreeLibrary()</code>"]:::winNode
+    W_Start["Windows"]
+    W1["加载<br>LoadLibrary()"]
+    W2["获取地址<br>GetProcAddress()"]
+    W3["关闭<br>FreeLibrary()"]
 
     %% 连线关系
-    L_Start ==>|"①"| L1 ==>|"②"| L2 ==>|"③"| L3
-    W_Start ==>|"①"| W1 ==>|"②"| W2 ==>|"③"| W3
+    L_Start -->|"①"| L1 -->|"②"| L2 -->|"③"| L3
+    W_Start -->|"①"| W1 -->|"②"| W2 -->|"③"| W3
 ```
 
 ```c++
@@ -528,7 +424,7 @@ target("main")
     end
 ```
 
-### 跨语言调用
+### 跨语言与跨边界调用
 
 #### python
 
@@ -536,7 +432,7 @@ target("main")
 
 `python`通过`ctypes`库可调用`c/c++`动态库, 但动态库函数声明中不能出现`c++`语言特性
 
-- 示例, 生成动态库`py_api.so`并通过`python`调用
+生成动态库`py_api.so`并通过`python`调用
 
 ```c++
 // py_api.hpp

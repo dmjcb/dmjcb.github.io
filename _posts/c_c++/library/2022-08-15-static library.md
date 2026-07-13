@@ -107,7 +107,7 @@ void hello(){
 
 #### 编译与打包
 
-在 `Linux/macOS` 下, 我们使用编译器生成目标文件, 然后使用 `ar`(Archive)工具将其打包
+在 `Linux/macOS` 下, 使用编译器生成目标文件, 然后使用 `ar`(Archive)工具将其打包
 
 ```sh
 # 1. 编译生成目标文件(.o)
@@ -185,8 +185,8 @@ clang++ main.cpp -L. -lstatic_api -o main
 
 - `-L.`: 告诉链接器在当前目录(.)下搜索库文件
 
-如果是其他路径, 如 /usr/local/lib, 则写 -L/usr/local/lib
+如果是其他路径, 如 `/usr/local/lib`写为 `-L/usr/local/lib`
 
-- `-lstatic_api`：告诉链接器寻找名为 libstatic_api.a(或 .so)的库
+- `-lstatic_api`：告诉链接器寻找名为 `libstatic_api.a`(或 `.so`)的库
 
-注意：必须去掉 lib 前缀和 .a 后缀
+注意：必须去掉 `lib` 前缀和 `.a` 后缀

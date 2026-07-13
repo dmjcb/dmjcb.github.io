@@ -32,8 +32,6 @@ double b = static_cast<double>(a);
 
 #### 多态类型转换
 
-- 示例, 将父类指针转换为子类指针
-
 ```c++
 #include <iostream>
 
@@ -50,17 +48,13 @@ int main() {
     Base* base = new Base();
     // 向下转换
     Derived* derived = static_cast<Derived*>(base);
+
+    // derived called
     derived->show();
     delete derived;
 
     return 0;
 }
-```
-
-结果
-
-```sh
-derived called
 ```
 
 ### dynamic_cast
