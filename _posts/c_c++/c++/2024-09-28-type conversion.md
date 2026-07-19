@@ -75,9 +75,9 @@ int main() {
 
 用于运行时的安全多态类型转换。它依赖 RTTI（运行时类型信息），仅能用于包含虚函数的类（多态类型）
 
-转换指针时：失败返回 nullptr
+转换指针时：失败返回 `nullptr`
 
-转换引用时：失败抛出 std::bad_cast 异常
+转换引用时：失败抛出 `std::bad_cast` 异常
 
 ```c++
 #include <iostream>
