@@ -694,7 +694,7 @@ int main() {
 }
 ```
 
-查看libc_api.so与main.o 符号表
+查看`libc_api.so`与`main.o` 符号表
 
 ```sh
 # nm libc_api.so
@@ -780,7 +780,6 @@ namespace cpp_api {
         public:
             Demo() = default;
             ~Demo() = default;
-
             void set_value(const int val);
             void print() const;
         private:
@@ -828,7 +827,6 @@ namespace cpp_api {
     public:
         Demo() = default;
         ~Demo() = default;
-
         void set_value(const int val);
         void print() const;
     private:
@@ -861,7 +859,7 @@ int main() {
 
 ##### 函数式调用
 
-若要支持c/c++调用, 需再封装一层c适配层, 并使用`extern "C" {}`包裹函数声明
+若要支持`c/c++`调用, 需再封装一层c适配层, 并使用`extern "C" {}`包裹函数声明
 
 新增接口文件, 封装类所有操作
 
@@ -929,10 +927,10 @@ clang++ demo.cpp c_api.cpp -fPIC -shared -o libc_api.so
 
 int main() {
     void* handle = demo_create();
-
     demo_set_value(handle, 0xFFFF);
     demo_print(handle);
     demo_destroy(handle);
+
     return 0;
 }
 ```
@@ -1002,7 +1000,6 @@ template class __EXPORT TemplateDemo<std::string>;
 int main() {
     std::cout << sub<int>(0xA, 0xB) << std::endl;
     std::cout << sub<double>(1.234, 9.876) << std::endl;
-
     std::cout << TemplateDemo<int>::add(0xA, 0xB) << std::endl;
     std::cout << TemplateDemo<double>::add(1.234, 9.876) << std::endl;
     std::cout << TemplateDemo<std::string>::add("Hello", "World") << std::endl;

@@ -1,5 +1,5 @@
 ---
-title: "c++ function"
+title: "c++ std::function"
 date: 2024-10-11
 categories: [c_c++]
 tags: [c_c++]
